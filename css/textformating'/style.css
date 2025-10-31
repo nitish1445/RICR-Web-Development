@@ -1,0 +1,21 @@
+*{
+    background-color: aqua;
+}
+h1{
+    font-size: 40px;
+    color: burlywood;
+    text-shadow: 2px 5px 5px gray;
+}
+p{
+    font-weight: 300;
+    font-style: italic;
+    font-variant: small-caps;
+}
+#div1{
+    border: 5px double red;
+    width: 500px;
+}
+#div2{
+    border: 8px solid rebeccapurple;
+
+}

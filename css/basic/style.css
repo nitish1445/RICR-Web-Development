@@ -1,0 +1,19 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: red;
+}
+h1{
+    background-color: aqua;
+    color: azure;
+}
+.A{
+    background-color: blue;
+}
+#para1{
+    color: brown;
+}
+h1{
+    background: linear-gradient(90deg, red 0, green 10%, skyblue 50%);
+}
