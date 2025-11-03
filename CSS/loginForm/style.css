@@ -1,0 +1,68 @@
+body{
+    background-color: rgb(243, 238, 231);
+}
+#mainbox{
+    border: 1px solid #000;
+    width: 500px;
+    height: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px 2px gray;
+
+}
+#formHeading{
+    text-align: center;
+    color: blue;
+}
+#Loginform{
+width: max-content;
+margin: auto;
+padding: 10px
+}
+label{
+    text-align: center;
+}
+.formField{
+    padding: 10px;
+    label{
+        font-size: 25px;
+    }
+}
+.formField input{
+    padding: 10px;
+    border-radius: 20px;
+    outline-color: blue;
+     border: 1px solid #000;
+}
+#formcontrol{
+    margin: auto;
+    width: fit-content;
+    button{
+        padding: 7px;
+        margin: 10px;
+        border-radius: 25px;
+    }
+}
+#submitButton{
+    background-color: green;
+    color: rgb(186, 219, 136);
+    border: 1px solid green;
+}
+#cancelButton{
+    background-color: red;
+    color: rgb(230, 191, 191);
+    border: 1px solid red;
+}
+#submitButton:hover{
+    background-color: white;
+    color: gray;
+}
+#cancelButton:hover{
+    background-color: white;
+    color: red;
+}
+#submitButton:active{
+    background-color: greenyellow;
+}
