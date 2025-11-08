@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+#navBar{
+  /* border: 1px solid #000; */
+  background-color: blue;
+  color: aliceblue;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 5px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+
+  div{
+    display: flex;
+    gap: 15px;
+  }
+
+  span:hover{
+    color: red;
+  }
+}
+h4{
+    text-align: center;
+}
+#helpButton{
+    padding: 5px 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 15px;
+    border-radius: 50%;
+    font-size: x-large;
+    text-align: center;
+}
