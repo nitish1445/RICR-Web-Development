@@ -2,6 +2,12 @@
     margin: 0;
     padding: 0;
 }
+#connect{
+  padding: auto;
+  margin: auto;
+  font-size: x-large;
+  text-align: center;
+}
 #navBar{
   /* border: 1px solid #000; */
   background-color: blue;
@@ -30,6 +36,8 @@ h4{
     position: fixed;
     bottom: 20px;
     right: 15px;
+    background-color: red;
+    color: wheat;
     border-radius: 50%;
     font-size: x-large;
     text-align: center;
