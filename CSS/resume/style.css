@@ -1,112 +1,111 @@
-body{
-    width: 900px;
-    height: auto;
-    padding: none;
-    margin: auto;
-    border: 1px solid #000;
+body {
+  width: 900px;
+  height: auto;
+  padding: none;
+  margin: auto;
+  border: 1px solid #000;
 }
-#resume{
-    display: flex;
-    justify-content: space-between;
-    #selfIntro{
-        padding: 10px 20px;
-        background-color:rgb(166, 116, 245);
-    }
-    #selfDetail{
-        padding: 10px;
-        background-color: rgb(188, 177, 201);
-    }
+#resume {
+  display: flex;
+  justify-content: space-between;
+  #selfIntro {
+    padding: 10px 20px;
+    background-color: rgb(166, 116, 245);
+  }
+  #selfDetail {
+    padding: 10px;
+    background-color: rgb(188, 177, 201);
+    position: relative;
+  }
 }
 
-
-.name{
-   text-align: center;
-   font-size: medium;
-   #name{
-        font-size: xx-large;
-        margin: 10px auto;
-   }
-   #degisnation{
-        font-size: larger;
-        margin-bottom: 10px;
-   }
-   hr{
-        border-bottom: 3px solid #0c0c0c;
-    }
-}
-img{
-    height: 230px;
-    width: 230px;
-    padding: auto;
-    margin: auto 10px auto;
-    border: 3px solid peachpuff;
-    border-radius: 50%;
-}
-#contactDetail{
-    margin-top: 20px;
-    #contactHeader{
-        font-size: x-large;
-        margin-bottom: 10px;
-    }
-    .contactInfo{
-        font-size: large;
-        padding: 5px auto;
-        margin: 5px auto;
-    }
-}
-#skill{
-    margin-top: 20px;
-    #skillHeader{
-        font-size: x-large;
-        margin-bottom: 10px;
-    }
-    .skillDetail{
-        font-size: large;
-        padding: 5px auto;
-        margin: 5px auto;
-    }
-}
-#refrences{
-    margin-top: 20px;
-    #refrencesHeader{
-        font-size: x-large;
-        margin-bottom: 10px;
-    }
-    .refrencesDetail{
-        font-size: large;
-        padding: 5px auto;
-        margin: 5px auto;
-    }
-}
-#aboutDetail{
-    padding: auto;
-    margin: 5px auto 10px;
-    #aboutHeader{
-        text-align: left;
-        font-size: x-large;
-    }
-    #aboutMe{
-        padding: 10px auto;
-        font-size: large;
-    }
-}
-#experiences{
-    #experiencesHearder{
-        margin-bottom: 10px;
-        font-size: x-large;
-    }
-}
-.companyDetail{
-    padding: 10px auto;
+.name {
+  text-align: center;
+  font-size: medium;
+  #name {
+    font-size: xx-large;
     margin: 10px auto;
-    display: flex;
-    justify-content: space-between;
-    .companyName{
-        border: 5px solid #000;
+  }
+  #degisnation {
+    font-size: larger;
+    margin-bottom: 10px;
+  }
+  hr {
+    border-bottom: 3px solid #0c0c0c;
+  }
+}
+img {
+  height: 230px;
+  width: 230px;
+  padding: auto;
+  margin: auto 10px auto;
+  border: 3px solid peachpuff;
+  border-radius: 50%;
+}
+#contactDetail {
+  margin-top: 20px;
+  #contactHeader {
+    font-size: x-large;
+    margin-bottom: 10px;
+  }
+  .contactInfo {
+    font-size: large;
+    padding: 5px auto;
+    margin: 5px auto;
+  }
+}
+#skill {
+  margin-top: 20px;
+  #skillHeader {
+    font-size: x-large;
+    margin-bottom: 10px;
+  }
+  .skillDetail {
+    font-size: large;
+    padding: 5px auto;
+    margin: 5px auto;
+  }
+}
+#refrences {
+  margin-top: 20px;
+  #refrencesHeader {
+    font-size: x-large;
+    margin-bottom: 10px;
+  }
+  .refrencesDetail {
+    font-size: large;
+    padding: 5px auto;
+    margin: 5px auto;
+  }
+}
+#aboutDetail {
+  padding: auto;
+  margin: 5px auto 10px;
+  #aboutHeader {
+    text-align: left;
+    font-size: x-large;
+  }
+  #aboutMe {
+    padding: 10px auto;
+    font-size: large;
+  }
+}
+#experiences {
+  #experiencesHearder {
+    margin-bottom: 10px;
+    font-size: x-large;
+  }
+}
+.companyDetail {
+  padding: 10px auto;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: row;
+  gap: 250px;
+  .companyName {
+    font-size: larger;
+  }
+  .positionName {
         font-size: larger;
-    }
-    .positionName{
-        border: 5px solid #000;
-        font-size: larger;
-    }
+  }
 }
