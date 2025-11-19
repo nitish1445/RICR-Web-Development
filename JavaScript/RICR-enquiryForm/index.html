@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enquiry Form | RICR</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- This is Header -->
+    <div
+      class="d-flex justify-content-between p-3 bg-light-subtle px-5 mb-5 position-sticky top-0"
+    >
+      <div
+        class="d-flex gap-5 justify-content-between align-items-center fs-5 fw-semibold"
+      >
+        <div>
+          <img
+            style="width: 125px; height: 50px"
+            src="./Screenshot 2025-11-18 011449.png"
+            alt="RICR"
+          />
+        </div>
+        <div>Home</div>
+        <div>About</div>
+        <div>Courses</div>
+        <div>IDE</div>
+        <div>Contact Us</div>
+      </div>
+      <div class="d-flex gap-4 align-items-center fs-5 px-2">
+        <div>
+          <i class="bi bi-telephone-fill"></i>
+          <span class="text-decoration-none text-dark"
+            ><a href="tel:+918889991736"
+              ><span class="text-dark">+91 8889991736</span></a
+            ></span
+          >
+        </div>
+        <div id="navButton">
+          <button
+            class="px-3 py-2 border rounded text-light fs-5"
+            style="box-shadow: 5px 5px lightblue; background-color: #1e537e"
+          >
+            Student Login
+          </button>
+        </div>
+      </div>
+    </div>
+    <!--  This detail Box -->
+    <div
+      class="border m-5 rounded border-primary-subtle p-5 bg-primary-subtle"
+    >
+      <div class="text-center mb-1">
+        <h1>Enquiry Form</h1>
+      </div>
+      <div class="text-center fs-5 pt-2">
+        <p>
+          Have questions or need assistance? Fill out the form below to connect
+          with our team and explore your opportunities.
+        </p>
+      </div>
+      <div class="fs-5 mb-3 d-flex justify-content-between align-items-center">
+        <div>
+          <div class="pb-2">Person Name*</div>
+          <div>
+            <input
+              class="p-3 rounded border-0"
+              type="text"
+              name="name"
+              id="personName"
+              placeholder="Person Name"
+              style="width: 550px;"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="pb-2">Contact Number*</div>
+          <div>
+            <input
+              class="p-3 rounded border-0"
+              type="phone"
+              name="number"
+              id="contactNumber"
+              placeholder="contact Number"
+              style="width: 550px;"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="fs-5 mb-3 d-flex justify-content-between align-items-center">
+        <div>
+          <div class="pb-2">Email*</div>
+          <div>
+            <input
+              class="p-3 rounded border-0"
+              type="text"
+              name="emai"
+              id="emailId"
+              placeholder="Email"
+              style="width: 750px;"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="pb-2">Qualification*</div>
+          <div>
+            <input
+              class="p-3 rounded border-0"
+              type="text"
+              name="qualification"
+              id="qualificationDetail"
+              placeholder="Qualification"
+              style="width: 350px;"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="fs-5 mb-3">
+        <div class="pb-2">College/School Name*</div>
+        <div>
+          <input
+            class="p-3 rounded border-0 w-100"
+            type="text"
+            name="college"
+            id="collegeName"
+            placeholder="College/School Name"
+          />
+        </div>
+      </div>
+
+      <div class="fs-5 mb-3 d-flex justify-content-between align-items-center">
+        <div>
+          <div class="pb-2" >Year*</div>
+          <div>
+            <select
+              name="year"
+              id="yearDetail"
+              class="py-3 px-2 rounded border-0"
+            >
+              <option value="">Other</option>
+              <option value="">First Year</option>
+              <option value="">Second Year</option>
+              <option value="">Third Year</option>
+              <option value="">Fourth Year</option>
+              <option value="">Passout</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="pb-2">Branch*</div>
+          <div>
+            <input
+              class="p-3 rounded border-0"
+              type="branch"
+              name="branch"
+              id="branchName"
+              placeholder="Branch"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-5 justify-content-between">
+        <div class="fs-5 mb-3">
+          <div class="mb-3">Interested in Which Course*</div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox1" />
+            <span>Full Stack Web Development - Placement Oriented</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox2" />
+            <span>Data Science with Python - Placement Oriented</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox3" />
+            <span>Data Analytics with Python - Placement Oriented</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox4" />
+            <span>Business Analyst</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox5" />
+            <span>Java Programming</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox6" />
+            <span>Python Programming</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox7" />
+            <span>C/C++ Programming</span>
+          </div>
+          <div>
+            <label for="chechbox"></label>
+            <input type="checkbox" name="chechbox" id="chechbox8" />
+            <span>Others</span>
+          </div>
+        </div>
+
+        <div class="fs-5">
+          <div>Source of Information</div>
+          <div>
+            <h5>
+              (Only choose 'Received call from institute' <br />
+              if you actually got a call from us)*
+            </h5>
+          </div>
+          <div>
+            <div>
+              <select
+                name="sourceOfInformation"
+                id="SoI"
+                class="py-3 px-2 rounded border-0"
+              >
+                <option value="">Other</option>
+                <option value="">News/Print Media</option>
+                <option value="">Friend/Relatives</option>
+                <option value="">Social Media</option>
+                <option value="">Workshop/Seminar</option>
+                <option value="">
+                  Received call from institute <br />
+                  (Only chooseif you actually got a call from us)
+                </option>
+              </select>
+            </div>
+            <div>
+              <div>Name of Eecutive*</div>
+              <select
+                name="nameOfExecutive"
+                id="NoE"
+                class="py-3 px-2 rounded border-0"
+              >
+                <option value="">Kashim Khan</option>
+                <option value="">Anushree Chaubey</option>
+                <option value="">Shani Mishra</option>
+                <option value="">Sankalp Shukla</option>
+                <option value="">Anchale Sejwar</option>
+                <option value="">Deelapi Tated</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- This is Submit Button -->
+
+      <div
+        class="border rounded d-flex justify-content-center align-items-center"
+      >
+        <button
+          class="border px-4 py-2 fs-4 fw-medium"
+          style="
+            background-color: rgb(2, 2, 43);
+            color: white;
+            border-radius: 30px;
+          "
+          id="submitButton"
+          onclick="submit()"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+
+    <!-- This is Footer -->
+    <div class="p-5" style="background-color: #1e537e; color: white">
+      <div
+        class="p-5 d-flex gap-5 justify-content-between align-items-top "
+      >
+        <div>
+          <div>
+            <img src="./Screenshot 2025-11-18 011440.png" alt="" />
+          </div>
+          <br />
+          <div>
+            <p>
+              RICR is a subsidiary of Raj Digital Private Limited. It is a
+              premier coding and robotics institute, empowering students with
+              cutting-edge education and real-world skills for a tech-driven
+              future.
+            </p>
+            <br />
+          </div>
+          <br />
+        </div>
+        <div class="d-flex gap-5 justify-content-between">
+          <div>
+            <div><h4>Quick Links</h4></div>
+            <br />
+            <div>Courses</div>
+            <br />
+            <div>Host a Workshop</div>
+            <br />
+            <div>Community Ambassador</div>
+            <br />
+            <div>Work with Us</div>
+            <br />
+            <div>Contact Us</div>
+            <br />
+          </div>
+          <div>
+            <div><h4>Other Links</h4></div>
+            <br />
+            <div>Edunest Facility</div>
+            <br />
+            <hr />
+            <div><h4>Policies</h4></div>
+            <br />
+            <div>Terms of Service</div>
+            <br />
+            <div>Privacy Policy</div>
+            <br />
+          </div>
+          <div>
+            <div><h4>Informations</h4></div>
+            <div>
+              <i class="bi bi-geo-alt"></i>
+              <span
+                >Minal Mall, 4th Floor, Minal Residency, JK Road, Bhopal Pincode
+                (462023)</span
+              >
+            </div>
+            <br />
+            <div>
+              <i class="bi bi-envelope"></i><span> conatct@ricr.in</span>
+            </div>
+            <br />
+            <div>
+              <i class="bi bi-telephone"></i><span> +91 8889991736</span>
+            </div>
+            <br />
+          </div>
+        </div>
+      </div>
+      <div class="px-5 pt-5">
+        <hr />
+        <div class="d-flex justify-content-between align-items-center">
+          <div>© 2024 - Raj Digital Private Limited | All Rights Reserved</div>
+          <div>Sitemap</div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdeliv?<r.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
