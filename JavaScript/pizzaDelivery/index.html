@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pizza Order</title>
+  </head>
+  <body>
+    <h2 style="text-align: center">Task 2:</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+      <tr>
+        <td>
+          <div>
+            <h3>Pizza Order Form</h3>
+          </div>
+          <br />
+          <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" name="firstName" id="firstName" />
+          </div>
+          <br />
+          <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" name="lastName" id="lastName" />
+          </div>
+          <br />
+          <div>
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" id="email" />
+          </div>
+          <br />
+          <div>
+            <label for="phone">Contact Number:</label>
+            <input type="phone" name="phone" id="phone" />
+          </div>
+          <br />
+          <div>
+            <label for="timedate">Preferred Delivery Date:</label>
+            <input type="date" name="date" id="date"
+          </div>
+          <br />
+          <div>
+            <label for="size">Size:</label><br />
+            <input type="checkbox" name="size" id="size" value="small" />
+            <span>Small</span>
+            <input type="checkbox" name="size" id="size1" value="medium" />
+            <span>Medium</span>
+            <input type="checkbox" name="size" id="size2" value="large" />
+            <span>Large</span>
+          </div>
+          <br />
+          <div>
+            <label for="flavour">Flavour:</label><br />
+            <input type="checkbox" name="flavour" id="flavour" value="Howaiin(Php 150.00)"/>
+            <span>Howaiin(Php 150.00)</span><br />
+            <input type="checkbox" name="flavour" id="flavour1" value="Pepperoni(Php 140.00)"/>
+            <span>Pepperoni(Php 140.00)</span><br />
+            <input type="checkbox" name="flavour" id="flavour3" value="Vegetable(Php 130.00)"/>
+            <span>Vegetable(Php 130.00)</span>
+          </div>
+          <br />
+          <div>
+            <label for="number">Credit Card:</label>
+            <input type="text" name="number" id="cardNumber" />
+          </div>   
+          <br />
+          <div>
+            <label for="number">PIN:</label>
+            <input type="text" name="number" id="pinNumber" />
+          </div>
+          <br />
+          <div>
+            <label for="text">Additional Note:</label>
+            <textarea name="text" id="additionalNote"></textarea>
+          </div>
+          <br />
+          <div>
+            <button id="submitOrder" onclick="submit()">Submit Order</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <script src="script.js"></script>
+  </body>
+</html>
