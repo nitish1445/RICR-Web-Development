@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="d-flex justify-content-between bg-primary p-3">
+    <div class="d-flex justify-content-between bg-primary p-3 position-sticky top-0">
       <div class="fs-4 fw-bold text-light px-3">MERN Classes</div>
       <div class="d-flex gap-4 px-4 fs-5" id="navBar">
         <a href="./index.html" class="text-dark text-decoration-none">Home</a>
@@ -33,22 +33,47 @@
     </div>
 
     <div
-      class="container my-5 border rounded d-flex flex-column gap-3 py-3 w-50"
+      class="container my-5 border border-primary-subtle shadow rounded d-flex flex-column gap-3 p-3 w-50 bg-body"
     >
+      <div class="d-flex justify-content-center">
+        <h4>Registration Form</h4>
+      </div>
       <div class="d-flex gap-3 justify-content-start align-items-center">
         <label for="name"></label>
-        <span class="w-25">Name :</span>
+        <span class="w-25">Student Name :</span>
         <input
           class="w-100"
           type="text"
-          name="name"
+          name="nameRegister"
           id="name"
           placeholder="Enter your name"
         />
       </div>
       <div class="d-flex gap-3 justify-content-start align-items-center">
+        <label for="phone"></label>
+        <span class="w-25">Phone Number :</span>
+        <input
+          class="w-100"
+          type="phone"
+          name="phoneNumber"
+          id="phoneNumber"
+          placeholder="Enter your number"
+        />
+      </div>
+      <div class="d-flex gap-3 justify-content-start align-items-center">
+        <label for="email"></label>
+        <span class="w-25">Email Address:</span>
+        <input
+          class="w-100"
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Enter your email"
+        />
+      </div>
+      <div class="d-flex gap-3 justify-content-start align-items-center">
         <label for="college"></label>
-        <span class="w-25">College :</span>
+        <span class="w-25">College Name:</span>
         <input
           class="w-100"
           type="text"
@@ -79,28 +104,7 @@
           placeholder="Current semester"
         />
       </div>
-      <div class="d-flex gap-3 justify-content-start align-items-center">
-        <label for="phone"></label>
-        <span class="w-25">Phone Number :</span>
-        <input
-          class="w-100"
-          type="phone"
-          name="phoneNumber"
-          id="phoneNumber"
-          placeholder="Enter your name"
-        />
-      </div>
-      <div class="d-flex gap-3 justify-content-start align-items-center">
-        <label for="email"></label>
-        <span class="w-25">Email :</span>
-        <input
-          class="w-100"
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Enter your email"
-        />
-      </div>
+      
       <div class="d-flex gap-3 justify-content-start align-items-center">
         <label for="gender"></label>
         <span class="w-25">Gender :</span>
@@ -113,22 +117,33 @@
       <div class="d-flex gap-3 justify-content-start align-items-center">
         <label for="course"></label>
         <span class="w-25">Course Name :</span>
-        <div class="d-flex gap-2 w-100">
-          <input type="checkbox" name="course" id="courseJava" /><span
-            >Java</span
-          >
-          <input type="checkbox" name="course" id="courseDSA" /><span
-            >Java with DSA</span
-          >
-          <input type="checkbox" name="course" id="courseMERN" /><span
-            >MERN Full Stack</span
-          >
+        <div class="d-flex gap-3 w-100">
+          <div class="d-flex gap-2">
+            <input type="checkbox" name="course" id="courseJava" /><span
+              >Java</span
+            >
+          </div>
+          <div class="d-flex gap-2">
+            <input type="checkbox" name="course" id="courseDSA" /><span
+              >Java with DSA</span
+            >
+          </div>
+          <div class="d-flex gap-2">
+            <input type="checkbox" name="course" id="courseMERN" /><span
+              >MERN Full Stack</span
+            >
+          </div>
+          <div class="d-flex gap-2">
+            <input type="checkbox" name="course" id="courseMERN" /><span
+              >Python</span
+            >
+          </div>
         </div>
       </div>
 
       <div class="d-flex justify-content-end my-3 px-3">
         <button class="btn btn-outline-success" onclick="complete()">
-          Enroll Done
+          Register Now
         </button>
       </div>
     </div>

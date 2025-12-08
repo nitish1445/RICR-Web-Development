@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -15,19 +15,65 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     />
     <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-    <div class="d-flex justify-content-between bg-primary p-3">
+  </head>
+  <body>
+    <div
+      class="d-flex justify-content-between bg-primary p-3 position-sticky top-0"
+    >
       <div class="fs-4 fw-bold text-light px-3">MERN Classes</div>
       <div class="d-flex gap-4 px-4 fs-5" id="navBar">
         <a href="./index.html" class="text-dark text-decoration-none">Home</a>
-        <a href="./course.html" class="text-dark text-decoration-none">Courses</a>
+        <a href="./course.html" class="text-dark text-decoration-none"
+          >Courses</a
+        >
         <a href="./about.html" class="text-dark text-decoration-none">About</a>
-        <a href="./contact.html" class="text-dark text-decoration-none">Contact</a>
+        <a href="./contact.html" class="text-dark text-decoration-none"
+          >Contact</a
+        >
       </div>
     </div>
 
-    <div>
+    <div
+      class="container my-5 border border-info shadow rounded d-flex flex-column gap-3 p-3 w-50 bg-body"
+    >
+      <div class="d-flex justify-content-center">
+        <h4>Contact Us</h4>
+      </div>
+      <div class="d-flex gap-3 justify-content-start align-items-center">
+        <label for="name"></label>
+        <span class="w-25">Name :</span>
+        <input
+          class="w-100"
+          type="text"
+          name="name"
+          id="nameContact"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
+      <div class="d-flex gap-3 justify-content-start align-items-center">
+        <label for="email"></label>
+        <span class="w-25">Email :</span>
+        <input
+          class="w-100"
+          type="email"
+          name="email"
+          id="emailContact"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+      <div class="d-flex gap-3 justify-content-start align-items-center">
+        <label for="message"></label>
+        <span class="w-25">Message :</span>
+        <textarea name="message" id="message" class="w-100"> </textarea>
+      </div>
+
+      <div class="d-flex justify-content-center my-3">
+        <button class="btn btn-outline-info px-4" onclick="submit()">
+          Submit
+        </button>
+      </div>
     </div>
 
     <script
@@ -35,5 +81,6 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
