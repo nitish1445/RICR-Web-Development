@@ -18,6 +18,7 @@ function addData() {
   //     const Data = [];
   //   }
 
+
   const data = JSON.parse(localStorage.getItem("passwordManager")) || [];
 
   data.push(dataPacket);
