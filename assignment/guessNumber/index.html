@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guess Number</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <main class="d-flex justify-content-center">
+      <div class="border border-info shadow m-5 w-50 p-3">
+        <div class="fs-3 mb-3 text-center fw-bold">Guess The Number</div>
+        <div class="fs-6 mb-3">
+          <p>
+            We have selected a random number between 1 - 10. See if you can
+            guess it.
+          </p>
+        </div>
+        <div>
+          <label for="guess">Enter the Guess : </label>
+          <input
+            type="text"
+            name="guess"
+            id="guessNum"
+            class="mb-3 py-1 form-label"
+          />
+          <button class="btn btn-primary py-2 px-4" onclick="guess()">Submit Guess</button>
+        </div>
+      </div>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="script.js"></script>
+  </body>
+</html>
