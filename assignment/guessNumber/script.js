@@ -9,8 +9,7 @@ function guess() {
   } else if (guess < num) {
     alert("OOPS! SORRY!!! TRY A LARGER NUMBER.");
   } else {
-    alert("Correct.");
-
-    document.getElementById("guessNum").value="";
+    alert("🎉 Well Done!! You guessed it right.");
   }
+  document.getElementById("guessNum").value="";
 }
