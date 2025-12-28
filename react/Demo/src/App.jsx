@@ -11,10 +11,6 @@ import Contact from "./pages/Contact";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  let a = 5;
-  let b = 10;
-  console.log(a + b);
-
   return (
     <>
       <BrowserRouter>
