@@ -1,7 +1,6 @@
 import React from "react";
 import { FaHome } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import Login from "./Login";
 
 const Home = () => {
   return (
