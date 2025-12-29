@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 
-const Contact = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+const ContactBox = () => {
+  const [contactDetail, setContactDetail] = useState({
+    fullName: "",
+    email: "",
+    message: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const handleClearForm = () => {
-    setFullName("");
-    setEmail("");
-    setMessage("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.traget;
+    setContactDetail((previousData) => ({ ...previousData, [name]: value }));
   };
+
+  const handleClearForm = () => {};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -17,11 +22,6 @@ const Contact = () => {
       const respone = await fetch(
         "https://official-joke-api.appspot.com/jokes/random"
       );
-      const data = {
-        fullName,
-        email,
-        message,
-      };
       console.log(data);
     } catch (error) {
       console.log(error.message);
@@ -49,8 +49,8 @@ const Contact = () => {
                 name="fullName"
                 id="fullName"
                 placeholder="Enter your full name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={contactDetail.fullName}
+                onChange={handleChange}
                 className="w-75"
                 required
               />
@@ -64,8 +64,8 @@ const Contact = () => {
                 name="email"
                 id="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={contactDetail.email}
+                onChange={handleChange}
                 className="w-75"
                 required
               />
@@ -78,8 +78,8 @@ const Contact = () => {
                 name="message"
                 id="message"
                 placeholder="Enter your message here..!"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={contactDetail.message}
+                onChange={handleChange}
                 className="w-75"
                 required
               ></textarea>
@@ -99,4 +99,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default ContactBox;
