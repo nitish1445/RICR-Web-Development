@@ -8,7 +8,7 @@ import { FaEuroSign } from "react-icons/fa";
 const Header = () => {
   return (
     <>
-      <div className="flex justify-center bg-blue-600 py-3 text-amber-50 items-center text-2xl font-bold">
+      <div className="flex justify-center bg-blue-600 py-3 text-amber-50 items-center text-2xl font-bold sticky top-0">
         <FaRupeeSign className="animate-spin" />
         <FaPoundSign className="animate-pulse" />
         <span className="px-1 text-3xl">Currency Converter</span>
