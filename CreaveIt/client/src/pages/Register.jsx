@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../config/Api";
+// import image from "../assets/transparentLogo1.png";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [detail, setDetail] = useState({
@@ -11,6 +13,9 @@ const Register = () => {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  // navigage declared
+  const navigate = useNavigate();
 
   const handleClear = () => {
     setDetail({
@@ -108,7 +113,7 @@ const Register = () => {
       handleClear();
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response.data.message || "Unkown Error");
     } finally {
       setIsLoading(false);
     }
@@ -120,24 +125,27 @@ const Register = () => {
 
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-6 px-4">
         <div className="max-w-xl mx-auto mt-12">
-          <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-            <form
-              onSubmit={submitRegister}
-              onReset={handleClear}
-              className="px-8 py-4"
-            >
+          {/* Registration Block */}
+
+          <div className="bg-white rounded-xl shadow-2xl overflow-hidden px-8 pt-5">
+            <form onSubmit={submitRegister} onReset={handleClear}>
               {/* Header */}
-              <div className="text-center mb-10">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                  Register Yourself
+
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-(--color-text)">
+                  Register Now
                 </h1>
                 <p className="text-xs text-gray-600">
-                  You are one step away to be a CraveIt Lover
+                  You are one step away to be a CraveIt Lover!
                 </p>
               </div>
+
               {/* Personal Information */}
-              <div className="mb-10">
+
+              <div className="mb-8">
                 <div className="space-y-4">
+                  {/* Full Name */}
+
                   <div className="text-end">
                     <input
                       type="text"
@@ -155,6 +163,9 @@ const Register = () => {
                       </span>
                     )}
                   </div>
+
+                  {/* Phone  */}
+
                   <div className="text-end">
                     <input
                       type="tel"
@@ -173,6 +184,9 @@ const Register = () => {
                       </span>
                     )}
                   </div>
+
+                  {/* Email */}
+
                   <div className="text-end">
                     <input
                       type="email"
@@ -191,7 +205,11 @@ const Register = () => {
                     )}
                   </div>
 
+                  {/* Password Block*/}
+
                   <div className="grid grid-cols-2 gap-5">
+                    {/* Create Password */}
+
                     <div>
                       <input
                         type="password"
@@ -209,6 +227,9 @@ const Register = () => {
                         </span>
                       )}
                     </div>
+
+                    {/* Confirm Password */}
+
                     <div>
                       <input
                         type="password"
@@ -231,23 +252,34 @@ const Register = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex gap-4 pt-8 border-t-2 border-gray-200">
-                <button
-                  type="reset"
-                  disabled={isLoading}
-                  className="flex-1 bg-(--color-background) text-(--color-primary) font-bold py-4 px-6 rounded-lg transition duration-300 transform hover:scale-105 cursor-pointer disabled:cursor-not-allowed disabled:scale-100"
-                >
-                  Clear Form
-                </button>
+
+              <div>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 bg-(--color-secondary) text-(--color-primary) font-bold py-4 px-6 rounded-lg hover:bg-(--color-secondary-hover) transition duration-300 transform hover:scale-105 shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:scale-100 disabled:bg-(--color-secondary)"
+                  className="flex-1 bg-(--color-secondary) text-(--color-primary) font-bold py-3 rounded-lg hover:bg-(--color-secondary-hover) transition duration-300 transform hover:scale-105 shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:scale-100 disabled:bg-(--color-secondary) w-full"
                 >
-                  {isLoading ? "Submitting" : "Submit"}
+                  {isLoading ? "Submitting" : "Submit Details"}
                 </button>
               </div>
             </form>
+
+            {/* Already have account */}
+
+            <div className="border-t-2 border-gray-200 px-8 mt-8 text-center">
+              <p className="py-5">
+                Already have account?{" "}
+                <button
+                  type="submit"
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                  className="text-blue-700 cursor-pointer hover:text-blue-700 hover:underline"
+                >
+                  Login Now
+                </button>
+              </p>
+            </div>
           </div>
 
           {/* Footer Note */}

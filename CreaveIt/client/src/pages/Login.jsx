@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../config/Api";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [detail, setDetail] = useState({
@@ -21,7 +22,8 @@ const Login = () => {
     const { name, value } = e.target;
     setDetail((prev) => ({ ...prev, [name]: value }));
   };
-
+  // navigate defined here
+  const navigate = useNavigate();
   const validate = () => {
     let Error = {};
 
@@ -64,7 +66,7 @@ const Login = () => {
       handleClear();
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response.data.message || "Unkown Error");
     } finally {
       setIsLoading(false);
     }
@@ -77,18 +79,23 @@ const Login = () => {
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4">
         <div className="max-w-110 mx-auto mt-12">
           {/* Header */}
+
           <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
             <form
               onSubmit={submitRegister}
               onReset={handleClear}
-              className="py-5 px-8"
+              className="pt-5 px-5"
             >
-              <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-5 text-center">
                 Login Now
               </h1>
-              {/* User Information */}
-              <div className="mb-8">
+
+              <div className="mb-5">
+                {/* User Information */}
+
                 <div className="space-y-3">
+                  {/* Login Email */}
+
                   <div className="text-end">
                     <input
                       type="text"
@@ -106,6 +113,8 @@ const Login = () => {
                       </span>
                     )}
                   </div>
+
+                  {/* Login Password */}
 
                   <div className="text-end">
                     <input
@@ -127,22 +136,45 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <div className="pt-8 border-t-2 border-gray-200 text-center">
+              {/* Login Button */}
+
+              <div className=" text-center">
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 bg-(--color-secondary) text-(--color-primary) font-bold py-4 px-6 rounded-lg hover:bg-(--color-secondary-hover) transition duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-full disabled:cursor-not-allowed disabled:scale-100 disabled:bg-(--color-secondary)"
+                  className="flex-1 bg-(--color-secondary) text-black font-bold py-3 px-6 rounded-lg hover:bg-(--color-secondary-hover) transition duration-300 transform hover:scale-105 shadow-lg cursor-pointer w-full disabled:cursor-not-allowed disabled:scale-100 disabled:bg-(--color-secondary)"
                 >
                   {isLoading ? "Loading..!" : "Login Now"}
                 </button>
               </div>
-
-              <div className="flex justify-between mt-5">
-                <div className="cursor-pointer">Didn't have account?</div>
-                <div className="cursor-pointer">Register Now</div>
-              </div>
             </form>
+
+            {/* Difficulity in Login process*/}
+
+            <div className=" pb-5 px-8">
+              {/* Forgotten Password */}
+
+              <div className="border-b-2 border-gray-200 text-center py-3">
+                <button className="text-(--color-text) cursor-pointer hover:text-blue-700 hover:underline">
+                  Forgotten Password?
+                </button>
+              </div>
+
+              {/* Don't have Account */}
+
+              <div className=" text-center pt-5">
+                <button
+                  type="submit"
+                  onClick={() => {
+                    navigate("/register");
+                  }}
+                  disabled={isLoading}
+                  className="flex-1 bg-(--color-background) text-(--color-primary) font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer disabled:cursor-not-allowed"
+                >
+                  Didn't have account?
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
