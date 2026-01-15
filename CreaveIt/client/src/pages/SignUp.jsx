@@ -4,7 +4,7 @@ import api from "../config/Api";
 // import image from "../assets/transparentLogo1.png";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const SignUp = () => {
   const [detail, setDetail] = useState({
     fullName: "",
     phone: "",
@@ -98,8 +98,9 @@ const Register = () => {
     return Object.keys(Error).length > 0 ? false : true;
   };
 
-  const submitRegister = async (e) => {
+  const submitSignUp = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Checks Any missing fields
     if (!validate()) {
@@ -108,7 +109,6 @@ const Register = () => {
     }
     try {
       const res = await api.post("/auth/register", detail);
-      setIsLoading(true);
       toast.success(res.data.message);
       handleClear();
     } catch (error) {
@@ -128,16 +128,13 @@ const Register = () => {
           {/* Registration Block */}
 
           <div className="bg-white rounded-xl shadow-2xl overflow-hidden px-8 pt-5">
-            <form onSubmit={submitRegister} onReset={handleClear}>
+            <form onSubmit={submitSignUp} onReset={handleClear}>
               {/* Header */}
 
-              <div className="text-center mb-8">
+              <div className="mb-8">
                 <h1 className="text-3xl font-bold text-(--color-text)">
-                  Register Now
+                  Sign Up
                 </h1>
-                <p className="text-xs text-gray-600">
-                  You are one step away to be a CraveIt Lover!
-                </p>
               </div>
 
               {/* Personal Information */}
@@ -259,7 +256,7 @@ const Register = () => {
                   disabled={isLoading}
                   className="flex-1 bg-(--color-secondary) text-(--color-primary) font-bold py-3 rounded-lg hover:bg-(--color-secondary-hover) transition duration-300 transform hover:scale-105 shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:scale-100 disabled:bg-(--color-secondary) w-full"
                 >
-                  {isLoading ? "Submitting" : "Submit Details"}
+                  {isLoading ? "Submitting" : "Create Account"}
                 </button>
               </div>
             </form>
@@ -292,4 +289,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

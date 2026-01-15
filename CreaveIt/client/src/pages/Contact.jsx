@@ -65,28 +65,22 @@ const Contact = () => {
     return Object.keys(Error).length > 0 ? true : false;
   };
 
-  const submitRegister = async (e) => {
+  const submitContact = async (e) => {
     e.preventDefault();
 
     // Checks Any missing fields
     if (validate()) {
-      toast.error("Fill the message correctly.");
-
+      toast.error("Use proper Name and Email.");
       return;
     }
     try {
-      toast.success(
-        "Your query has been submitted. \nWe'll get back you soon.",
-        {
-          position: "bottom-center",
-          duration: 6000,
-        }
-      );
+      const res = await api.post("/public/new-contact", contactUs);
       setIsLoading(true);
+      toast.success(res.data.message, { position: "bottom-center" });
       handleClear();
     } catch (error) {
       console.log(error);
-      toast.error(error.message || "Unkown Error");
+      toast.error(error.response.data.message || "Unkown Error");
     } finally {
       setIsLoading(false);
     }
@@ -210,7 +204,7 @@ const Contact = () => {
 
               <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
                 <form
-                  onSubmit={submitRegister}
+                  onSubmit={submitContact}
                   onReset={handleClear}
                   className="p-8"
                 >

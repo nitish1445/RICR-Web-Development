@@ -45,11 +45,11 @@ const Header = () => {
           </button>
           <button
             onClick={() => {
-              navigate("/register");
+              navigate("/SignUp");
             }}
             className="bg-(--color-secondary) py-1.5 px-5 font-bold hover:bg-(--color-secondary-hover) hover:text-white rounded cursor-pointer"
           >
-            Register
+            Sign Up
           </button>
         </div>
       </div>

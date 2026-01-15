@@ -51,8 +51,9 @@ const Login = () => {
     return Object.keys(Error).length > 0 ? true : false;
   };
 
-  const submitRegister = async (e) => {
+  const submitLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Checks Any missing fields
     if (validate()) {
@@ -62,7 +63,7 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", detail);
       toast.success(res.data.message);
-      setIsLoading(true);
+      
       handleClear();
     } catch (error) {
       console.log(error);
@@ -82,11 +83,11 @@ const Login = () => {
 
           <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
             <form
-              onSubmit={submitRegister}
+              onSubmit={submitLogin}
               onReset={handleClear}
               className="pt-5 px-5"
             >
-              <h1 className="text-2xl font-bold text-gray-900 mb-5 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-5">
                 Login Now
               </h1>
 
@@ -166,7 +167,7 @@ const Login = () => {
                 <button
                   type="submit"
                   onClick={() => {
-                    navigate("/register");
+                    navigate("/SignUp");
                   }}
                   disabled={isLoading}
                   className="flex-1 bg-(--color-background) text-(--color-primary) font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer disabled:cursor-not-allowed"
