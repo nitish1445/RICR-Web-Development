@@ -16,7 +16,6 @@ const Login = () => {
     });
   };
   const [isLoading, setIsLoading] = useState(false);
-  const [validError, setValidError] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,47 +23,15 @@ const Login = () => {
   };
   // navigate defined here
   const navigate = useNavigate();
-  const validate = () => {
-    let Error = {};
-
-    // user error validation
-
-    if (detail.email.length == 0) {
-      Error.email = "Please enter your email first.";
-    } else {
-      if (
-        !/^[\w.+-]+@(gmail|outlook|ricr|yahoo)\.(com|in|co\.in)$/.test(
-          detail.email
-        )
-      ) {
-        Error.email = "Use registered email only.";
-      }
-    }
-
-    // Password
-
-    if (detail.password.length == 0) {
-      Error.password = "Please enter your password first";
-    }
-
-    setValidError(Error);
-    return Object.keys(Error).length > 0 ? true : false;
-  };
 
   const submitLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Checks Any missing fields
-    if (validate()) {
-      toast.error("Fill the form correctly.");
-      return;
-    }
     try {
       const res = await api.post("/auth/login", detail);
       toast.success(res.data.message);
-      
       handleClear();
+      navigate("/user-dashboard");
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message || "Unkown Error");
@@ -97,7 +64,7 @@ const Login = () => {
                 <div className="space-y-3">
                   {/* Login Email */}
 
-                  <div className="text-end">
+                  <div className="">
                     <input
                       type="text"
                       name="email"
@@ -108,16 +75,11 @@ const Login = () => {
                       required
                       className="w-full h-fit px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
                     />
-                    {validError.email && (
-                      <span className="text-xs text-red-500">
-                        {validError.email}
-                      </span>
-                    )}
                   </div>
 
                   {/* Login Password */}
 
-                  <div className="text-end">
+                  <div className="">
                     <input
                       type="password"
                       name="password"
@@ -128,11 +90,6 @@ const Login = () => {
                       required
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
                     />
-                    {validError.password && (
-                      <span className="text-xs text-red-500">
-                        {validError.password}
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>

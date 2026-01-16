@@ -24,55 +24,15 @@ const Contact = () => {
     });
   };
   const [isLoading, setIsLoading] = useState(false);
-  const [validError, setValidError] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setContactUs((prev) => ({ ...prev, [name]: value }));
   };
-  const validate = () => {
-    let Error = {};
-
-    // Name validation
-
-    if (contactUs.fullName.length == 0) {
-      Error.fullName = "Please Enter your name here";
-    } else {
-      if (contactUs.fullName.length < 3) {
-        Error.fullName = "Name should contain atleast three letters.";
-      } else {
-        if (!/^[A-z ]+$/.test(contactUs.fullName)) {
-          Error.fullName = "Name should contains only A-Z, a-z and space.";
-        }
-      }
-    }
-
-    // email validation
-
-    if (contactUs.email.length == 0) {
-      Error.email = "Please enter your email first.";
-    } else {
-      if (
-        !/^[\w.+-]+@(gmail|outlook|ricr|yahoo)\.(com|in|co\.in)$/.test(
-          contactUs.email
-        )
-      ) {
-        Error.email = "Use registered email only.";
-      }
-    }
-
-    setValidError(Error);
-    return Object.keys(Error).length > 0 ? true : false;
-  };
 
   const submitContact = async (e) => {
     e.preventDefault();
-
-    // Checks Any missing fields
-    if (validate()) {
-      toast.error("Use proper Name and Email.");
-      return;
-    }
+    setIsLoading(true);
     try {
       const res = await api.post("/public/new-contact", contactUs);
       setIsLoading(true);
@@ -118,7 +78,7 @@ const Contact = () => {
                         href="mailto:sarainitish@gmail.com"
                         className="text-blue-600 hover:underline text-[17px]"
                       >
-                        nitish@gmail.com
+                        contact@craveit.in
                       </a>
                       <div className="text-gray-600 text-[14px]">
                         We'll respond you within 24 hours
@@ -135,7 +95,7 @@ const Contact = () => {
                     <div>
                       <div className="flex gap-5">
                         <a href="tel:9153109330" className="hover:underline ">
-                          +91 999999XXXX
+                          +91 9153109330
                         </a>
                       </div>
 
@@ -158,7 +118,7 @@ const Contact = () => {
                           target="blank"
                           className="hover:underline "
                         >
-                          764595XXX
+                          7645956734
                         </a>
                       </div>
 
@@ -215,53 +175,39 @@ const Contact = () => {
                   <div className="space-y-3">
                     {/* Contact name */}
 
-                    <div>
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="fullName" name="fullName" id="fullName">
-                          Full Name <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="fullName"
-                          placeholder="Nitish Kumar"
-                          value={contactUs.fullName}
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          required
-                          className="w-full h-fit px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                        />
-                      </div>
-                      {validError.fullName && (
-                        <span className="text-xs text-red-500">
-                          {validError.fullName}
-                        </span>
-                      )}
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="fullName" name="fullName" id="fullName">
+                        Full Name <span className="text-red-600">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Nitish Kumar"
+                        value={contactUs.fullName}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        required
+                        className="w-full h-fit px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
+                      />
                     </div>
 
                     {/* Contact email */}
 
-                    <div>
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="email" name="email" id="email">
-                          Email <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="email"
-                          id="email"
-                          value={contactUs.email}
-                          placeholder="nitish@example.com"
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          required
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                        />
-                      </div>
-                      {validError.email && (
-                        <span className="text-xs text-red-500">
-                          {validError.email}
-                        </span>
-                      )}
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="email" name="email" id="email">
+                        Email <span className="text-red-600">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="email"
+                        id="email"
+                        value={contactUs.email}
+                        placeholder="nitish@example.com"
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        required
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
+                      />
                     </div>
 
                     {/* Contact subject/topic */}
