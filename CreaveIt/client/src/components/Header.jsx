@@ -1,8 +1,10 @@
 import React from "react";
 import transparentLogo from "../assets/transparentLogo1.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+  const { user, isLogin } = useAuth();
   const navigate = useNavigate();
   return (
     <>
@@ -35,22 +37,28 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex gap-4">
-          <button
-            onClick={() => {
-              navigate("/login");
-            }}
-            className="bg-(--color-secondary) py-1.5 px-5 font-bold hover:bg-(--color-secondary-hover) hover:text-white rounded cursor-pointer"
-          >
-            Login
-          </button>
-          <button
-            onClick={() => {
-              navigate("/SignUp");
-            }}
-            className="bg-(--color-secondary) py-1.5 px-5 font-bold hover:bg-(--color-secondary-hover) hover:text-white rounded cursor-pointer"
-          >
-            Sign Up
-          </button>
+          {isLogin ? (
+            <span className="text-(--color-secondary) font-bold">{user.fullName}</span>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  navigate("/login");
+                }}
+                className="bg-(--color-secondary) py-1.5 px-5 font-bold hover:bg-(--color-secondary-hover) hover:text-white rounded cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/SignUp");
+                }}
+                className="bg-(--color-secondary) py-1.5 px-5 font-bold hover:bg-(--color-secondary-hover) hover:text-white rounded cursor-pointer"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       </div>
     </>

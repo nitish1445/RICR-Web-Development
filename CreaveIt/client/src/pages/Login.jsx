@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../config/Api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { setUser, setIsLogin } = useAuth();
   const [detail, setDetail] = useState({
     email: "",
     password: "",
@@ -30,6 +32,9 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", detail);
       toast.success(res.data.message);
+      setUser(res.data.data);
+      setIsLogin(true);
+      sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
       handleClear();
       navigate("/user-dashboard");
     } catch (error) {
