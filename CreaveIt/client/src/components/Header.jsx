@@ -38,7 +38,7 @@ const Header = () => {
         </div>
         <div className="flex gap-4">
           {isLogin ? (
-            <span className="text-(--color-secondary) font-bold">{user.fullName}</span>
+            <div className="text-(--color-secondary) font-bold" onClick={()=>navigate("/userDashboard")}>{user.fullName}</div>
           ) : (
             <>
               <button
