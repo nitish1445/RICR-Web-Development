@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const { setUser, setIsLogin } = useAuth();
+  const { setUser, setIsLogin, setRole } = useAuth();
   const [detail, setDetail] = useState({
     email: "",
     password: "",
@@ -36,10 +36,34 @@ const Login = () => {
       setIsLogin(true);
       sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
       handleClear();
-      navigate("/user-dashboard");
+      switch (res.data.data.role) {
+        case "manager": {
+          setRole("manager");
+          navigate("/resturant-dashboard");
+          break;
+        }
+        case "partner": {
+          setRole("partner");
+          navigate("/rider-dashboard");
+          break;
+        }
+        case "customer": {
+          setRole("customer");
+          navigate("/user-dashboard");
+          break;
+        }
+        case "admin": {
+          setRole("admin");
+          navigate("/admin-dashboard");
+          break;
+        }
+
+        default:
+          break;
+      }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message || "Unkown Error");
+      toast.error(error?.response?.data?.message || "Unkown Error");
     } finally {
       setIsLoading(false);
     }

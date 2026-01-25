@@ -11,6 +11,7 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "",
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +25,7 @@ const SignUp = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      role: "",
     });
   };
 
@@ -94,6 +96,12 @@ const SignUp = () => {
       }
     }
 
+    // role validation
+
+    if (!detail.role) {
+      Error.role = "Please choose any one";
+    }
+
     setValidError(Error);
     return Object.keys(Error).length > 0 ? false : true;
   };
@@ -141,6 +149,52 @@ const SignUp = () => {
 
               <div className="mb-8">
                 <div className="space-y-4">
+                  {/* Role */} 
+
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <label>I am </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="role"
+                          id="manager"
+                          checked={detail.role === "manager"}
+                          value={"manager"}
+                          onChange={handleChange}
+                        />
+                        <label htmlFor="manager">Resturant Manager</label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="role"
+                          id="partner"
+                          checked={detail.role === "partner"}
+                          value={"partner"}
+                          onChange={handleChange}
+                        />
+                        <label htmlFor="partner">Delivery Partner</label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="role"
+                          id="customer"
+                          checked={detail.role === "customer"}
+                          value={"customer"}
+                          onChange={handleChange}
+                        />
+                        <label htmlFor="customer">Customer</label>
+                      </div>
+                    </div>
+                     {validError.role && (
+                      <span className="text-xs text-red-500">
+                        {validError.role}
+                      </span>
+                    )}
+                  </div>
+                  
                   {/* Full Name */}
 
                   <div className="text-end">

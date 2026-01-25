@@ -4,8 +4,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
-  const { user, isLogin } = useAuth();
+  const { user, isLogin, role  } = useAuth();
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    switch (role) {
+      case "manager": {
+        navigate("/resturant-dashboard");
+        break;
+      }
+      case "partner": {
+        navigate("/rider-dashboard");
+        break;
+      }
+      case "customer": {
+        navigate("/user-dashboard");
+        break;
+      }
+      case "admin": {
+        navigate("/admin-dashboard");
+        break;
+      }
+      default:
+        break;
+    }
+  };
   return (
     <>
       <div className="sticky top-0 flex justify-between items-center bg-(--color-primary) px-4 py-2">
@@ -38,7 +61,7 @@ const Header = () => {
         </div>
         <div className="flex gap-4">
           {isLogin ? (
-            <div className="text-(--color-secondary) font-bold" onClick={()=>navigate("/userDashboard")}>{user.fullName}</div>
+            <div className="text-(--color-secondary) font-bold" onClick={handleNavigate}>{user.fullName}</div>
           ) : (
             <>
               <button

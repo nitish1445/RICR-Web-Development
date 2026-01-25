@@ -45,6 +45,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
                   : "hover:bg-gray-100"
               }`}
               onClick={() => setActive(item.key)}
+              key={idx}
             >
               {item.icon}
               {!isCollapsed && item.title}
