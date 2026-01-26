@@ -121,7 +121,7 @@ const SignUp = () => {
       handleClear();
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message || "Unkown Error");
+      toast.error(error?.response?.data?.message || "Unkown Error");
     } finally {
       setIsLoading(false);
     }
@@ -162,6 +162,7 @@ const SignUp = () => {
                           checked={detail.role === "manager"}
                           value={"manager"}
                           onChange={handleChange}
+                          className="cursor-pointer"
                         />
                         <label htmlFor="manager">Resturant Manager</label>
                       </div>
@@ -173,6 +174,7 @@ const SignUp = () => {
                           checked={detail.role === "partner"}
                           value={"partner"}
                           onChange={handleChange}
+                          className="cursor-pointer"
                         />
                         <label htmlFor="partner">Delivery Partner</label>
                       </div>
@@ -184,6 +186,7 @@ const SignUp = () => {
                           checked={detail.role === "customer"}
                           value={"customer"}
                           onChange={handleChange}
+                          className="cursor-pointer"
                         />
                         <label htmlFor="customer">Customer</label>
                       </div>

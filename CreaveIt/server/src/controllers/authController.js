@@ -26,6 +26,11 @@ export const UserRegister = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
+    const photoURL = `https://placehold.co/600x400?text=${fullName.charAt(0).toUpperCase()}`;
+    const photo = {
+      url: photoURL,
+    };
+
     // save data to database
     const newUser = await User.create({
       fullName,
@@ -33,6 +38,7 @@ export const UserRegister = async (req, res, next) => {
       phone,
       password: hashPassword,
       role,
+      photo,
     });
 
     // send respone to frontend
@@ -82,6 +88,8 @@ export const UserLogin = async (req, res, next) => {
 export const UserLogout = async (req, res, next) => {
   try {
     // send mesage to frontend
+    res.clearCookie("parle");
+    
     res.status(200).json({ message: "Logout Successfull" });
   } catch (error) {
     next(error);

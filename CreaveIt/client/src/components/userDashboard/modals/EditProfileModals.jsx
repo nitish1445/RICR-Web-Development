@@ -121,9 +121,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import api from "../../../config/Api";
+import { GiCancel } from "react-icons/gi";
 
 const EditProfileModal = ({ onClose }) => {
-  const { user, setUser } = useAuth();
+  const { user, setUser, setIsLogin } = useAuth();
   const [formData, setFormData] = useState({
     fullName: user.fullName,
     email: user.email,
@@ -154,12 +155,12 @@ const EditProfileModal = ({ onClose }) => {
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
         <div className="bg-white w-5xl max-h-[85vh] overflow-y-auto">
           <div className="flex justify-between px-5 py-3 border-b border-gray-300 items-center">
-            <div>EditProfileModal</div>
+            <div>Edit Profile</div>
             <button
               onClick={() => onClose()}
-              className="text-red-600 hover:text-red-900 text-2xl"
+              className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
             >
-              ⊗
+              <GiCancel/>
             </button>
           </div>
           
@@ -214,13 +215,13 @@ const EditProfileModal = ({ onClose }) => {
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
+                  className="cursor-pointer px-4 py-2 text-(--color-primary) bg-(--color-background) rounded transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                  className="cursor-pointer px-4 py-2 bg-(--color-secondary) text-(--color-text) rounded transition"
                 >
                   Save Changes
                 </button>
