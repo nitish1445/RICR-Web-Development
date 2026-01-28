@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const UserUpdate = async (req, res, next) => {
   try {
@@ -43,11 +44,38 @@ export const UserUpdate = async (req, res, next) => {
 
 export const UserChangePhoto = async (req, res, next) => {
   try {
-    console.log("body: ", req.body);
+    // console.log("body: ", req.body);
+    const currentUser = req.user;
+    const dp = req.file;
 
-    console.log("file:", req.file);
+    if (!dp) {
+      const error = new Error("Profile picture required");
+      error.statusCode = 400;
+      return next(error);
+    }
 
-    res.status(200).json({ message: "Photo Updated" });
+    if (currentUser.photo.publicID) {
+      await cloudinary.uploader.destroy(currentUser.photo.publicID);
+    }
+
+    const b64 = Buffer.from(dp.buffer).toString("base64");
+    const dataURI = `data:${dp.mimetype};base64,${b64}`;
+    console.log("Data URI : ", dataURI.slice(0, 100));
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "CraveIt/User",
+      width: 500,
+      height: 500,
+      crop: "fill",
+    });
+
+    console.log("Image Upload Done ", result);
+    currentUser.photo.url = result.secure_url;
+    currentUser.photo.publicID = result.publicID;
+
+    await currentUser.save();
+
+    res.status(200).json({ message: "Photo Updated", data: currentUser });
   } catch (error) {
     next(error);
   }

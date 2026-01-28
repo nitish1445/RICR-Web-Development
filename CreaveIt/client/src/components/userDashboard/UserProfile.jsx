@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import EditProfileModal from "./modals/EditProfileModals";
 import UserImage from "../../assets/userImage.jpg";
-import { FaCamera } from "react-icons/fa"; 
+import { FaCamera } from "react-icons/fa";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
 
@@ -12,11 +12,11 @@ const UserProfile = () => {
   const [preview, setPreview] = useState("");
   const [photo, setPhoto] = useState("");
 
-  const changePhoto = async () => {
+  const changePhoto = async (photo) => {
     const form_Data = new FormData();
 
     form_Data.append("image", photo);
-    form_Data.append("imageURL", preview);
+    // form_Data.append("imageURL", preview);
 
     try {
       const res = await api.patch("/user/changePhoto", form_Data);
@@ -32,10 +32,7 @@ const UserProfile = () => {
     const newPhotoURL = URL.createObjectURL(file);
     //console.log(newPhotoURL);
     setPreview(newPhotoURL);
-    setTimeout(() => {
-      setPhoto(file);
-      changePhoto();
-    }, 5000);
+    changePhoto(file);
   };
 
   return (
