@@ -41,6 +41,11 @@ const userSchema = mongoose.Schema(
       required: true,
       default: "N/A",
     },
+    city: {
+      type: String,
+      required: true,
+      default: "N/A",
+    },
     pin: {
       type: String,
       required: true,

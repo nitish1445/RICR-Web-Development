@@ -129,6 +129,11 @@ const EditProfileModal = ({ onClose }) => {
     fullName: user.fullName,
     email: user.email,
     phone: user.phone,
+    gender:user.gender,
+    dob:user.dob,
+    address:user.address,
+    city:user.city,
+    pin:user.pin,
   });
 
   const handleSubmit = async (e) => {
@@ -153,7 +158,7 @@ const EditProfileModal = ({ onClose }) => {
   return (
     <>
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
-        <div className="bg-white w-5xl max-h-[85vh] overflow-y-auto">
+        <div className="bg-white w-5xl max-h-[85vh] rounded-md overflow-y-auto">
           <div className="flex justify-between px-5 py-3 border-b border-gray-300 items-center">
             <div>Edit Profile</div>
             <button
@@ -210,6 +215,76 @@ const EditProfileModal = ({ onClose }) => {
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Gender
+                  </label>
+                  <input
+                    type="text"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gender: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Date of Birth
+                  </label>
+                  <input
+                    type="text"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={(e) =>
+                      setFormData({ ...formData, dob: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Pin Code
+                  </label>
+                  <input
+                    type="text"
+                    name="pin"
+                    value={formData.pin}
+                    onChange={(e) =>
+                      setFormData({ ...formData, pin: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  />
+                </div>                                
               </div>
               <div className="px-6 py-6 flex justify-end space-x-4 border-t border-gray-300">
                 <button

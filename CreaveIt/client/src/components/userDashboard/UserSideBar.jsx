@@ -11,8 +11,10 @@ import { FaSignOutAlt } from "react-icons/fa";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
+  const navigate = useNavigate();
   const { setUser, setIsLogin } = useAuth();
   const menuItems = [
     { key: "overview", title: "OverView", icon: <FiGrid /> },
@@ -27,7 +29,8 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
       toast.success(res.data.message);
       setUser("");
       setIsLogin(false);
-      sessionStorage.removeItem("CravingUser");
+      sessionStorage.removeItem("CraveItUser");
+      navigate("/login");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unknown Error");
     }
@@ -72,19 +75,15 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
           </div>
         </div>
         <div>
-            <button
-              className={`flex gap-6 items-center cursor-pointer text-nowrap h-12 px-3 rounded-xl text-base text-red-700 
+          <button
+            className={`flex gap-6 items-center cursor-pointer text-nowrap h-12 px-3 rounded-xl text-base text-red-700 
                   `}
-              onClick={() => {
-                {
-                  handleLogout;
-                }
-              }}
-            >
-              <FaSignOutAlt />
-              {!isCollapsed && "Logout"}
-            </button>
-          </div>
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt />
+            {!isCollapsed && "Logout"}
+          </button>
+        </div>
       </div>
     </>
   );
