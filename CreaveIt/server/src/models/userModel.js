@@ -73,7 +73,7 @@ const userSchema = mongoose.Schema(
         default: "N/A",
       },
     },
-    paymentDetails: {
+    paymentDetail: {
       upi: {
         type: String,
         required: true,

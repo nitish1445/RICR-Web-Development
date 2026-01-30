@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const UserProfile = () => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [preview, setPreview] = useState("");
   const [photo, setPhoto] = useState("");
 
@@ -22,6 +22,9 @@ const UserProfile = () => {
       const res = await api.patch("/user/changePhoto", form_Data);
 
       toast.success(res.data.message);
+
+      setUser(res.data.data);
+      sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unknown Error");
     }
@@ -68,22 +71,25 @@ const UserProfile = () => {
             </div>
             <div>
               <div className="text-3xl text-(--color-primary) font-bold">
-                {user.fullName}
+                {user.fullName || "User Name"}
               </div>
               <div className="text-gray-600 text-lg font-semibold">
-                {user.email}
+                {user.email || "user@example.com"}
               </div>
               <div className="text-gray-600 text-lg font-semibold">
-                {user.mobileNumber}
+                {user.phone || "999999XXXX"}
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <button className="px-4 py-2 rounded bg-(--color-secondary) text-white" onClick={setIsEditProfileModalOpen}>
+            <button
+              className="px-4 py-2 rounded bg-(--color-secondary) text-white"
+              onClick={() => setIsEditProfileModalOpen(true)}
+            >
               Edit
             </button>
             <button className="px-4 py-2 rounded bg-(--color-secondary) text-white">
-              Reset
+              Reset Password
             </button>
           </div>
         </div>
