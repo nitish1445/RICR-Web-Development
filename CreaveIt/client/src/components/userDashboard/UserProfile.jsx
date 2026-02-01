@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import EditProfileModal from "./modals/EditProfileModals";
 import ResetPasswordModal from "./modals/ResetPasswordModal";
@@ -45,14 +45,14 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="bg-(--color-primary)/10 rounded-lg shadow-md p-6 md:p-8 h-full">
-        <div className="flex justify-between border p-3 rounded-3xl items-center border-gray-300 bg-white">
+      <div className=" rounded-lg p-6 md:p-8 h-full">
+        <div className="flex justify-between border p-3 shadow-md rounded-3xl items-center border-gray-300 bg-white">
           <div className="flex gap-5 items-center">
             <div className="relative">
               <div className=" border-2 border-black rounded-full w-36 h-36 overflow-hidden">
                 <img
                   src={preview || user.photo.url || UserImage}
-                  alt=""
+                  alt="image"
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -4,7 +4,7 @@ import { BsArrowClockwise } from "react-icons/bs";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
 
-const ForgetPasswordModal = ({onClose}) => {
+const ForgetPasswordModal = ({ onClose }) => {
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
@@ -29,10 +29,13 @@ const ForgetPasswordModal = ({onClose}) => {
       let res;
       if (isOtpSent) {
         if (isOtpVerified) {
-          console.log("OTP already verify now update passsword");
+          res = await api.post("/auth/forgetPassword", formData);
+          toast.success(res.data.message);
           onClose();
         } else {
-          console.log("OTP already Sent now Verify It");
+          res = await api.post("/auth/verifyOtp", formData);
+          toast.success(res.data.message);
+          setIsOtpSent(true);
           setIsOtpVerified(true);
         }
       } else {
@@ -59,7 +62,7 @@ const ForgetPasswordModal = ({onClose}) => {
             </h2>
             <button
               onClick={() => onClose()}
-              className="text-gray-600 hover:text-red-600 text-2xl transition"
+              className="text-gray-600 hover:text-red-600 text-2xl transition cursor-pointer"
             >
               <GiCancel />
             </button>

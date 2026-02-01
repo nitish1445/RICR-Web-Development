@@ -47,7 +47,7 @@ const UserDashBoard = () => {
           />
         </div>
         <div
-          className={`border border-amber-600 duration-300 ${isCollapsed ? "w-57/60" : " w-50/60"}`}
+          className={`bg-(--color-primary)/10 duration-300 ${isCollapsed ? "w-57/60" : " w-50/60"}`}
         >
           {active === "overview" && <UserOverview />}
           {active === "profile" && <UserProfile />}

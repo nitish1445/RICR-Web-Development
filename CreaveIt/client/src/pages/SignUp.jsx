@@ -69,7 +69,7 @@ const SignUp = () => {
       Error.email = "Please enter your email here";
     } else {
       if (
-        !/^[\w.+-]+@(gmail|outlook|ricr|yahoo)\.(com|in|co\.in)$/.test(
+        !/^[\w.+-]+@(gmail|outlook|ricr|yahoo|zohomail)\.(com|in|co\.in)$/.test(
           detail.email
         )
       ) {

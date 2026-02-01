@@ -1,12 +1,13 @@
 import React from "react";
 import {
-  FiGrid,
-  FiUser,
-  FiShoppingBag,
-  FiCreditCard,
-  FiHelpCircle,
-  FiMenu,
-} from "react-icons/fi";
+  FaUtensils,
+  FaClipboardList,
+  FaDollarSign,
+  FaBoxes,
+  FaUsers,
+  FaUser
+} from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { FaSignOutAlt } from "react-icons/fa";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
@@ -17,11 +18,12 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const { setUser, setIsLogin } = useAuth();
   const menuItems = [
-    { key: "overview", title: "OverView", icon: <FiGrid /> },
-    { key: "profile", title: "Profile", icon: <FiUser /> },
-    { key: "order", title: "Orders", icon: <FiShoppingBag /> },
-    { key: "transaction", title: "Transactions", icon: <FiCreditCard /> },
-    { key: "helpDesk", title: "Help Desk", icon: <FiHelpCircle /> },
+    { key: "manager", title: "Manager", icon: <FaUser /> },
+    { key: "menu", title: "Menu", icon: <FaUtensils /> },
+    { key: "order", title: "Orders", icon: <FaClipboardList /> },
+    { key: "sales", title: "Total Sale", icon: <FaDollarSign /> },
+    { key: "stock", title: "Stock", icon: <FaBoxes /> },
+    { key: "customer", title: "Customer", icon: <FaUsers /> },
   ];
   const handleLogout = async () => {
     try {
@@ -37,12 +39,12 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
   };
   return (
     <>
-      <div className="p-3 flex flex-col gap-30">
+      <div className="p-3 flex flex-col gap-15">
         <div>
-          <div className="h-10 text-xl text-(--color-primary) font-bold flex gap-3 mb-1 items-center">
+          <div className="h-10 text-md text-(--color-primary) font-bold flex gap-1 items-center">
             {!isCollapsed && (
               <span className="overflow-hidden text-nowrap">
-                User Dashboard
+                Resturant Dashboard
               </span>
             )}
             <button
@@ -51,7 +53,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
                 setIsCollapsed(!isCollapsed);
               }}
             >
-              <FiMenu />
+              <GiHamburgerMenu />
             </button>
           </div>
 
