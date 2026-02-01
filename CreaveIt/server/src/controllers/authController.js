@@ -1,14 +1,17 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import OTP from "../models/otpModel.js";
 import { genToken } from "../utils/authToken.js";
+import { sendOTPEmail } from "../utils/emailService.js";
 
+//Resgister the new User
 export const UserRegister = async (req, res, next) => {
   try {
     // fetch data from frontend
     const { fullName, email, phone, password, role } = req.body;
 
     // check all the required data
-    if (!fullName || !email || !phone || !password|| !role) {
+    if (!fullName || !email || !phone || !password || !role) {
       const error = new Error("All fields required");
       error.statusCode = 400;
       return next(error);
@@ -48,6 +51,8 @@ export const UserRegister = async (req, res, next) => {
     next(error);
   }
 };
+
+//Login the existing user
 export const UserLogin = async (req, res, next) => {
   try {
     // fetch data from frontend
@@ -85,12 +90,61 @@ export const UserLogin = async (req, res, next) => {
     next(error);
   }
 };
+
+//Logiut the user
 export const UserLogout = async (req, res, next) => {
   try {
     // send mesage to frontend
     res.clearCookie("parle");
-    
+
     res.status(200).json({ message: "Logout Successfull" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reset forgotten password of user by generating otp
+export const UserGenOtp = async (req, res, next) => {
+
+  try {
+    // fetch the data from fe
+    const { email } = req.body;
+    console.log(email);
+    
+
+    //verify data is avuialable or not from fe
+    if (!email) {
+      const error = new Error("All field reaquired");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    //checks the existing user is or not from db
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      const error = new Error("Email not registered");
+      error.satusCode = 401;
+      return next(error);
+    }
+
+    //if verfied gen Opt
+    const otp = Math.floor(Math.random() * 1000000).toString();
+
+    // adding some extra stuff to otp before hashing
+    const salt = await bcrypt.genSalt(10);
+
+    //hasing of otp
+    const hashOTP = await bcrypt.hash(otp, salt);
+
+    await OTP.create({
+      email,
+      otp: hashOTP,
+      createdAt: new Date(),
+    });
+
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent on the registered email." });
   } catch (error) {
     next(error);
   }

@@ -324,7 +324,7 @@ const SignUp = () => {
               <p className="py-5">
                 Already have account?{" "}
                 <button
-                  type="submit"
+                  type="button"
                   onClick={() => {
                     navigate("/login");
                   }}

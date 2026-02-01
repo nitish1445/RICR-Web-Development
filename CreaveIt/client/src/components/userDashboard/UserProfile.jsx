@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import EditProfileModal from "./modals/EditProfileModals";
+import ResetPasswordModal from "./modals/ResetPasswordModal";
 import UserImage from "../../assets/userImage.jpg";
 import { FaCamera } from "react-icons/fa";
 import api from "../../config/Api";
@@ -8,9 +9,11 @@ import toast from "react-hot-toast";
 
 const UserProfile = () => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
+
   const { user, setUser } = useAuth();
   const [preview, setPreview] = useState("");
-  const [photo, setPhoto] = useState("");
 
   const changePhoto = async (photo) => {
     const form_Data = new FormData();
@@ -83,12 +86,15 @@ const UserProfile = () => {
           </div>
           <div className="flex flex-col gap-2">
             <button
-              className="px-4 py-2 rounded bg-(--color-secondary) text-white"
+              className="px-4 py-2 rounded bg-(--color-secondary) text-white cursor-pointer"
               onClick={() => setIsEditProfileModalOpen(true)}
             >
               Edit
             </button>
-            <button className="px-4 py-2 rounded bg-(--color-secondary) text-white">
+            <button
+              className="px-4 py-2 rounded bg-(--color-secondary) text-white cursor-pointer"
+              onClick={() => setIsResetPasswordModalOpen(true)}
+            >
               Reset Password
             </button>
           </div>
@@ -97,6 +103,11 @@ const UserProfile = () => {
 
       {isEditProfileModalOpen && (
         <EditProfileModal onClose={() => setIsEditProfileModalOpen(false)} />
+      )}
+      {isResetPasswordModalOpen && (
+        <ResetPasswordModal
+          onClose={() => setIsResetPasswordModalOpen(false)}
+        />
       )}
     </>
   );

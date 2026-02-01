@@ -30,7 +30,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
       setUser("");
       setIsLogin(false);
       sessionStorage.removeItem("CraveItUser");
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unknown Error");
     }

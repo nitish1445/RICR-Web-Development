@@ -3,8 +3,11 @@ import toast from "react-hot-toast";
 import api from "../config/Api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ForgetPasswordModal from "../components/publicModal/ForgetPasswordModal";
 
 const Login = () => {
+  const [isForgetPasswordModalOpen, setIsForgetPasswordModalOpen] =
+    useState(false);
   const { setUser, setIsLogin, setRole } = useAuth();
   const [detail, setDetail] = useState({
     email: "",
@@ -134,37 +137,51 @@ const Login = () => {
                   {isLoading ? "Loading..!" : "Login Now"}
                 </button>
               </div>
-            </form>
 
-            {/* Difficulity in Login process*/}
+              {/* Difficulity in Login process*/}
 
-            <div className=" pb-5 px-8">
-              {/* Forgotten Password */}
+              <div className=" pb-5 px-8">
+                {/* Forgotten Password */}
 
-              <div className="border-b-2 border-gray-200 text-center py-3">
-                <button className="text-(--color-text) cursor-pointer hover:text-blue-700 hover:underline">
-                  Forgotten Password?
-                </button>
-              </div>
-
-              {/* Don't have Account */}
-
-              <div className=" text-center pt-5">
-                <button
-                  type="submit"
-                  onClick={() => {
-                    navigate("/SignUp");
-                  }}
-                  disabled={isLoading}
-                  className="flex-1 bg-(--color-background) text-(--color-primary) font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer disabled:cursor-not-allowed"
+                <div
+                  className="border-b-2 border-gray-200 text-center py-3"
                 >
-                  Didn't have account?
-                </button>
+                  <button type="submit"
+                    className="text-(--color-text) cursor-pointer hover:text-blue-700 hover:underline"
+                    onClick={(e) => {
+                      console.log(isForgetPasswordModalOpen);
+                      e.preventDefault();
+                      setIsForgetPasswordModalOpen(true);
+                    }}
+                  >
+                    Forgotten Password?
+                  </button>
+                </div>
+
+                {/* Don't have Account */}
+
+                <div className=" text-center pt-5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/SignUp");
+                    }}
+                    disabled={isLoading}
+                    className="flex-1 bg-(--color-background) text-(--color-primary) font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer disabled:cursor-not-allowed"
+                  >
+                    Didn't have account?
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
+      {isForgetPasswordModalOpen && (
+        <ForgetPasswordModal
+          onClose={() => setIsForgetPasswordModalOpen(false)}
+        />
+      )}
     </>
   );
 };

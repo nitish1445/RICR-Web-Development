@@ -108,6 +108,12 @@ const userSchema = mongoose.Schema(
         return this.role === "Manager" ? "N/A" : null;
       },
     },
+    isActive: {
+      type: String,
+      enum: ["active", "inactive", "blocked"],
+      required: true,
+      default: "active",
+    },
   },
   { timestamps: true },
 );

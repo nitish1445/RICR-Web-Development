@@ -158,13 +158,13 @@ const EditProfileModal = ({ onClose }) => {
       newErrors.fullName = "Full name is required";
     }
 
-    if (!formData.email.trim()) {
+    if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
     }
 
-    if (!formData.mobileNumber.trim()) {
+    if (!formData.mobileNumber) {
       newErrors.mobileNumber = "Mobile number is required";
     } else if (!/^\d{10}$/.test(formData.mobileNumber.replace(/\D/g, ""))) {
       newErrors.mobileNumber = "Mobile number must be 10 digits";
@@ -181,15 +181,15 @@ const EditProfileModal = ({ onClose }) => {
     }
 
     if (
-      formData.documents.pan &&
-      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.documents.pan)
+      formData.document.pan &&
+      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.document.pan)
     ) {
       newErrors.pan = "Invalid PAN format";
     }
 
     if (
-      formData.paymentDetails.upi &&
-      !/^[a-zA-Z0-9._-]+@[a-zA-Z]{3,}$/.test(formData.paymentDetails.upi)
+      formData.paymentDetail.upi &&
+      !/^[a-zA-Z0-9._-]+@[a-zA-Z]{3,}$/.test(formData.paymentDetail.upi)
     ) {
       newErrors.upi = "Invalid UPI format";
     }
