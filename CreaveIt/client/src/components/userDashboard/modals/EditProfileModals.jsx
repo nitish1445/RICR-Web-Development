@@ -1,121 +1,3 @@
-// import React, { useState } from "react";
-// import { GiCancel } from "react-icons/gi";
-// import { useAuth } from "../../../context/AuthContext";
-// import api from "../../../config/Api";
-
-// const EditProfileModal = ({ onClose }) => {
-//   const { user, setUser, setIsLogin } = useAuth();
-//   const [formDetail, setFormDetail] = useState({
-//     fullName: user.fullName,
-//     email: user.email,
-//     phone: user.phone,
-//   });
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     console.log("form Submitted");
-//     console.log(formDetail);
-
-//     try {
-//       const res = await api.put("/user/update", formDetail);
-//       sessionStorage.setItem("CraveIt", JSON.stringify(res.data.data));
-//       setUser(res.data.data);
-//       setIsLogin(true);
-//     } catch (error) {
-//       console.log(error);
-//     } finally {
-//       onClose();
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="z-100 fixed inset-50 rounded-2xl w-5xl px-10">
-//         <div className="flex justify-between items-center px-5 py-3">
-//           <div className="text-xl font-medium">Edit Profile</div>
-//           <button
-//             className="text-red-600 text-2xl cursor-pointer"
-//             onClick={() => onClose()}
-//           >
-//             <GiCancel />
-//           </button>
-//         </div>
-
-//         <hr />
-
-//         <div>
-//           <div className="px-8 mt-5">
-//             <form onSubmit={handleSubmit}>
-//               <div className="space-y-4">
-//                 {/* Full Name */}
-
-//                 <div className="">
-//                   <div>FULL NAME</div>
-//                   <input
-//                     type="text"
-//                     name="fullName"
-//                     value={formDetail.fullName}
-//                     onChange={(e) =>
-//                       setFormDetail({ ...formDetail, fullName: e.target.value })
-//                     }
-//                     className="w-full h-fit px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-//                   />
-//                 </div>
-
-//                 <div className="">
-//                   <div>EMAIL </div>
-//                   <input
-//                     type="email"
-//                     name="email"
-//                     value={formDetail.email}
-//                     onChange={(e) =>
-//                       setFormDetail({ ...formDetail, email: e.target.value })
-//                     }
-//                     className="w-full h-fit px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-//                   />
-//                 </div>
-
-//                 {/* Phone  */}
-
-//                 <div className="">
-//                   <div>PHONE NUMBER</div>
-//                   <input
-//                     type="tel"
-//                     name="phone"
-//                     maxLength="10"
-//                     value={formDetail.phone}
-//                     onChange={(e) =>
-//                       setFormDetail({ ...formDetail, phone: e.target.value })
-//                     }
-//                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-//                   />
-//                 </div>
-//               </div>
-//               <div className="px-6 py-6 flex justify-end space-x-4 border-t border-gray-300">
-//                 <button
-//                   type="button"
-//                   onClick={() => onClose()}
-//                   className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition"
-//                 >
-//                   Cancel
-//                 </button>
-//                 <button
-//                   type="submit"
-//                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-//                 >
-//                   Save Changes
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default EditProfileModal;
-
 import React, { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import api from "../../../config/Api";
@@ -250,14 +132,15 @@ const EditProfileModal = ({ onClose }) => {
       setMessage({ type: "error", text: "Please fix the errors above" });
       return;
     }
-
+    console.log(formData)
     setLoading(true);
     setMessage({ type: "", text: "" });
 
     try {
+      console.log(formData); 
       const res = await api.put("/user/update", formData);
       if (res.data?.data) {
-        sessionStorage.setItem("CravingUser", JSON.stringify(res.data.data));
+        sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
         setUser(res.data.data);
         setIsLogin(true);
         setMessage({ type: "success", text: "Profile updated successfully!" });
@@ -364,7 +247,7 @@ const EditProfileModal = ({ onClose }) => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     >
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
@@ -382,7 +265,7 @@ const EditProfileModal = ({ onClose }) => {
                       name="dob"
                       value={formData.dob}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     />
                   </div>
                 </div>
@@ -454,7 +337,7 @@ const EditProfileModal = ({ onClose }) => {
                     <div className="flex items-end">
                       <div className="h-fit flex items-center w-full gap-4">
                         <button
-                          className="w-full border border-gray-300 rounded-md shadow-sm p-2 h-fit"
+                          className="w-full border border-gray-300 rounded-md shadow-sm p-2 h-fit cursor-pointer"
                           onClick={fetchLocation}
                         >
                           Get Live Location
@@ -463,7 +346,7 @@ const EditProfileModal = ({ onClose }) => {
                         formData.geoLocation.lon !== "N/A"
                           ? "✅"
                           : "❌"}
-                        {console.log(formData)}
+                        {/* {console.log(formData)} */}
                       </div>
                     </div>
                   </div>
@@ -590,14 +473,14 @@ const EditProfileModal = ({ onClose }) => {
                   type="button"
                   onClick={() => onClose()}
                   disabled={loading}
-                  className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50"
+                  className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-2 bg-(--color-secondary) text-(--color-primary) rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
                 >
                   {loading ? (
                     <>

@@ -39,20 +39,20 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
     <>
       <div className="p-3 flex flex-col gap-30">
         <div>
-          <div className="h-10 text-xl text-(--color-primary) font-bold flex gap-3 mb-1 items-center">
-            {!isCollapsed && (
-              <span className="overflow-hidden text-nowrap">
-                User Dashboard
-              </span>
-            )}
+          <div className="h-10 text-md text-(--color-primary) font-bold flex justify-between items-center">
             <button
-              className="cursor-pointer px-3 hover:scale-125 hover:duration-200"
+              className="cursor-pointer ps-3 hover:scale-125 hover:duration-200"
               onClick={() => {
                 setIsCollapsed(!isCollapsed);
               }}
             >
               <FiMenu />
             </button>
+            {!isCollapsed && (
+              <span className="overflow-hidden text-nowrap">
+                Resturant Dashboard
+              </span>
+            )}
           </div>
 
           <hr />

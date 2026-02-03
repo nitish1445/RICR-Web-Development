@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ResturantMenu from "../../components/resturantDashboard/ResturantMenu";
 import ResturantOrder from "../../components/resturantDashboard/ResturantOrder";
-import ResturantSales from "../../components/resturantDashboard/ResturantSales";
-import ResturantStock from "../../components/resturantDashboard/ResturantStock";
-import ResutrantCustomer from "../../components/resturantDashboard/ResutrantCustomer";
-import ResturantManager from "../../components/resturantDashboard/ResturantManager";
+import ResturantOverview from "../../components/resturantDashboard/ResutrantOverview"
+import ResturantHelp from "../../components/resturantDashboard/ResturantHelp";
+import ResturantProfile from "../../components/resturantDashboard/ResturantProfile";
+import ResturantPayment from "../../components/resturantDashboard/ResturantEarnings"
 
 const ResturantDashboard = () => {
   const { role, isLogin } = useAuth();
@@ -52,10 +52,10 @@ const ResturantDashboard = () => {
         >
           {active === "menu" && <ResturantMenu />}
           {active === "order" && <ResturantOrder />}
-          {active === "sales" && <ResturantSales />}
-          {active === "stock" && <ResturantStock />}
-          {active === "customer" && <ResutrantCustomer />}
-          {active === "manager" && <ResturantManager />}
+          {active === "overview" && <ResturantOverview />}
+          {active === "profile" && <ResturantProfile />}
+          {active === "help" && <ResturantHelp />}
+          {active === "earnings" && <ResturantPayment />}
         </div>
       </div>
     </>

@@ -2,13 +2,13 @@ import React from "react";
 import {
   FaUtensils,
   FaClipboardList,
-  FaDollarSign,
-  FaBoxes,
-  FaUsers,
-  FaUser
+  FaUser,
+  FaSignOutAlt,
+  FaWallet,
 } from "react-icons/fa";
+import { IoGrid } from "react-icons/io5";
+import { IoMdHelpCircle } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaSignOutAlt } from "react-icons/fa";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
@@ -18,12 +18,12 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const { setUser, setIsLogin } = useAuth();
   const menuItems = [
-    { key: "manager", title: "Manager", icon: <FaUser /> },
+    { key: "overview", title: "Overview", icon: <IoGrid /> },
     { key: "menu", title: "Menu", icon: <FaUtensils /> },
     { key: "order", title: "Orders", icon: <FaClipboardList /> },
-    { key: "sales", title: "Total Sale", icon: <FaDollarSign /> },
-    { key: "stock", title: "Stock", icon: <FaBoxes /> },
-    { key: "customer", title: "Customer", icon: <FaUsers /> },
+    { key: "profile", title: "Profile", icon: <FaUser /> },
+    { key: "earnings", title: "Earnings", icon: <FaWallet /> },
+    { key: "help", title: "Help", icon: <IoMdHelpCircle /> },
   ];
   const handleLogout = async () => {
     try {
@@ -41,20 +41,20 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
     <>
       <div className="p-3 flex flex-col gap-15">
         <div>
-          <div className="h-10 text-md text-(--color-primary) font-bold flex gap-1 items-center">
-            {!isCollapsed && (
-              <span className="overflow-hidden text-nowrap">
-                Resturant Dashboard
-              </span>
-            )}
+          <div className="h-10 text-md text-(--color-primary) font-bold flex justify-between items-center">
             <button
-              className="cursor-pointer px-3 hover:scale-125 hover:duration-200"
+              className="cursor-pointer ps-3 hover:scale-125 hover:duration-200"
               onClick={() => {
                 setIsCollapsed(!isCollapsed);
               }}
             >
               <GiHamburgerMenu />
             </button>
+            {!isCollapsed && (
+              <span className="overflow-hidden text-nowrap">
+                Resturant Dashboard
+              </span>
+            )}
           </div>
 
           <hr />
