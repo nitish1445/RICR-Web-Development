@@ -9,7 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import UserDashBoard from "./pages/dashboards/UserDashBoard";
 import RiderDashboard from "./pages/dashboards/RiderDashboard";
-import ResturantDashboard from "./pages/dashboards/ResturantDashboard";
+import RestaurantDashboard from "./pages/dashboards/RestaurantDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 
 const App = () => {
@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/user-dashboard" element={<UserDashBoard />} />
           <Route path="/rider-dashboard" element={<RiderDashboard />} />
-          <Route path="/resturant-dashboard" element={<ResturantDashboard />} />
+          <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>
       </BrowserRouter>

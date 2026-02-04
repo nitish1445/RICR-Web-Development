@@ -39,7 +39,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
     <>
       <div className="p-3 flex flex-col gap-30">
         <div>
-          <div className="h-10 text-md text-(--color-primary) font-bold flex justify-between items-center">
+          <div className="h-10 text-md text-(--color-primary) font-bold flex gap-5 items-center">
             <button
               className="cursor-pointer ps-3 hover:scale-125 hover:duration-200"
               onClick={() => {
@@ -50,7 +50,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
             </button>
             {!isCollapsed && (
               <span className="overflow-hidden text-nowrap">
-                Resturant Dashboard
+                User Dashboard
               </span>
             )}
           </div>

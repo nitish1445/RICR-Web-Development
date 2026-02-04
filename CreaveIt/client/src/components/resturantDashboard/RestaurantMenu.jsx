@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import AddMenuItemModal from "../resturantDashboard/modals/AddMenuItemModal";
+import AddMenuItemModal from "./modals/AddMenuItemModal";
 
-const ResturantMenu = () => {
+const RestaurantMenu = () => {
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   return (
     <>
@@ -16,10 +16,10 @@ const ResturantMenu = () => {
             </div>
             <div>
               <button
-                className="flex gap-2 items-center border-2 py-1 px-4 rounded-2xl text-(--color-secondary) cursor-pointer text-md hover:bg-(--color-secondary) hover:border-2 hover:border-(--color-secondary) hover:text-white hover:duration-300 duration-300"
+                className="flex gap-2 items-center border-2 py-1 px-4 rounded text-(--color-secondary) cursor-pointer text-md hover:bg-(--color-secondary) hover:border-2 hover:border-(--color-secondary) hover:text-white hover:duration-300 duration-300"
                 onClick={()=>setAddItemModalOpen(true)}
               >
-                <FaPlus /> <span>Add Items</span>
+                <FaPlus /> <span>Add Item</span>
               </button>
             </div>
           </div>
@@ -32,4 +32,4 @@ const ResturantMenu = () => {
   );
 };
 
-export default ResturantMenu;
+export default RestaurantMenu;

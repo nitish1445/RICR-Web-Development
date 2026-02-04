@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const menuSchema = mongoose.Schema({
-  resturantID: {
+  restaurantID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  dishName: {
+  itemName: {
     type: String,
     required: true,
   },
@@ -48,7 +48,12 @@ const menuSchema = mongoose.Schema({
     default: "available",
   },
   image: {
-    type: String,
+    type: [
+      {
+        url: { type: String, required: true },
+        publicID: { type: String, required: true },
+      },
+    ],
     required: true,
   },
 });

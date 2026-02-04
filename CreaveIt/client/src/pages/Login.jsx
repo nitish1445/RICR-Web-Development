@@ -42,7 +42,7 @@ const Login = () => {
       switch (res.data.data.role) {
         case "manager": {
           setRole("manager");
-          navigate("/resturant-dashboard");
+          navigate("/restaurant-dashboard");
           break;
         }
         case "partner": {

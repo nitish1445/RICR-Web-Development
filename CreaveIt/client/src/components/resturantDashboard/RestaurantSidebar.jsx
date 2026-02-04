@@ -52,7 +52,7 @@ const SideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
             </button>
             {!isCollapsed && (
               <span className="overflow-hidden text-nowrap">
-                Resturant Dashboard
+                Restaurant Dashboard
               </span>
             )}
           </div>

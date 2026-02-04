@@ -2,23 +2,27 @@ import React, { useState } from "react";
 import { GiCancel } from "react-icons/gi";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import toast from "react-hot-toast";
-import api from "../../../config/Api"
+import api from "../../../config/Api";
 
 const AddMenuItemModal = ({ onClose }) => {
   const [formData, setFormData] = useState({
     itemName: "",
     description: "",
     price: "",
-    category: "",
     cuisine: "",
     type: "",
     preparationTime: "",
+    servingSize: "",
     availability: true,
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // for backend
   const [images, setImages] = useState([]);
+
+  // for frontend
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleInputChange = (e) => {
@@ -32,26 +36,65 @@ const AddMenuItemModal = ({ onClose }) => {
     }
   };
 
-  const handleImageChange = {
-    // handfle file image
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const fileArray = Array.from(files);
+    let temp = [];
+    fileArray.forEach((img) => {
+      let imgURL = URL.createObjectURL(img);
+      temp.push(imgURL);
+    });
+    //slice == max length limit of array -1
+    setImagePreviews(temp.slice(0, 5));
+    setImages(fileArray.slice(0, 5));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(formData);
+
     try {
-      console.log(formData);
-      
       // transfer menu data to form data
-      const form_Data = new FormData();
-      const res = await api.post("/menu/add", form_Data);
+
+      const form_data = new FormData();
+      form_data.append("itemName", formData.itemName);
+      form_data.append("description", formData.description);
+      form_data.append("price", formData.price);
+      form_data.append("servingSize", formData.servingSize);
+      form_data.append("cuisine", formData.cuisine);
+      form_data.append("type", formData.type);
+      form_data.append("preparationTime", formData.preparationTime);
+      form_data.append("availability", formData.availability);
+      images.forEach((img) => {
+        form_data.append("itemImages", img);
+      });
+
+      //connect backend
+      const res = await api.post("/restaurant/addMenuItem", form_data);
       toast.success(res.data.message);
-      setTimeout(() => onClose(), 1500);
+      setTimeout(handleClose, 1500);
     } catch (error) {
       console.log(error);
       toast.error(error?.respone?.data?.message || "Unknown Error");
     }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      itemName: "",
+      description: "",
+      price: "",
+      cuisine: "",
+      type: "",
+      preparationTime: "",
+      servingSize: "",
+      availability: true,
+    });
+    setImagePreviews([]);
+    setImages([]);
+    setErrors("");
+    setLoading(false);
+    onClose();
   };
 
   return (
@@ -63,7 +106,7 @@ const AddMenuItemModal = ({ onClose }) => {
               Add Menu Item
             </h2>
             <button
-              onClick={() => onClose()}
+              onClick={handleClose}
               className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
             >
               <GiCancel />
@@ -72,21 +115,58 @@ const AddMenuItemModal = ({ onClose }) => {
 
           {/* Menu Detail */}
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            onReset={handleClose}
+            className="p-6 space-y-6"
+          >
             {/* Item image Section */}
 
             <div>
               <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
                 Item Image
               </h3>
-              <input
-                type="file"
-                name="image"
-                id="image"
-                onChange={handleInputChange}
-                accept="image/*"
-                multiple
-              />
+              <div className="flex items-end gap-4">
+                <label
+                  htmlFor="image"
+                  className="px-6 py-2 w-fit bg-(--color-secondary) text-white rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex gap-3 items-center"
+                >
+                  Add Image
+                </label>
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-600">
+                    (Upto 5 images allowed)
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    (Max size 1 MB each.)
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  onChange={handleImageChange}
+                  accept="image/*"
+                  className="hidden"
+                  multiple
+                />
+              </div>
+              {imagePreviews.length !== 0 && (
+                <div className="mt-3 grid grid-cols-5 gap-1">
+                  {imagePreviews.map((itemImg, idx) => (
+                    <div
+                      className="border rounded-md w-30 h-30 overflow-hidden"
+                      key={idx}
+                    >
+                      <img
+                        src={itemImg}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Basic Detail of dish */}
@@ -130,7 +210,7 @@ const AddMenuItemModal = ({ onClose }) => {
               <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
                 Pricing & Category
               </h3>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <div className="flex gap-1.5 items-center">
@@ -152,12 +232,12 @@ const AddMenuItemModal = ({ onClose }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category <span className="text-red-500 ">*</span>
+                    Serving Size <span className="text-red-500 ">*</span>
                   </label>
                   <input
                     type="text"
-                    name="category"
-                    value={formData.category}
+                    name="servingSize"
+                    value={formData.servingSize}
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
@@ -190,7 +270,7 @@ const AddMenuItemModal = ({ onClose }) => {
               <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
                 Item Attributes
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                   <label
                     htmlFor="type"
@@ -226,7 +306,7 @@ const AddMenuItemModal = ({ onClose }) => {
                     <span className="text-red-500 ">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     name="preparationTime"
                     value={formData.preparationTime}
                     onChange={handleInputChange}
@@ -236,7 +316,7 @@ const AddMenuItemModal = ({ onClose }) => {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 justify-end">
+                <div className="flex gap-3 justify-start">
                   <input
                     type="checkbox"
                     name="availability"
@@ -258,7 +338,7 @@ const AddMenuItemModal = ({ onClose }) => {
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-300">
               <button
                 type="button"
-                onClick={() => onClose()}
+                onClick={handleClose}
                 className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50 cursor-pointer"
               >
                 Cancel

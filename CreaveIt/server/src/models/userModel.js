@@ -90,7 +90,7 @@ const userSchema = mongoose.Schema(
         default: "N/A",
       },
     },
-    resturantName: {
+    restaurantName: {
       type: String,
       required() {
         return this.role === "Manager";
