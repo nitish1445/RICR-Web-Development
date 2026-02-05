@@ -64,7 +64,10 @@ const AddMenuItemModal = ({ onClose }) => {
       form_data.append("cuisine", formData.cuisine);
       form_data.append("type", formData.type);
       form_data.append("preparationTime", formData.preparationTime);
-      form_data.append("availability", formData.availability);
+      form_data.append(
+        "availability",
+        formData.availability ? "available" : "unavailable",
+      );
       images.forEach((img) => {
         form_data.append("itemImages", img);
       });

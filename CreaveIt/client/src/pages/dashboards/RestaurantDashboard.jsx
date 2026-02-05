@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import RestaurantSidebar from "../../components/resturantDashboard/RestaurantSidebar";
+import RestaurantSidebar from "../../components/resturantDashboard/ResturantSidebar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import RestaurantMenu from "../../components/resturantDashboard/RestaurantMenu";
 import RestaurantOrder from "../../components/resturantDashboard/RestaurantOrder";
 import RestaurantOverview from "../../components/resturantDashboard/RestaurantOverview"
 import RestaurantHelp from "../../components/resturantDashboard/RestaurantHelp";
-import RestaurantProfile from "../../components/resturantDashboard/RestaurantProfile";
+import RestaurantProfile from "../../components/resturantDashboard/ResturantProfile";
 import RestaurantEarnings from "../../components/resturantDashboard/RestaurantEarnings"
 
 const RestaurantDashboard = () => {

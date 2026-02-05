@@ -33,7 +33,7 @@ const menuSchema = mongoose.Schema({
     ],
     required: true,
   },
-  decription: {
+  description: {
     type: String,
     required: true,
   },

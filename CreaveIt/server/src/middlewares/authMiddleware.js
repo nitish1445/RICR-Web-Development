@@ -38,6 +38,7 @@ export const AdminProtect = async (req, res, next) => {
     next(error);
   }
 };
+
 export const PartnerProtect = async (req, res, next) => {
   try {
     if (req.user.role !== "partner") {
@@ -50,6 +51,7 @@ export const PartnerProtect = async (req, res, next) => {
     next(error);
   }
 };
+
 export const ManagerProtect = async (req, res, next) => {
   try {
     if (req.user.role !== "manager") {
@@ -64,6 +66,7 @@ export const ManagerProtect = async (req, res, next) => {
     next(error);
   }
 };
+
 export const CustomerProtect = async (req, res, next) => {
   try {
     if (req.user.role !== "customer") {

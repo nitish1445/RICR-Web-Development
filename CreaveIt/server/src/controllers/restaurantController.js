@@ -58,16 +58,17 @@ export const RestaurantAddMenuItem = async (req, res, next) => {
   }
 };
 
-// export const GetRestaurantMenuItem = (req, res, next) => {};
-// try {
-//   const CurrentUser = rea.user;
+export const GetRestaurantMenuItem = async (req, res, next) => {
+  try {
+    const CurrentUser = req.user;
 
-//   const menuItems = await Menu.find({ restaurantID: CurrentUser._id });
+    const menuItems = await Menu.find({ resturantID: CurrentUser._id });
 
-//   res.status(200).json({
-//     message: "Menu Items Fetched Successfully",
-//     data: menuItems,
-//   });
-// } catch (error) {
-//   next(error);
-// }
+    res.status(200).json({
+      message: "Menu Items Fetched Successfully",
+      data: menuItems,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

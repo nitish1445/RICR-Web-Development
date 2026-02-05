@@ -44,3 +44,19 @@ app.listen(port, async () => {
     console.error("Error connecting cloudinary API : ", error);
   }
 });
+
+// const startServer = async () => {
+//   try {
+//     // connect the server
+//     await connectDB();
+//     // starts server after checking db is connected
+//     app.listen(port, () => {
+//       console.log("Server started at port:", port);
+//     });
+//   } catch (error) {
+//     // if db not connected
+//     console.log("DB connection failed:", error);
+//   }
+// };
+
+// startServer();
