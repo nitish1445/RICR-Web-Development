@@ -4,16 +4,16 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import api from "../../../config/Api";
 
-const AddMenuItemModal = ({ onClose }) => {
+const EditItemModal = ({ onClose, selectedItem }) => {
   const [formData, setFormData] = useState({
-    itemName: "",
-    description: "",
-    price: "",
-    cuisine: "",
-    type: "",
-    preparationTime: "",
-    servingSize: "",
-    availability: true,
+    itemName: selectedItem?.itemName,
+    description: selectedItem?.description,
+    price: selectedItem?.price || "",
+    cuisine: selectedItem?.cuisine || "",
+    type: selectedItem?.type || "",
+    preparationTime: selectedItem?.preparationTime || "",
+    servingSize: selectedItem?.servingSize || "",
+    availability: selectedItem?.availability || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -64,22 +64,22 @@ const AddMenuItemModal = ({ onClose }) => {
       form_data.append("cuisine", formData.cuisine);
       form_data.append("type", formData.type);
       form_data.append("preparationTime", formData.preparationTime);
-      form_data.append(
-        "availability",
-        formData.availability ? "available" : "unavailable",
-      );
+      form_data.append("availability", formData.availability);
       images.forEach((img) => {
         form_data.append("itemImages", img);
       });
 
       //connect backend
-      const res = await api.post("/restaurant/addMenuItem", form_data);
+      const res = await api.put(
+        `/restaurant/updateMenuItem/${selectedItem._id}`,
+        form_data,
+      );
       toast.success(res.data.message);
       setTimeout(handleClose, 1500);
     } catch (error) {
       console.log(error);
       toast.error(error?.respone?.data?.message || "Unknown Error");
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -93,8 +93,9 @@ const AddMenuItemModal = ({ onClose }) => {
       type: "",
       preparationTime: "",
       servingSize: "",
-      availability: true,
+      availability: "",
     });
+
     setImagePreviews([]);
     setImages([]);
     setErrors("");
@@ -104,11 +105,11 @@ const AddMenuItemModal = ({ onClose }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
-        <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg">
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
+        <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg">
           <div className="flex justify-between px-6 py-4 border-b border-gray-300 items-center sticky top-0 bg-white">
             <h2 className="text-xl font-semibold text-gray-800">
-              Add Menu Item
+              Update Menu Item
             </h2>
             <button
               onClick={handleClose}
@@ -131,6 +132,7 @@ const AddMenuItemModal = ({ onClose }) => {
               <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
                 Item Image
               </h3>
+
               <div className="flex items-end gap-4">
                 <label
                   htmlFor="image"
@@ -155,6 +157,11 @@ const AddMenuItemModal = ({ onClose }) => {
                   className="hidden"
                   multiple
                 />
+              </div>
+              <div className="pt-2">
+                <p className="text-sm text-gray-600">
+                  Upload new images if you want to change them
+                </p>
               </div>
               {imagePreviews.length !== 0 && (
                 <div className="mt-3 grid grid-cols-5 gap-1">
@@ -322,19 +329,18 @@ const AddMenuItemModal = ({ onClose }) => {
                 </div>
 
                 <div className="flex gap-3 justify-start">
-                  <input
-                    type="checkbox"
+                  <select
                     name="availability"
-                    checked={formData.availability}
+                    value={formData.availability}
                     onChange={handleInputChange}
-                    className=" text-green-600 border-gray-300 rounded-full focus:ring-green-500 cursor-pointer"
-                  />
-                  <label
-                    htmlFor="availability"
-                    className="block text-sm font-medium text-gray-700 mb-1 cursor-pointer"
+                    className="w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 cursor-pointer"
+                    required
                   >
-                    Available <span className="text-red-500 ">*</span>
-                  </label>
+                    <option value="">Select Availability</option>
+                    <option value="available">Available</option>
+                    <option value="unavailable">Unavailable</option>
+                    <option value="removed">Removed</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -354,10 +360,10 @@ const AddMenuItemModal = ({ onClose }) => {
               >
                 {loading ? (
                   <>
-                    <span className="animate-spin">⟳</span> Adding..
+                    <span className="animate-spin">⟳</span> Updating..
                   </>
                 ) : (
-                  "Add Items"
+                  "Update Items"
                 )}
               </button>
             </div>
@@ -368,4 +374,4 @@ const AddMenuItemModal = ({ onClose }) => {
   );
 };
 
-export default AddMenuItemModal;
+export default EditItemModal;

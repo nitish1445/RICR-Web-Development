@@ -1,7 +1,14 @@
 import express from "express";
 import multer from "multer";
 
-import { RestaurantAddMenuItem,GetRestaurantMenuItem } from "../controllers/restaurantController.js";
+import {
+  RestaurantAddMenuItem,
+  GetRestaurantMenuItem,
+  RestaurantEditMenuItem,
+  RestaurantUpdateProfile,
+  RestaurantResetPassword,
+  RestaurantUpdatePhoto,
+} from "../controllers/restaurantController.js";
 import { ManagerProtect, Protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -15,11 +22,38 @@ router.post(
   RestaurantAddMenuItem,
 );
 
-router.get(
-  "/menuItems",
+router.get("/menuItems", Protect, ManagerProtect, GetRestaurantMenuItem);
+
+router.put(
+  "/updateMenuItem/:id",
   Protect,
   ManagerProtect,
-  GetRestaurantMenuItem,
+  upload.array("itemImages", 5),
+  RestaurantEditMenuItem,
+);
+
+router.put(
+  "/update",
+  Protect,
+  ManagerProtect,
+  upload.array("itemImages", 5),
+  RestaurantUpdateProfile,
+);
+
+router.patch(
+  "/updatePhoto",
+  Protect,
+  ManagerProtect,
+  upload.array("itemImages", 5),
+  RestaurantUpdatePhoto,
+);
+
+router.patch(
+  "/resetPassword",
+  Protect,
+  ManagerProtect,
+  upload.array("itemImages", 5),
+  RestaurantResetPassword,
 );
 
 export default router;

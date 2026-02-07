@@ -1,82 +1,14 @@
-// import React, { useState } from "react";
-// import { useAuth } from "../../context/AuthContext";
-// import ManagerImage from "../../assets/userImage.jpg";
-// import { FaCamera } from "react-icons/fa";
-
-// const ResturantManager = () => {
-//   const { user, setUser } = useAuth();
-//   // const [preview, setPreview] = useState();
-//   return (
-//     <>
-//       <div className="p-6 h-full">
-//         <div className="flex justify-between items-center shadow-md border p-5 rounded-3xl border-gray-300 bg-white">
-//           <div className="flex gap-5 items-center">
-//             <div className="relative">
-//               <div className="border-2 border-black rounded-full w-36 h-36 overflow-hidden">
-//                 <img
-//                   src={ManagerImage}
-//                   alt="image"
-//                   className="w-full h-full object-cover"
-//                 />
-//               </div>
-//               <div className="absolute bottom-2 left-[75%] border bg-white p-2 rounded-full group flex gap-3">
-//                 <label
-//                   htmlFor="imaheUplaod"
-//                   className="text-(--color-primary) group-hover:text-(--color-secondary) cursor-pointer"
-//                 >
-//                   <FaCamera />
-//                 </label>
-//                 <input
-//                   type="file"
-//                   id="imageUplaod"
-//                   className="hidden"
-//                   accept="image/*"
-//                 />
-//               </div>
-//             </div>
-//             <div className="grid">
-//               <h2 className="text-3xl text-(--color-primary) font-bold">
-//                 {user.fullName || "Manager Name"}{" "}
-//                 <span className="text-xs">( {user.role} )</span>
-//               </h2>
-//               <div className="text-gray-600 text-lg font-semibold">
-//                 {user.email || "example@xyz.com"}
-//               </div>
-//               <div className="text-gray-600 text-lg font-semibold">
-//                 {user.phone || "999999XXXX"}
-//               </div>
-//             </div>
-//           </div>
-//           <div className="grid gap-5">
-//             <button className="px-4 py-2 rounded bg-(--color-secondary) text-white cursor-pointer">
-//               Edit Details
-//             </button>
-//             <button className="px-4 py-2 rounded bg-(--color-secondary) text-white cursor-pointer">
-//               Reset Password
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default ResturantManager;
-
 //copy paste
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import UserImage from "../../assets/userImage.jpg";
-import {
-  FaCamera,
-  FaMapLocationDot,
-  FaWallet,
-} from "react-icons/fa6";
+import { FaCamera, FaMapLocationDot, FaWallet } from "react-icons/fa6";
 import { FaFileAlt } from "react-icons/fa";
 import { BiSolidBank } from "react-icons/bi";
 import api from "../../config/Api";
 import toast from "react-hot-toast";
-import ResetPasswordModal from "../userDashboard/modals/ResetPasswordModal";
+import RestaurantEditProfileModal from "./modals/RestaurantEditProfileModal";
+import RestaurantResetPassword from "../resturantDashboard/modals/RestaurantResetPassword";
 
 const RestaurantProfile = () => {
   const { user, setUser } = useAuth();
@@ -90,7 +22,7 @@ const RestaurantProfile = () => {
     form_Data.append("image", photo);
 
     try {
-      const res = await api.patch("/user/changePhoto", form_Data);
+      const res = await api.patch("/restaurant/updatePhoto", form_Data);
       toast.success(res.data.message);
       setUser(res.data.data);
       sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
@@ -193,22 +125,22 @@ const RestaurantProfile = () => {
                   <div className="flex items-center gap-3">
                     <span className="text-gray-600 font-medium">Phone:</span>
                     <span className="text-gray-900">
-                      {user?.mobileNumber || "N/A"}
+                      {user?.phone || "N/A"}
                     </span>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  {/* <button
+                  <button
                     onClick={() => setIsEditProfileModalOpen(true)}
-                    className="px-6 py-2 bg-(--color-secondary) text-white rounded-lg hover:bg-(--color-secondary-hover) transition font-semibold"
+                    className="cursor-pointer px-6 py-2 bg-(--color-secondary) text-white rounded-lg hover:bg-(--color-secondary-hover) transition font-semibold"
                   >
                     Edit Profile
-                  </button> */}
+                  </button>
                   <button
                     onClick={() => setIsResetPasswordModalOpen(true)}
-                    className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold"
+                    className="cursor-pointer px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold"
                   >
                     Reset Password
                   </button>
@@ -302,8 +234,8 @@ const RestaurantProfile = () => {
             <div className="space-y-1">
               {renderField("GST Certificate", user?.documents?.gst)}
               {renderField("FSSAI License", user?.documents?.fssai)}
-              {renderField("RC (Registration)", user?.documents?.rc)}
-              {renderField("Driving License", user?.documents?.dl)}
+              {/* {renderField("RC (Registration)", user?.documents?.rc)}
+              {renderField("Driving License", user?.documents?.dl)} */}
               {renderField("UIDAI", user?.documents?.uidai)}
               {renderField("PAN", user?.documents?.pan)}
             </div>
@@ -334,14 +266,14 @@ const RestaurantProfile = () => {
         </div>
       </div>
 
-      {/* {isEditProfileModalOpen && (
-        <EditRestaurantProfileModal
+      {isEditProfileModalOpen && (
+        <RestaurantEditProfileModal
           onClose={() => setIsEditProfileModalOpen(false)}
         />
-      )} */}
+      )}
 
       {isResetPasswordModalOpen && (
-        <ResetPasswordModal
+        <RestaurantResetPassword
           onClose={() => setIsResetPasswordModalOpen(false)}
         />
       )}

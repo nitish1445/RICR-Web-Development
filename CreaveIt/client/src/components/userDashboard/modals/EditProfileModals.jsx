@@ -36,6 +36,8 @@ const EditProfileModal = ({ onClose }) => {
   const validateForm = () => {
     const newErrors = {};
 
+    console.log("Forma Data ",formData);
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
     }
@@ -132,12 +134,12 @@ const EditProfileModal = ({ onClose }) => {
       setMessage({ type: "error", text: "Please fix the errors above" });
       return;
     }
-    console.log(formData)
+    console.log(formData);
     setLoading(true);
     setMessage({ type: "", text: "" });
 
     try {
-      console.log(formData); 
+      console.log(formData);
       const res = await api.put("/user/update", formData);
       if (res.data?.data) {
         sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
@@ -161,7 +163,7 @@ const EditProfileModal = ({ onClose }) => {
     <>
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
         <div className="bg-white w-5xl max-h-[85vh] rounded-md overflow-y-auto">
-          <div className="flex justify-between px-5 py-3 border-b border-gray-300 items-center">
+          <div className="flex justify-between px-5 py-3 border-b text-2xl font-semibold text-gray-800 items-center">
             <div>Edit Profile</div>
             <button
               onClick={() => onClose()}
@@ -211,7 +213,7 @@ const EditProfileModal = ({ onClose }) => {
                       disabled
                       className="w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-600 cursor-not-allowed"
                     />
-                    <p className="text-gray-500 text-xs mt-1">
+                    <p className="text-red-500 text-xs mt-1">
                       Email cannot be changed
                     </p>
                   </div>
@@ -226,9 +228,7 @@ const EditProfileModal = ({ onClose }) => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.phone
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors.phone ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="10-digit mobile number"
                     />

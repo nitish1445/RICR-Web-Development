@@ -19,6 +19,10 @@ const menuSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  preparationTime: {
+    type: String,
+    required: true,
+  },
   type: {
     type: String,
     enum: [
@@ -47,7 +51,7 @@ const menuSchema = mongoose.Schema({
     enum: ["available", "unavailable", "removed"],
     default: "available",
   },
-  image: {
+  images: {
     type: [
       {
         url: { type: String, required: true },

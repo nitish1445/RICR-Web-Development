@@ -36,7 +36,7 @@ export const UserUpdate = async (req, res, next) => {
     }
 
     // Validate mobile number (10 digits)
-    if (!/^\d{10}$/.test(mobileNumber.replace(/\D/g, ""))) {
+    if (!/^\d{10}$/.test(phone.replace(/\D/g, ""))) {
       const error = new Error("Mobile number must be 10 digits");
       error.statusCode = 400;
       return next(error);
@@ -136,7 +136,7 @@ export const UserUpdate = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ message: "User Updated Successfully", data: updatedUser });
+      .json({ message: "User Updated Successfully", data: currentUser });
   } catch (error) {
     next(error);
   }
