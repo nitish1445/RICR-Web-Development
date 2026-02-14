@@ -16,13 +16,12 @@ const RestaurantProfile = () => {
   const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
     useState(false);
   const [preview, setPreview] = useState("");
-
   const changePhoto = async (photo) => {
     const form_Data = new FormData();
     form_Data.append("image", photo);
 
     try {
-      const res = await api.patch("/restaurant/updatePhoto", form_Data);
+      const res = await api.patch("/restaurant/changePhoto", form_Data);
       toast.success(res.data.message);
       setUser(res.data.data);
       sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
@@ -45,7 +44,7 @@ const RestaurantProfile = () => {
 
   const renderField = (label, value) => (
     <div className="flex justify-between py-2 px-3 border-b border-gray-200 last:border-b-0">
-      <span className="text-gray-600 font-medium">{label}:</span>
+      <span className="text-gray-600 font-medium">{label} :</span>
       <span className="text-gray-900 font-semibold">
         {value && value !== "N/A" ? (
           value
@@ -116,14 +115,14 @@ const RestaurantProfile = () => {
 
                 {/* Contact Information */}
                 <div className="space-y-2 mb-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-600 font-medium">Email:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600 font-medium">Email :</span>
                     <span className="text-gray-900">
                       {user?.email || "N/A"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-600 font-medium">Phone:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600 font-medium">Phone :</span>
                     <span className="text-gray-900">
                       {user?.phone || "N/A"}
                     </span>
@@ -156,91 +155,74 @@ const RestaurantProfile = () => {
             <span className="w-1 h-6 bg-(--color-secondary) rounded"></span>
             Personal Information
           </h2>
-          <div className="space-y-1">
+          <div className="space-y-1 capitalize">
             {renderField("Date of Birth", user?.dob)}
             {renderField("Gender", user?.gender)}
             {renderField("Address", user?.address)}
             {renderField("City", user?.city)}
-            {renderField("PIN Code", user?.pin)}
+            {renderField("Pin Code", user?.pin)}
           </div>
         </div>
 
         {/* Location Section */}
-        {(user?.geoLocation?.lat !== "N/A" ||
-          user?.geoLocation?.lon !== "N/A") && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FaMapLocationDot className="text-(--color-secondary)" />
-              Geo Location
-            </h2>
-            <div className="space-y-1">
-              {renderField("Latitude", user?.geoLocation?.lat)}
-              {renderField("Longitude", user?.geoLocation?.lon)}
-            </div>
+        
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <FaMapLocationDot className="text-(--color-secondary)" />
+            Geo Location
+          </h2>
+          <div className="space-y-1">
+            {renderField("Latitude", user?.geoLocation?.lat)}
+            {renderField("Longitude", user?.geoLocation?.lon)}
           </div>
-        )}
+        </div>
 
         {/* Payment Details - UPI Section */}
-        {user?.paymentDetails?.upi !== "N/A" && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FaWallet className="text-(--color-secondary)" />
-              Payment Details
-            </h2>
-            <div className="space-y-1">
-              {renderField("UPI ID", user?.paymentDetails?.upi)}
-            </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <FaWallet className="text-(--color-secondary)" />
+            Payment Details
+          </h2>
+          <div className="space-y-1">
+            {renderField("UPI ID", user?.paymentDetail?.upi)}
           </div>
-        )}
+        </div>
 
         {/* Bank Account Details Section */}
-        {(user?.paymentDetails?.account_number !== "N/A" ||
-          user?.paymentDetails?.ifs_Code !== "N/A") && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <BiSolidBank className="text-(--color-secondary)" />
-              Bank Account Details
-            </h2>
-            <div className="space-y-1">
-              {renderField(
-                "Account Number",
-                user?.paymentDetails?.account_number,
-              )}
-              {renderField("IFSC Code", user?.paymentDetails?.ifs_Code)}
-            </div>
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <BiSolidBank className="text-(--color-secondary)" />
+            Bank Account Details
+          </h2>
+          <div className="space-y-1">
+            {renderField("Account Number", user?.paymentDetail?.account_number)}
+            {renderField("IFSC Code", user?.paymentDetail?.IFSC)}
           </div>
-        )}
+        </div>
 
         {/* Restaurant Information Section */}
-        {(user?.restaurantName !== "N/A" || user?.cuisine !== "N/A") && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Restaurant Information
-            </h2>
-            <div className="space-y-1">
-              {renderField("Restaurant Name", user?.restaurantName)}
-              {renderField("Cuisine Type", user?.cuisine)}
-            </div>
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            Restaurant Information
+          </h2>
+          <div className="space-y-1 capitalize">
+            {renderField("Restaurant Name", user?.restaurantName)}
+            {renderField("Cuisine Type", user?.cuisine)}
           </div>
-        )}
+        </div>
 
         {/* Business Documents Section */}
-        {Object.values(user?.documents || {}).some((doc) => doc !== "N/A") && (
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FaFileAlt className="text-(--color-secondary)" />
-              Business Documents
-            </h2>
-            <div className="space-y-1">
-              {renderField("GST Certificate", user?.documents?.gst)}
-              {renderField("FSSAI License", user?.documents?.fssai)}
-              {/* {renderField("RC (Registration)", user?.documents?.rc)}
-              {renderField("Driving License", user?.documents?.dl)} */}
-              {renderField("UIDAI", user?.documents?.uidai)}
-              {renderField("PAN", user?.documents?.pan)}
-            </div>
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <FaFileAlt className="text-(--color-secondary)" />
+            Business Documents
+          </h2>
+          <div className="space-y-1">
+            {renderField("GST Certificate", user?.document?.gst)}
+            {renderField("FSSAI License", user?.document?.fssai)}
           </div>
-        )}
+        </div>
 
         {/* Account Metadata */}
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 text-sm">

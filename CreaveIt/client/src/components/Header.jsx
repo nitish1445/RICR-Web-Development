@@ -2,9 +2,10 @@ import React from "react";
 import transparentLogo from "../assets/transparentLogo1.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 const Header = () => {
-  const { user, isLogin, role  } = useAuth();
+  const { user, isLogin, role } = useAuth();
   const navigate = useNavigate();
 
   const handleNavigate = () => {
@@ -61,7 +62,14 @@ const Header = () => {
         </div>
         <div className="flex gap-4">
           {isLogin ? (
-            <div className="text-(--color-secondary) font-bold" onClick={handleNavigate}>{user.fullName}</div>
+            <div className="flex justify-between gap-3 items-center">
+              <div className="text-(--color-secondary) font-bold">
+                Hey, {user.fullName}
+              </div>
+              <div onClick={handleNavigate} className="cursor-pointer">
+                <FaRegCircleUser className="w-6 h-6 text-white" />
+              </div>
+            </div>
           ) : (
             <>
               <button

@@ -32,19 +32,13 @@ router.put(
   RestaurantEditMenuItem,
 );
 
-router.put(
-  "/update",
-  Protect,
-  ManagerProtect,
-  upload.array("itemImages", 5),
-  RestaurantUpdateProfile,
-);
+router.put("/update", Protect, ManagerProtect, RestaurantUpdateProfile);
 
 router.patch(
-  "/updatePhoto",
+  "/changePhoto",
   Protect,
   ManagerProtect,
-  upload.array("itemImages", 5),
+  upload.single("image"),
   RestaurantUpdatePhoto,
 );
 

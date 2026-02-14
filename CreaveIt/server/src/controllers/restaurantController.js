@@ -1,5 +1,6 @@
 import Menu from "../models/menuSchema.js";
 import { UploadMultipleToCloudinary } from "../utils/imageUploader.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const RestaurantAddMenuItem = async (req, res, next) => {
   try {
@@ -229,25 +230,23 @@ export const RestaurantUpdateProfile = async (req, res, next) => {
       CurrentUser.document = {
         gst: document.gst || CurrentUser.document?.gst || "N/A",
         fssai: document.fssai || CurrentUser.document?.fssai || "N/A",
-        uidai: document.uidai || CurrentUser.document?.uidai || "N/A",
-        pan: document.pan || CurrentUser.document?.pan || "N/A",
       };
     }
 
     // Update payment details
-    // if (paymentDetail) {
-    //   CurrentUser.paymentDetail = {
-    //     upi: paymentDetail.upi || CurrentUser.paymentDetail?.upi || "N/A",
-    //     account_number:
-    //       paymentDetail.account_number ||
-    //       CurrentUser.paymentDetail?.account_number ||
-    //       "N/A",
-    //     ifs_Code:
-    //       paymentDetail.ifs_Code ||
-    //       CurrentUser.paymentDetail?.ifs_Code ||
-    //       "N/A",
-    //   };
-    // }
+    if (paymentDetail) {
+      CurrentUser.paymentDetail = {
+        upi: paymentDetail.upi || CurrentUser.paymentDetail?.upi || "N/A",
+        account_number:
+          paymentDetail.account_number ||
+          CurrentUser.paymentDetail?.account_number ||
+          "N/A",
+        IFSC:
+          paymentDetail.IFSC ||
+          CurrentUser.paymentDetail?.IFSC ||
+          "N/A",
+      };
+    }
 
     // Update geo location
     if (geoLocation) {
@@ -282,6 +281,9 @@ export const RestaurantUpdatePhoto = async (req, res, next) => {
     const currentUser = req.user;
     const dp = req.file;
 
+    console.log(currentUser);
+    console.log(dp);
+
     //console.log("request file: ", req.file);
 
     if (!dp) {
@@ -302,7 +304,7 @@ export const RestaurantUpdatePhoto = async (req, res, next) => {
     console.log("DataURI", dataURI.slice(0, 100));
 
     const result = await cloudinary.uploader.upload(dataURI, {
-      folder: "Cravings/User",
+      folder: "CraveIt/Manager",
       width: 500,
       height: 500,
       crop: "fill",

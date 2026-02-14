@@ -1,5 +1,5 @@
 import Contact from "../models/contactModel.js";
-import User from "../models/userModel.js";
+import {User} from "../models/userModel.js";
 
 export const NewContact = async (req, res, next) => {
   try {

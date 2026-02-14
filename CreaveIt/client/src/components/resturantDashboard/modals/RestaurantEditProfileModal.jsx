@@ -20,10 +20,6 @@ const RestaurantEditProfileModal = ({ onClose }) => {
     document: {
       gst: user?.document?.gst || "",
       fssai: user?.document?.fssai || "",
-      //   rc: user?.document?.rc || "",
-      //   dl: user?.document?.dl || "",
-      uidai: user?.document?.uidai || "",
-      pan: user?.document?.pan || "",
     },
     paymentDetail: {
       upi: user?.paymentDetail?.upi || "",
@@ -71,13 +67,6 @@ const RestaurantEditProfileModal = ({ onClose }) => {
 
     if (!formData.restaurantName) {
       newErrors.restaurantName = "Restaurant name is required";
-    }
-
-    if (
-      formData.document.pan &&
-      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.document.pan)
-    ) {
-      newErrors.pan = "Invalid PAN format";
     }
 
     if (
@@ -373,7 +362,7 @@ const RestaurantEditProfileModal = ({ onClose }) => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      PIN Code *
+                      Pin Code *
                     </label>
                     <input
                       type="text"
@@ -393,7 +382,7 @@ const RestaurantEditProfileModal = ({ onClose }) => {
                   <div className="flex items-end">
                     <div className="h-fit flex items-center w-full gap-4">
                       <button
-                        className="w-full border border-gray-300 rounded-md shadow-sm p-2 h-fit"
+                        className="w-full border border-gray-300 bg-green-50 rounded-md shadow-sm p-2 h-fit cursor-pointer"
                         onClick={fetchLocation}
                       >
                         Get Live Location
@@ -442,72 +431,6 @@ const RestaurantEditProfileModal = ({ onClose }) => {
                     className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="FSSAI registration number"
                   />
-                </div>
-
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    RC (Vehicle Registration)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.document.rc}
-                    onChange={(e) =>
-                      handleNestedChange("documents", "rc", e.target.value)
-                    }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Registration certificate"
-                  />
-                </div> */}
-
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Driving License
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.documents.dl}
-                    onChange={(e) =>
-                      handleNestedChange("documents", "dl", e.target.value)
-                    }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Driving license number"
-                  />
-                </div> */}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    UIDAI (Aadhaar)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.document.uidai}
-                    onChange={(e) =>
-                      handleNestedChange("document", "uidai", e.target.value)
-                    }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="12-digit UIDAI number"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PAN
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.document.pan}
-                    onChange={(e) =>
-                      handleNestedChange("document", "pan", e.target.value)
-                    }
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.pan ? "border-red-500" : "border-gray-300"
-                    }`}
-                    placeholder="PAN number"
-                    maxLength="10"
-                  />
-                  {errors.pan && (
-                    <p className="text-red-600 text-xs mt-1">{errors.pan}</p>
-                  )}
                 </div>
               </div>
             </div>

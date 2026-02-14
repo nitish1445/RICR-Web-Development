@@ -1,4 +1,4 @@
-import User from "../models/userModel.js";
+import { User, Admin } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import OTP from "../models/otpModel.js";
 import { genToken, genOTPToken } from "../utils/authToken.js";
@@ -66,14 +66,16 @@ export const UserLogin = async (req, res, next) => {
 
     // check if user is register or not?
     const existingUser = await User.findOne({ email });
-    if (!existingUser) {
+    const existingAdmin = await Admin.findOne({ email });
+    if (!existingUser && !existingAdmin) {
       const error = new Error("Email not Registered");
       error.statusCode = 401;
       return next(error);
     }
 
     // verify the password
-    const isVerified = await bcrypt.compare(password, existingUser.password);
+    const existingData = existingUser || existingAdmin;
+    const isVerified = await bcrypt.compare(password, existingData.password);
     if (!isVerified) {
       const error = new Error("Password didn't matched");
       error.statusCode = 401;
@@ -81,10 +83,10 @@ export const UserLogin = async (req, res, next) => {
     }
 
     // Token Generation
-    genToken(existingUser, res);
+    genToken(existingData, res);
 
     // send mesage to frontend
-    res.status(200).json({ message: "Login Successfull", data: existingUser });
+    res.status(200).json({ message: "Login Successfull", data: existingData });
     // end
   } catch (error) {
     next(error);

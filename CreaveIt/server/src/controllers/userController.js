@@ -1,4 +1,4 @@
-import User from "../models/userModel.js";
+import {User} from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
 import bcrypt from "bcrypt";
 
@@ -163,7 +163,7 @@ export const UserChangePhoto = async (req, res, next) => {
     console.log("Data URI : ", dataURI.slice(0, 100));
 
     const result = await cloudinary.uploader.upload(dataURI, {
-      folder: "CraveIt/User",
+      folder: "CraveIt/Customer",
       width: 500,
       height: 500,
       crop: "fill",

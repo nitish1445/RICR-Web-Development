@@ -34,7 +34,7 @@ const RestaurantMenu = () => {
 
   return (
     <>
-      <div className="p-6 h-full">
+      <div className="p-6 h-full overflow-y-auto">
         <div className="shadow-md border px-8 py-6 rounded-3xl border-gray-300 bg-white">
           <div className="flex justify-between items-center">
             <div>
@@ -76,13 +76,13 @@ const RestaurantMenu = () => {
                       <div key={idx}>
                         <tr className="grid grid-cols-8 items-center text-center py-1.5 border-b border-gray-300 bg-gray-200/40 ">
                           <td>{idx + 1}</td>
-                          <td className="col-span-2">{items.itemName}</td>
+                          <td className="col-span-2 capitalize">{items.itemName}</td>
                           <td className="flex gap-1 justify-center items-center">
                             <MdOutlineCurrencyRupee />
                             {items.price}
                           </td>
                           <td>{items.type.toUpperCase()}</td>
-                          <td>{items.cuisine}</td>
+                          <td className="capitalize">{items.cuisine}</td>
                           <td className="flex justify-center items-center ">
                             {items.availability === "available" ? (
                               <FaToggleOn
@@ -126,7 +126,7 @@ const RestaurantMenu = () => {
                     ))}
                   </div>
                 ) : (
-                  <div>There is no Menu Item Added.</div>
+                  <tr className="text-center pt-5">There is no Menu Item.</tr>
                 )}
               </tbody>
             </table>

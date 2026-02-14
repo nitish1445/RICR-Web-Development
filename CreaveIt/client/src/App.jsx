@@ -5,6 +5,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import NotFound from "./pages/NotFound";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import UserDashBoard from "./pages/dashboards/UserDashBoard";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/order" element={<OrderNow />} />
           <Route path="/restaurant/:id" element={<RestaurantDisplayMenu />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
