@@ -1,5 +1,5 @@
 import Contact from "../models/contactModel.js";
-import {User} from "../models/userModel.js";
+import { User } from "../models/userModel.js";
 
 export const NewContact = async (req, res, next) => {
   try {
@@ -33,13 +33,13 @@ export const NewContact = async (req, res, next) => {
 
 export const GetAllRestaurants = async (req, res, next) => {
   try {
-    const restaurants = await User.find({ role: "manager" }).select(
+    const restaurant = await User.find({ role: "manager" }).select(
       "-password",
     );
 
     res.status(200).json({
       message: "Restaurants fetched successfully",
-      data: restaurants,
+      data: restaurant,
     });
   } catch (error) {
     next(error);
@@ -48,7 +48,7 @@ export const GetAllRestaurants = async (req, res, next) => {
 
 export const GetRestaurantDisplay = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findById(req.params.id);
+    const restaurant = await restaurant.findById(req.params.id);
 
     if (!restaurant) {
       return res.status(404).json({

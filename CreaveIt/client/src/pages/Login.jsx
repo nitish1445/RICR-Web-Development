@@ -76,7 +76,7 @@ const Login = () => {
     <>
       {/*Login Details */}
 
-      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4">
+      <div className="h-[90.5vh] bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4">
         <div className="max-w-110 mx-auto mt-12">
           {/* Header */}
 

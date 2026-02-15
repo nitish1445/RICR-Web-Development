@@ -14,6 +14,7 @@ import RestaurantDashboard from "./pages/dashboards/RestaurantDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import OrderNow from "./pages/OrderNow";
 import RestaurantDisplayMenu from "./pages/RestaurantDisplayMenu";
+// import Loading from "./components/Loading";
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/order" element={<OrderNow />} />
           <Route path="/restaurant/:id" element={<RestaurantDisplayMenu />} />
           <Route path="*" element={<NotFound />} />
+          {/* <Route path="/loading" element={<Loading />} /> */}
         </Routes>
       </BrowserRouter>
     </>
