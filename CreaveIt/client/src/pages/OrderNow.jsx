@@ -3,8 +3,10 @@ import api from "../config/Api";
 import toast from "react-hot-toast";
 import { IoIosArrowDropright } from "react-icons/io";
 import Loading from "../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const OrderNow = () => {
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -22,8 +24,10 @@ const OrderNow = () => {
     }
   };
 
-  const handleClick = () => {
+  const handleRestaurantClick = (restaurantDetail) => {
     console.log("Restaurant clicked !!");
+    navigate("/restaurantMenu", { state: restaurantDetail });
+    // console.log(restaurant);
   };
 
   useEffect(() => {
@@ -58,26 +62,28 @@ const OrderNow = () => {
             restaurants.map((EachRestaurant, idx) => (
               <div
                 key={idx}
-                className="p-2 h-90 border rounded-xl bg-amber-50 shadow-md hover:shadow-xl border-gray-100 hover:scale-102 duration-200 cursor-pointer group"
-                onClick={handleClick}
+                className=" h-90 rounded-xl bg-amber-50 shadow-md hover:shadow-xl hover:scale-102 duration-200 cursor-pointer group"
+                onClick={() => handleRestaurantClick(EachRestaurant)}
               >
                 <img
                   src={EachRestaurant.photo.url}
                   alt={EachRestaurant.restaurantName}
                   className="w-full h-[50%] object-cover rounded-t-xl"
                 />
-                <div className="text-2xl font-semibold py-1 text-(--color-primary) capitalize truncate">
-                  {EachRestaurant.restaurantName}
-                </div>
-                <div className="capitalize">
-                  {EachRestaurant.cuisine.split(",").slice(0, 2)}
-                </div>
-                <div>{EachRestaurant.address}</div>
-                <div>{EachRestaurant.city}</div>
-                <div>{EachRestaurant.price}</div>
-                <div className="flex float-end items-center text-(--color-secondary) gap-1 group-hover:underline w-fit">
-                  <span className="">Explore Menu</span>
-                  <IoIosArrowDropright className="text-xl" />
+                <div className="px-2">
+                  <div className="text-2xl font-semibold py-1 text-(--color-primary) capitalize truncate">
+                    {EachRestaurant.restaurantName}
+                  </div>
+                  <div className="capitalize">
+                    {EachRestaurant.cuisine.split(",").slice(0, 2)}
+                  </div>
+                  <div>{EachRestaurant.address}</div>
+                  <div>{EachRestaurant.city}</div>
+                  <div>{EachRestaurant.price}</div>
+                  <div className="flex float-end items-center text-(--color-secondary) gap-1 group-hover:underline w-fit">
+                    <span className="">Explore Menu</span>
+                    <IoIosArrowDropright className="text-xl" />
+                  </div>
                 </div>
               </div>
             ))}

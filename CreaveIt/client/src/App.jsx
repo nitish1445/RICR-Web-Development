@@ -36,7 +36,7 @@ const App = () => {
           />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/order" element={<OrderNow />} />
-          <Route path="/restaurant/:id" element={<RestaurantDisplayMenu />} />
+          <Route path="/restaurantMenu" element={<RestaurantDisplayMenu />} />
           <Route path="*" element={<NotFound />} />
           {/* <Route path="/loading" element={<Loading />} /> */}
         </Routes>
