@@ -14,6 +14,7 @@ import RestaurantDashboard from "./pages/dashboards/RestaurantDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import OrderNow from "./pages/OrderNow";
 import RestaurantDisplayMenu from "./pages/RestaurantDisplayMenu";
+import CheckoutPage from "./pages/CheckoutPage";
 // import Loading from "./components/Loading";
 
 const App = () => {
@@ -36,8 +37,9 @@ const App = () => {
           />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/order" element={<OrderNow />} />
-          <Route path="/restaurantMenu" element={<RestaurantDisplayMenu />} />
+          <Route path="/menu-items" element={<RestaurantDisplayMenu />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/checkout" element={<CheckoutPage/>}/>
           {/* <Route path="/loading" element={<Loading />} /> */}
         </Routes>
       </BrowserRouter>

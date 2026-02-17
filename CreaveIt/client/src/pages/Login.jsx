@@ -85,7 +85,7 @@ const Login = () => {
     <>
       {/*Login Details */}
 
-      <div className="max-h-full bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4">
+      <div className="max-h-full bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4 ">
         <div className="max-w-110 mx-auto mt-5">
           {/* Header */}
 
@@ -217,7 +217,7 @@ const Login = () => {
             </form>
           </div>
           <div className="text-xs pt-5 text-center text-gray-600">
-            By signing in you agree to the event terms & conditions.
+            By signing in you agree to the terms & conditions.
           </div>
         </div>
       </div>
