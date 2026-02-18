@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import api from "../config/Api";
 import { useAuth } from "../context/AuthContext";
 import { GoDotFill } from "react-icons/go";
+import { FaTrashAlt } from "react-icons/fa";
 
 const RestaurantDisplayMenu = () => {
   const navigate = useNavigate();
@@ -51,6 +52,12 @@ const RestaurantDisplayMenu = () => {
       });
       setCartFlag((prev) => [...prev, newItem._id]);
     }
+  };
+
+  const handleRemoveCartItem = () => {
+    localStorage.removeItem("CraveIt Cart");
+    setCart();
+    setCartFlag([]);
   };
 
   // const handleCheckout = () => {
@@ -210,19 +217,30 @@ const RestaurantDisplayMenu = () => {
       {/* Checkout Floating Bar */}
       {cart && (
         <div className="fixed bottom-5 left-0 right-0 flex justify-center px-4">
-          <button
-            className="bg-(--color-secondary) lg:max-w-3xl md:max-w-2xl w-full py-4 px-10 rounded-full shadow-xl hover:scale-[1.01] transition flex justify-between items-center cursor-pointer"
-            onClick={handleCheckout}
-          >
-            <div className="text-white font-bold text-lg">
-              {cart.cartItem.length}{" "}
-              {cart.cartItem.length === 1 ? "item" : "items"} Added
+          <div className="bg-(--color-secondary) lg:max-w-3xl md:max-w-2xl w-full py-4 px-10 rounded-full  flex justify-between items-center ">
+            <div className="flex gap-4 items-center">
+              <div className="text-white font-bold text-lg">
+                {cart.cartItem.length}{" "}
+                {cart.cartItem.length === 1 ? "item" : "items"} Added
+              </div>
+              <div>
+                <button
+                  className="text-red-600 cursor-pointer hover:scale-110"
+                  title="Remove Cart item"
+                  onClick={handleRemoveCartItem}
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
             </div>
 
-            <div className="text-(--color-primary) font-extrabold text-lg">
-              Checkout : <span className="text-white">₹ {cart.cartValue}</span>
-            </div>
-          </button>
+            <button
+              className="text-(--color-primary) font-extrabold text-lg cursor-pointer hover:scale-103 transition"
+              onClick={handleCheckout}
+            >
+              Checkout : <span className="text-white">₹ {cart.cartValue} </span>
+            </button>
+          </div>
         </div>
       )}
     </div>
