@@ -5,13 +5,14 @@ import UserProfile from "../../components/userDashboard/UserProfile";
 import UserOrder from "../../components/userDashboard/UserOrder";
 import UserTransaction from "../../components/userDashboard/UserPayment";
 import UserHelpDesk from "../../components/userDashboard/UserHelpDesk";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const UserDashBoard = () => {
   const { role, isLogin } = useAuth();
+  const ActiveTab = useLocation().state?.tab;
   const navigate = useNavigate();
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState(ActiveTab || "overview");
   const [isCollapsed, setIsCollapsed] = useState(false);
   useEffect(() => {
     if (!isLogin) {
@@ -35,7 +36,7 @@ const UserDashBoard = () => {
   }
   return (
     <>
-      <div className="w-full flex h-[89.9vh]">
+      <div className="w-full flex h-screen">
         <div
           className={`bg-(--color-background) duration-300 ${isCollapsed ? "w-3/60" : "w-10/60"}`}
         >

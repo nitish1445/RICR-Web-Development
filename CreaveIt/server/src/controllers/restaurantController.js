@@ -241,10 +241,7 @@ export const RestaurantUpdateProfile = async (req, res, next) => {
           paymentDetail.account_number ||
           CurrentUser.paymentDetail?.account_number ||
           "N/A",
-        IFSC:
-          paymentDetail.IFSC ||
-          CurrentUser.paymentDetail?.IFSC ||
-          "N/A",
+        IFSC: paymentDetail.IFSC || CurrentUser.paymentDetail?.IFSC || "N/A",
       };
     }
 
@@ -348,6 +345,24 @@ export const RestaurantResetPassword = async (req, res, next) => {
     await currentUser.save();
 
     res.status(200).json({ message: "Password Reset Successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const GetAllPlacedOrder = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+
+    const allOrders = await Order.find({ restaurantId: currentUser._id })
+      .populate("userId")
+      .populate("riderId")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "All Placed Orders Fetched Successfully",
+      data: allOrders,
+    });
   } catch (error) {
     next(error);
   }
