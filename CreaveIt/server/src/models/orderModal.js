@@ -65,7 +65,7 @@ const orderSchema = new mongoose.Schema(
         "pickedUp",
         "onTheWay",
         "delivered",
-        "refused",
+        "rejected",
         "damaged",
         "cancelled",
       ],
@@ -80,6 +80,11 @@ const orderSchema = new mongoose.Schema(
       comment: {
         type: String,
       },
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
     },
   },
   { timestamps: true },

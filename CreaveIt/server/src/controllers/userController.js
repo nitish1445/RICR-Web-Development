@@ -1,6 +1,7 @@
 import { User } from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
 import bcrypt from "bcrypt";
+import Order from "../models/orderModal.js";
 
 export const UserUpdate = async (req, res, next) => {
   try {
@@ -214,11 +215,11 @@ export const UserPlaceOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
 
-    const { restaurantId, items, orderValue, status, review } = req.body;
+    const { restaurantID, items, orderValue, status, review } = req.body;
 
-    console.log({ restaurantId, items, orderValue, status, review });
+    console.log({ restaurantID, items, orderValue, status, review });
 
-    if (!restaurantId || !items || !orderValue || !status) {
+    if (!restaurantID || !items || !orderValue || !status) {
       const error = new Error("All feilds required");
       error.statusCode = 400;
       return next(error);
@@ -226,7 +227,7 @@ export const UserPlaceOrder = async (req, res, next) => {
 
     const newOrder = await Order.create({
       orderNumber: `ORD-${Date.now()}`,
-      restaurantId,
+      restaurantID,
       userId: currentUser._id,
       items,
       orderValue,

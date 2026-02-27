@@ -25,6 +25,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [promoCode, setPromoCode] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("pending");
   const [cart, setCart] = useState(
     JSON.parse(localStorage.getItem("CraveIt Cart")),
   );
@@ -81,7 +82,7 @@ const CheckoutPage = () => {
     setIsprocessing(true);
 
     //Payment gateway call
-
+    handlePayment();
     const payload = GeneratePayload();
     console.log(payload);
 
@@ -149,7 +150,7 @@ const CheckoutPage = () => {
   const GeneratePayload = () => {
     const { subtotal, tax, total } = calculatePrices();
     return {
-      restaurantId: cart.resturantID,
+      restaurantID: cart.restaurantID,
       userId: user._id,
       items: [...cart.cartItem],
       orderValue: {
@@ -160,10 +161,20 @@ const CheckoutPage = () => {
         deliveryFee: 50,
         discountPercentage: PromoCode[promoCode],
         paymentMethod,
+        paymentStatus,
       },
       status: "pending",
       review: {},
     };
+  };
+
+  const handlePayment = async () => {
+    try {
+      //call Payment gateway API
+      setPaymentStatus("paid");
+    } catch (error) {
+      setPaymentStatus("failed");
+    }
   };
 
   const { subTotal, gst, surgeCharge, total } = calculatePrices();
