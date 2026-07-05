@@ -48,21 +48,21 @@ const Contact = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-4">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-3 sm:px-4">
         {/* This isi Header */}
 
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-(--color-text)">
+        <div className="text-center px-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-(--color-text)">
             Contact Us{" "}
           </h1>
         </div>
 
         {/* contact box */}
 
-        <div className="flex justify-center mt-5 ">
-          <div className="container max-w-6xl px-8 py-6 ">
-            <div className="grid grid-cols-2 gap-10">
-              <div className="bg-white rounded-xl shadow-2xl overflow-hidden p-8">
+        <div className="flex justify-center mt-5">
+          <div className="container max-w-6xl px-1 sm:px-4 md:px-8 py-4 sm:py-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+              <div className="bg-white rounded-xl shadow-2xl overflow-hidden p-5 sm:p-8">
                 <h1 className="text-2xl font-semibold text-(--color-primary) mb-5 ">
                   Reach us
                 </h1>
@@ -166,7 +166,7 @@ const Contact = () => {
                 <form
                   onSubmit={submitContact}
                   onReset={handleClear}
-                  className="p-8"
+                  className="p-5 sm:p-8"
                 >
                   <h1 className="text-2xl font-semibold text-(--color-primary) mb-5">
                     Send us a message
@@ -251,11 +251,11 @@ const Contact = () => {
 
                   {/* Submit Button */}
 
-                  <div className=" text-center mt-5">
+                  <div className="text-center mt-5">
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="flex-1 bg-(--color-secondary) text-black font-bold py-3 px-6 rounded-lg hover:bg-(--color-secondary-hover) shadow-lg cursor-pointer w-full disabled:cursor-not-alloweddisabled:bg-(--color-secondary)"
+                      className="w-full bg-(--color-secondary) text-black font-bold py-3 px-6 rounded-lg hover:bg-(--color-secondary-hover) shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-(--color-secondary)"
                     >
                       <div className="flex gap-2 items-center justify-center">
                         {<FiSend />} <span>Send Message</span>

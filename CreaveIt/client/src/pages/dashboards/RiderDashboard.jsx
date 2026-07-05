@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import RiderSideBar from "../../components/riderDashboard/RiderSideBar";
+import RiderSideBar from "../../components/riderDashboard/RiderSidebar";
 import RiderOverview from "../../components/riderDashboard/RiderOverview";
 import RiderProfile from "../../components/riderDashboard/RiderProfile";
 import RiderCurrentOrder from "../../components/riderDashboard/RiderCurrentOrder";

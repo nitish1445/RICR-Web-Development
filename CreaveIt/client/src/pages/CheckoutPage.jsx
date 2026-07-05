@@ -181,24 +181,24 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-8 px-4 ">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-6 sm:py-8 px-3 sm:px-4">
         <div>
-          <div className="max-w-110 mx-auto">
+          <div className="max-w-xl mx-auto">
             <div className="flex flex-col items-center space-y-1">
-              <div className="text-3xl p-2 h-14 w-14 rounded-[50%] bg-white text-(--color-primary)">
+              <div className="text-2xl sm:text-3xl p-2 h-12 w-12 sm:h-14 sm:w-14 rounded-[50%] bg-white text-(--color-primary)">
                 <div className="flex flex-col justify-between items-center text-green-700">
                   <AiOutlineSafety />
                   <p className="text-[10px]">Secure</p>
                 </div>
               </div>
-              <div className="text-2xl font-bold text-(--color-secondary)">
+              <div className="text-xl sm:text-2xl font-bold text-(--color-secondary)">
                 CHECKOUT
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 p-10 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 p-3 sm:p-6 lg:p-10 gap-5 sm:gap-8">
           {/* Left Order Detail Section */}
 
           <div className="lg:col-span-2">
@@ -208,9 +208,9 @@ const CheckoutPage = () => {
               {isLogin ? (
                 // Order Item Section
 
-                <div className="rounded shadow p-7 bg-white">
+                <div className="rounded shadow p-4 sm:p-7 bg-white">
                   <div className="mb-5">
-                    <h1 className="text-4xl font-bold text-(--color-primary)">
+                    <h1 className="text-2xl sm:text-4xl font-bold text-(--color-primary)">
                       Order Checkout
                     </h1>
                     <p className="text-gray-600 mt-2">
@@ -226,7 +226,7 @@ const CheckoutPage = () => {
                         <div className="border-b">
                           <div
                             key={idx}
-                            className="flex gap-4 pb-4 hover:bg-gray-50 p-3 rounded transition"
+                            className="flex flex-col sm:flex-row gap-4 pb-4 hover:bg-gray-50 p-3 rounded transition"
                           >
                             {/* item image */}
 
@@ -234,7 +234,7 @@ const CheckoutPage = () => {
                               <img
                                 src={item?.images?.[0]?.url || "🍔"}
                                 alt=""
-                                className="w-32 h-full object-cover rounded-lg"
+                                className="w-full sm:w-32 h-40 sm:h-full object-cover rounded-lg"
                               />
                             </div>
 
@@ -247,7 +247,7 @@ const CheckoutPage = () => {
                               <p className="text-sm text-gray-600 mt-1 capitalize">
                                 {item.cuisine} • {item.type}
                               </p>
-                              <div className="flex gap-2 mt-2">
+                              <div className="flex flex-wrap gap-2 mt-2">
                                 <span className="text-sm bg-blue-100 text-blue-800 rounded py-1 px-2">
                                   {item.servingSize} persons
                                 </span>
@@ -260,9 +260,9 @@ const CheckoutPage = () => {
                               </div>
                             </div>
 
-                            <div className="flex flex-col justify-between items-end">
+                            <div className="flex flex-col sm:items-end justify-between gap-3">
                               <button
-                                className="text-red-600 cursor-pointer"
+                                className="text-red-600 cursor-pointer self-start sm:self-auto"
                                 title="Remove item"
                               >
                                 <FaTrashAlt />
@@ -281,7 +281,7 @@ const CheckoutPage = () => {
                               </div>
 
                               <div>
-                                <p className="text-sm text-gray-600 text-end">
+                                <p className="text-sm text-gray-600 sm:text-end">
                                   Subtotal
                                 </p>
                                 <p className="text-lg font-bold text-(--color-primary)">
@@ -344,8 +344,8 @@ const CheckoutPage = () => {
               ) : (
                 // Login or signup section if not login
 
-                <div className=" flex justify-between items-center rounded shadow p-7 bg-white">
-                  <div className="space-y-5 ">
+                <div className="flex flex-col-reverse sm:flex-row justify-between sm:items-center rounded shadow p-4 sm:p-7 bg-white gap-6">
+                  <div className="space-y-5 w-full">
                     <div>
                       <h1 className="text-xl font-bold">Account</h1>
                       <p className="text-gray-500">
@@ -353,7 +353,7 @@ const CheckoutPage = () => {
                         or sign up.
                       </p>
                     </div>
-                    <div className="flex gap-10">
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-10">
                       {!loginButtonClicked && !signupButtonClicked && (
                         <button
                           className="border py-2 px-6 border-(--color-secondary) rounded cursor-pointer hover:shadow-xl"
@@ -368,7 +368,7 @@ const CheckoutPage = () => {
                         </button>
                       )}
                       {loginButtonClicked && (
-                        <div className="space-y-5 w-3/4">
+                        <div className="space-y-5 w-full sm:w-3/4">
                           <div className="relative">
                             <LuUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
                             <input
@@ -410,8 +410,8 @@ const CheckoutPage = () => {
                       )}
                     </div>
                   </div>
-                  <div>
-                    <img src={gatewayImg} alt="" className="w-36 h-36" />
+                  <div className="flex justify-center sm:justify-end">
+                    <img src={gatewayImg} alt="" className="w-28 h-28 sm:w-36 sm:h-36" />
                   </div>
                 </div>
               )}
@@ -419,7 +419,7 @@ const CheckoutPage = () => {
               {/* Adrress section */}
 
               {isLogin ? (
-                <div className="space-y-5 rounded shadow p-7 bg-white">
+                <div className="space-y-5 rounded shadow p-4 sm:p-7 bg-white">
                   <h1 className="text-2xl font-bold text-(--color-primary)">
                     Delivery Address
                   </h1>
@@ -456,7 +456,7 @@ const CheckoutPage = () => {
               ) : (
                 // add user address in new login case
                 <div>
-                  <div className="space-y-5 rounded shadow p-7 bg-white">
+                  <div className="space-y-5 rounded shadow p-4 sm:p-7 bg-white">
                     <h1 className="text-2xl font-bold text-(--color-primary)">
                       Delivery Address
                     </h1>
@@ -472,7 +472,7 @@ const CheckoutPage = () => {
           {/* Right Section : Payment Gateway */}
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md sticky top-20 p-7">
+            <div className="bg-white rounded-lg shadow-md lg:sticky lg:top-20 p-4 sm:p-7">
               <div className=" space-y-3 ">
                 <h2 className="text-xl text-(--color-primary) font-bold mb-6">
                   Price Details
@@ -516,7 +516,7 @@ const CheckoutPage = () => {
                   <span className="text-lg font-bold text-(--color-primary)">
                     Total Amount
                   </span>
-                  <span className="text-2xl font-bold text-(--color-secondary)">
+                  <span className="text-xl sm:text-2xl font-bold text-(--color-secondary)">
                     ₹ {total.toFixed(2)}
                   </span>
                 </div>
@@ -527,7 +527,7 @@ const CheckoutPage = () => {
                 <h3 className="font-bold mb-3 text-(--color-primary)">
                   Promo Code
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     name="promo"
@@ -538,7 +538,7 @@ const CheckoutPage = () => {
                     disabled={appliedPromo}
                   />
                   <button
-                    className="text-white px-4 py-2 rounded hover:opacity-90 transition bg-(--color-secondary) cursor-pointer"
+                    className="text-white px-4 py-2 rounded hover:opacity-90 transition bg-(--color-secondary) cursor-pointer sm:w-auto w-full"
                     onClick={handlePromoCodeApply}
                     disabled={appliedPromo}
                   >

@@ -60,13 +60,6 @@ const RestaurantDisplayMenu = () => {
     setCartFlag([]);
   };
 
-  // const handleCheckout = () => {
-  // isLogin && role === "customer "
-  // ? (localStorage.setItem("CraveIt Cart", JSON.stringify(cart)),
-  // navigate("/checkout-page"))
-  // : (toast.error("Please login to proceed"), navigate("/login"));
-  // };
-
   const handleCheckout = () => {
     navigate("/checkout");
   };
@@ -81,18 +74,19 @@ const RestaurantDisplayMenu = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-amber-50 to-orange-100 pb-32">
-      {/* Restaurant Banner */}
-      <div className="w-full h-64 relative">
+      
+      {/* 🔧 FIX 1: Banner responsive height + text */}
+      <div className="w-full h-48 md:h-64 relative">
         <img
           src={restaurantData.photo.url}
           alt="restaurant"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-(--color-secondary)">
-          <h1 className="text-4xl font-extrabold tracking-wide drop-shadow-lg">
+          <h1 className="text-2xl md:text-4xl font-extrabold tracking-wide drop-shadow-lg text-center px-2">
             {restaurantData.restaurantName || "Restaurant"}
           </h1>
-          <p className="text-sm mt-2 text-gray-200">
+          <p className="text-xs md:text-sm mt-2 text-gray-200 text-center px-2">
             Fresh Food • Great Taste • Fast Delivery
           </p>
         </div>
@@ -100,40 +94,40 @@ const RestaurantDisplayMenu = () => {
 
       {/* Menu Section */}
       <div className="max-w-6xl mx-auto px-4 mt-10">
-        <h2 className="text-3xl font-bold text-(--color-primary) text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-(--color-primary) text-center">
           Our Menu
         </h2>
-        <p className="text-gray-600 text-center mt-2">
+        <p className="text-gray-600 text-center mt-2 text-sm md:text-base">
           Choose your favorite dishes and add them to your cart 🍽️
         </p>
 
-        {/* Loading */}
         {loading && (
           <div className="text-center mt-10 text-lg font-semibold text-gray-600">
             Loading Menu...
           </div>
         )}
 
-        {/* Menu Items */}
-        <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-6 mt-10">
+        {/* 🔧 FIX 2: Grid responsive */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
           {menuItems &&
             menuItems.map((EachItem, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex gap-4 p-2 border border-gray-100"
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden flex flex-col sm:flex-row gap-4 p-2 border border-gray-100"
               >
-                {/* Item Image */}
+                
+                {/* 🔧 FIX 3: Image responsive */}
                 <img
                   src={EachItem.images[0].url}
                   alt={EachItem.itemName}
-                  className="w-48 h-full rounded-l-xl object-cover"
+                  className="w-full sm:w-48 h-40 sm:h-auto rounded-xl sm:rounded-l-xl object-cover"
                 />
 
-                {/* Item Details */}
+                {/* Details */}
                 <div className="flex flex-col justify-between w-full">
                   <div>
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xl font-bold text-(--color-primary)">
+                      <h3 className="text-lg md:text-xl font-bold text-(--color-primary)">
                         {EachItem.itemName}
                       </h3>
 
@@ -152,29 +146,15 @@ const RestaurantDisplayMenu = () => {
                       {EachItem.description}
                     </p>
 
-                    {/* Extra Info */}
                     <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-700">
-                      <p>
-                        <span className="font-semibold">Cuisine : </span>{" "}
-                        {EachItem.cuisine}
-                      </p>
-
-                      <p>
-                        <span className="font-semibold">Serving : </span>{" "}
-                        {EachItem.servingSize} persons
-                      </p>
-
-                      <p>
-                        <span className="font-semibold">Prep Time : </span>{" "}
-                        {EachItem.preparationTime} min
-                      </p>
-
+                      <p><span className="font-semibold">Cuisine : </span>{EachItem.cuisine}</p>
+                      <p><span className="font-semibold">Serving : </span>{EachItem.servingSize} persons</p>
+                      <p><span className="font-semibold">Prep Time : </span>{EachItem.preparationTime} min</p>
                       <p className="flex gap-4 items-center">
-                        <span className="font-semibold">Type : </span>{" "}
+                        <span className="font-semibold">Type : </span>
                         <span
                           className={`text-md border-2 ${
-                            EachItem.type === "non-veg" ||
-                            EachItem.type === "egg"
+                            EachItem.type === "non-veg" || EachItem.type === "egg"
                               ? "border-red-500 text-red-500"
                               : "border-green-500 text-green-500"
                           }`}
@@ -185,9 +165,8 @@ const RestaurantDisplayMenu = () => {
                     </div>
                   </div>
 
-                  {/* Price & Button */}
                   <div className="flex justify-between items-center mt-4">
-                    <p className="text-2xl font-extrabold text-(--color-primary)">
+                    <p className="text-xl md:text-2xl font-extrabold text-(--color-primary)">
                       ₹{EachItem.price}
                     </p>
 
@@ -206,7 +185,6 @@ const RestaurantDisplayMenu = () => {
             ))}
         </div>
 
-        {/* Empty Menu */}
         {!loading && menuItems.length === 0 && (
           <div className="text-center text-gray-600 font-semibold mt-10">
             No menu items available 😢
@@ -214,32 +192,31 @@ const RestaurantDisplayMenu = () => {
         )}
       </div>
 
-      {/* Checkout Floating Bar */}
+      {/* 🔧 FIX 4: Cart responsive */}
       {cart && (
         <div className="fixed bottom-5 left-0 right-0 flex justify-center px-4">
-          <div className="bg-(--color-secondary) lg:max-w-3xl md:max-w-2xl w-full py-4 px-10 rounded-full  flex justify-between items-center ">
-            <div className="flex gap-4 items-center">
-              <div className="text-white font-bold text-lg">
+          <div className="bg-(--color-secondary) w-full max-w-3xl py-3 md:py-4 px-4 md:px-10 rounded-2xl md:rounded-full flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between items-center text-center sm:text-left">
+            
+            <div className="flex gap-3 items-center">
+              <div className="text-white font-bold text-sm md:text-lg">
                 {cart.cartItem.length}{" "}
                 {cart.cartItem.length === 1 ? "item" : "items"} Added
               </div>
-              <div>
-                <button
-                  className="text-red-600 cursor-pointer hover:scale-110"
-                  title="Remove Cart item"
-                  onClick={handleRemoveCartItem}
-                >
-                  <FaTrashAlt />
-                </button>
-              </div>
+              <button
+                className="text-red-600 cursor-pointer hover:scale-110"
+                onClick={handleRemoveCartItem}
+              >
+                <FaTrashAlt />
+              </button>
             </div>
 
             <button
-              className="text-(--color-primary) font-extrabold text-lg cursor-pointer hover:scale-103 transition"
+              className="text-(--color-primary) font-extrabold text-sm md:text-lg cursor-pointer"
               onClick={handleCheckout}
             >
-              Checkout : <span className="text-white">₹ {cart.cartValue} </span>
+              Checkout : <span className="text-white">₹ {cart.cartValue}</span>
             </button>
+
           </div>
         </div>
       )}
