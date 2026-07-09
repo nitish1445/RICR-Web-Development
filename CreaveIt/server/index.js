@@ -12,7 +12,9 @@ import RiderRouter from "./src/routers/riderRouter.js";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({ origin: ["http://localhost:5173", "https://craveit-food.vercel.app/"], credentials: true }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
