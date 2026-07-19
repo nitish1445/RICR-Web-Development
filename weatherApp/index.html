@@ -1,52 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="./weatherIcon.png" />
-    <title>Weather App</title>
+    <link rel="icon" href="weatherIcon.png" />
+    <title>Weather App | Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
     />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
   </head>
-  <body>
-    <header>
-      <div class="bg-primary py-2 text-center text-light fs-4 fw-bold">
-        ⛅🌧️💧🌤️🌡️ Mausham Ka Haal ☀️🌥️🌦️🌈🌞☔
-      </div>
-    </header>
 
-    <main>
-      <div class="container border shadow mt-3 w-50 rounded-2 py-3">
-        <div class="d-flex gap-3">
-          <input
-            type="text"
-            name="city"
-            id="city"
-            placeholder="City Name"
-            class="px-2 form-control rounded"
-          />
-          <button class="btn btn-primary w-25" onclick="getWeather()">
-            Get Weather
+  <body>
+    <div class="container">
+      <!-- Left Panel -->
+      <div class="left-panel">
+        <!-- Logo -->
+        <div class="logo">
+          <span>Weather<b>App</b></span>
+        </div>
+
+        <div class="search-box">
+          <input type="text" id="search" placeholder="Search city..." />
+          <button id="searchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
 
-        <div class="mt-3 d-flex justify-content-between" id="weatherData"></div>
-      </div>
-    </main>
+        <div class="location">
+          <i class="fa-solid fa-location-dot"></i>
+          <span id="city">Loading...</span>
+        </div>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+        <img id="weatherIcon" alt="Weather icon" />
+
+        <h1 id="temp">--°</h1>
+
+        <h3 id="condition">Fetching weather...</h3>
+
+        <p>Feels Like <span id="feelsLike">--°</span></p>
+
+        <div class="date-time">
+          <h3 id="date"></h3>
+          <h4 id="time"></h4>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="right-panel">
+        <!-- 5 Day Forecast -->
+        <div class="forecast-card">
+          <h2>5 Day Forecast</h2>
+          <div id="forecast" class="forecast"></div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="highlights">
+          <div class="card">
+            <i class="fa-solid fa-wind"></i>
+            <h4>Wind</h4>
+            <h2 id="wind">0 km/h</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-droplet"></i>
+            <h4>Humidity</h4>
+            <h2 id="humidity">0%</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-eye"></i>
+            <h4>Visibility</h4>
+            <h2 id="visibility">0 km</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <h4>Pressure</h4>
+            <h2 id="pressure">0 hPa</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-temperature-three-quarters"></i>
+            <h4>Feels Like</h4>
+            <h2 id="feel">0°</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-sun"></i>
+            <h4>Sunrise</h4>
+            <h2 id="sunrise">--</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-moon"></i>
+            <h4>Sunset</h4>
+            <h2 id="sunset">--</h2>
+          </div>
+
+          <div class="card">
+            <i class="fa-solid fa-leaf"></i>
+            <h4>Air Quality</h4>
+            <h2 id="aqi">--</h2>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <script src="config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
