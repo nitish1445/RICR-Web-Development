@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 import {
   FaXmark,
   FaMinus,
@@ -8,10 +10,12 @@ import {
   FaArrowRight,
   FaCartShopping,
 } from "react-icons/fa6";
+
 import { useCart } from "../context/CartContext";
 
 const CartSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+
   const {
     cart,
     cartCount,
@@ -30,7 +34,6 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
   const totalItems = cartCount;
 
-  // Block Screen scroll if cart sidebar component is open
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
 
@@ -55,12 +58,12 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed right-0 top-0 z-70 flex h-screen w-full max-w-md flex-col bg-[#FBF3E7] shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-70 flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[#FBF3E7] shadow-2xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-dashed border-[#1F1811]/20 px-5 py-5">
+        <div className="shrink-0 flex items-center justify-between border-b border-dashed border-[#1F1811]/20 px-5 py-5">
           <div>
             <p className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
               Your order
@@ -78,14 +81,14 @@ const CartSidebar = ({ isOpen, onClose }) => {
             type="button"
             onClick={onClose}
             aria-label="Close cart"
-            className="flex size-10 cursor-pointer items-center justify-center border border-[#1F1811]/15 text-[#1F1811] transition-colors hover:bg-[#1F1811] hover:text-[#FBF3E7]"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center border border-[#1F1811]/15 text-[#1F1811] transition-colors hover:bg-[#1F1811] hover:text-[#FBF3E7]"
           >
             <FaXmark />
           </button>
         </div>
 
         {/* Cart Content */}
-        <div className="flex-1 overflow-y-auto px-5 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5">
           {!cart?.cartItem?.length ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="flex size-16 items-center justify-center bg-[#F3E9DB] text-[#E8491D]">
@@ -144,7 +147,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                         type="button"
                         onClick={() => removeFromCart(item._id)}
                         aria-label={`Remove ${item.itemName}`}
-                        className="cursor-pointer text-[#8A7C6A] transition-colors hover:text-[#E8491D]"
+                        className="shrink-0 cursor-pointer text-[#8A7C6A] transition-colors hover:text-[#E8491D]"
                       >
                         <FaTrash className="text-xs" />
                       </button>
@@ -187,7 +190,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         {cart?.cartItem?.length > 0 && (
-          <div className="border-t border-dashed border-[#1F1811]/20 bg-white px-5 py-5">
+          <div className="shrink-0 border-t border-dashed border-[#1F1811]/20 bg-white px-5 py-5">
             <div className="flex items-end justify-between">
               <div>
                 <p className="font-[JetBrains_Mono] text-[9px] font-bold uppercase tracking-wider text-[#8A7C6A]">

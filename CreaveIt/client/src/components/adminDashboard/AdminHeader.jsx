@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
 import { FaBars, FaRegCircleUser } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const AdminHeader = ({ onMenuClick }) => {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ const AdminHeader = ({ onMenuClick }) => {
       </div>
 
       {/* Admin */}
-      <div className="flex items-center gap-3">
+      <Link to={"/admin-dashboard/profile"} className="flex items-center gap-3">
         {user?.photo?.url ? (
           <img
             src={user.photo.url}
@@ -65,7 +66,7 @@ const AdminHeader = ({ onMenuClick }) => {
             Admin
           </p>
         </div>
-      </div>
+      </Link>
     </header>
   );
 };

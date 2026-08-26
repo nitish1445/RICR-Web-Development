@@ -66,9 +66,7 @@ const Contact = () => {
 
     try {
       const res = await api.post("/public/new-contact", contactUs);
-      toast.success(res.data.message || "Message sent successfully!", {
-        position: "bottom-center",
-      });
+      toast.success(res.data.message || "Message sent successfully!");
 
       handleClear();
       setIsSubmitted(true);

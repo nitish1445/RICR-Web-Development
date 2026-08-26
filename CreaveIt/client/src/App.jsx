@@ -25,13 +25,40 @@ import ContactMessages from "./components/adminDashboard/ContactMessages";
 import AdminProfile from "./components/adminDashboard/AdminProfile";
 import Orders from "./components/adminDashboard/AdminOrders";
 import AdminAddData from "./components/adminDashboard/AdminAddData";
+import CustomerRoute from "./Layout/AuthCustomer";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
         <ScrollToTop />
-        <Toaster />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#1F1811",
+              color: "#FBF3E7",
+              fontSize: "13px",
+              fontWeight: "600",
+              borderRadius: "0px",
+              padding: "14px 18px",
+            },
+            success: {
+              iconTheme: {
+                primary: "#6B8E4E",
+                secondary: "#FBF3E7",
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: "#E8491D",
+                secondary: "#FBF3E7",
+              },
+            },
+          }}
+        />
 
         <Routes>
           {/*AuthPage: No Header and Footer */}
@@ -60,7 +87,10 @@ const App = () => {
               <Route path="add-user" element={<AdminAddData />} />
             </Route>
 
-            <Route path="/checkout" element={<CheckoutPage />} />
+            {/* ONLY CUSTOMER CAN ACCESS CHECKOUT */}
+            <Route element={<CustomerRoute />}>
+              <Route path="/checkout" element={<CheckoutPage />} />
+            </Route>
           </Route>
 
           {/* MainPage: With Header and Footer  */}

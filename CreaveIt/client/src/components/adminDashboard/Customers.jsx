@@ -41,7 +41,7 @@ const Customers = () => {
   };
 
   const handleCreate = () => {
-    navigate("/admin/add-user");
+    navigate("/admin-dashboard/add-user");
   };
 
   const handleDelete = async (customer) => {
