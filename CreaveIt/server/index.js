@@ -9,6 +9,7 @@ import morgan from "morgan";
 import UserRouter from "./src/routers/userRouter.js";
 import RestaurantRouter from "./src/routers/restaurantRouter.js";
 import RiderRouter from "./src/routers/riderRouter.js";
+import AdminRouter from "./src/routers/adminRouter.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/public", PublicRouter);
 app.use("/user", UserRouter);
 app.use("/restaurant", RestaurantRouter);
 app.use("/rider", RiderRouter);
+app.use("/admin", AdminRouter);
 
 app.get("/", (req, res) => {
   console.log("Server is working");

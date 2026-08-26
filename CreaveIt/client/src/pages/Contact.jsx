@@ -1,19 +1,46 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../config/Api";
-import { FiSend } from "react-icons/fi";
-import { MdOutlineMail } from "react-icons/md";
-import { IoCallOutline } from "react-icons/io5";
-import { MdOutlineLocationOn } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
+
+import { FiSend, FiMail, FiPhone, FiMapPin, FiClock } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa6";
+
+const contactInfo = [
+  {
+    icon: FiMail,
+    label: "Email us",
+    value: "sarainitish@zohomail.in",
+    href: "mailto:sarainitish@zohomail.in",
+    description: "We'll get back to you within 24 hours.",
+  },
+  {
+    icon: FiPhone,
+    label: "Call us",
+    value: "+91 9153109330",
+    href: "tel:9153109330",
+    description: "For urgent queries and assistance.",
+  },
+  {
+    icon: FaWhatsapp,
+    label: "WhatsApp",
+    value: "+91 7645956734",
+    href: "https://wa.me/917645956734",
+    description: "Chat with our support team directly.",
+    external: true,
+  },
+];
 
 const Contact = () => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const [contactUs, setContactUs] = useState({
     fullName: "",
     email: "",
     subject: "",
     query: "",
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClear = () => {
     setContactUs({
@@ -23,252 +50,370 @@ const Contact = () => {
       query: "",
     });
   };
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setContactUs((prev) => ({ ...prev, [name]: value }));
+
+    setContactUs((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const submitContact = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
       const res = await api.post("/public/new-contact", contactUs);
-      setIsLoading(true);
-      toast.success(res.data.message, { position: "bottom-center" });
+      toast.success(res.data.message || "Message sent successfully!", {
+        position: "bottom-center",
+      });
+
       handleClear();
+      setIsSubmitted(true);
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message || "Unkown Error");
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-5 px-3 sm:px-4">
-        {/* This isi Header */}
+    <main className="min-h-screen bg-[#FBF3E7]">
+      {/* HERO */}
 
-        <div className="text-center px-2">
-          <h1 className="text-3xl sm:text-4xl font-bold text-(--color-text)">
-            Contact Us{" "}
-          </h1>
+      <section className="relative overflow-hidden bg-[#1F1811]">
+        {/* subtle texture */}
+
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#E8491D]">
+              We're here to help
+            </p>
+
+            <h1 className="mt-3 font-[Archivo_Black] text-4xl uppercase leading-[0.95] tracking-tight text-[#FBF3E7] sm:text-5xl lg:text-6xl">
+              LET'S TALK
+              <br />
+              ABOUT FOOD.
+            </h1>
+
+            <p className="mt-5 max-w-xl text-sm leading-6 text-[#C9BEB0] sm:text-base">
+              Have a question, need support, or want to share feedback? Send us
+              a message and the CraveIt team will get back to you.
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* contact box */}
+      {/* CONTACT CONTENT */}
 
-        <div className="flex justify-center mt-5">
-          <div className="container max-w-6xl px-1 sm:px-4 md:px-8 py-4 sm:py-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-              <div className="bg-white rounded-xl shadow-2xl overflow-hidden p-5 sm:p-8">
-                <h1 className="text-2xl font-semibold text-(--color-primary) mb-5 ">
-                  Reach us
-                </h1>
-                <div className="space-y-8">
-                  {/* email */}
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
+          {/* LEFT SIDE */}
 
-                  <div className="flex gap-5 items-center">
-                    <div className="text-blue-700 font-bold text-2xl border border-none bg-blue-100 rounded-[50%] p-3">
-                      <MdOutlineMail />
+          <div>
+            <div className="border-b border-dashed border-[#1F1811]/20 pb-5">
+              <p className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                Contact details
+              </p>
+
+              <h2 className="mt-2 font-[Archivo_Black] text-2xl uppercase text-[#1F1811]">
+                REACH OUT
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-[#8A7C6A]">
+                Choose the easiest way to connect with us.
+              </p>
+            </div>
+
+            <div className="divide-y divide-dashed divide-[#1F1811]/15">
+              {contactInfo.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noreferrer" : undefined}
+                    className="group flex items-start gap-4 py-5"
+                  >
+                    <span className="flex size-10 shrink-0 items-center justify-center border border-[#1F1811]/15 bg-[#F3E9DB] text-[#E8491D] transition-transform duration-200 group-hover:-translate-y-1">
+                      <Icon className="text-base" />
+                    </span>
+
+                    <div className="min-w-0">
+                      <p className="font-[JetBrains_Mono] text-[9px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                        {item.label}
+                      </p>
+
+                      <p className="mt-1 text-sm font-bold text-[#1F1811] transition-colors group-hover:text-[#E8491D]">
+                        {item.value}
+                      </p>
+
+                      <p className="mt-1 text-xs leading-5 text-[#8A7C6A]">
+                        {item.description}
+                      </p>
                     </div>
-                    <div>
-                      <a
-                        href="mailto:sarainitish@gmail.com"
-                        className="text-blue-600 hover:underline text-[17px]"
-                      >
-                        contact@craveit.in
-                      </a>
-                      <div className="text-gray-600 text-[14px]">
-                        We'll respond you within 24 hours
-                      </div>
-                    </div>
-                  </div>
+                  </a>
+                );
+              })}
+            </div>
 
-                  {/* phone number */}
+            {/* ADDRESS */}
 
-                  <div className="flex gap-5 items-center">
-                    <div className="text-blue-700 font-bold text-2xl border border-none bg-blue-100 rounded-[50%] p-3">
-                      <IoCallOutline />
-                    </div>
-                    <div>
-                      <div className="flex gap-5">
-                        <a href="tel:9153109330" className="hover:underline ">
-                          +91 9153109330
-                        </a>
-                      </div>
+            <div className="border-t border-dashed border-[#1F1811]/20 py-5">
+              <div className="flex items-start gap-4">
+                <span className="flex size-10 shrink-0 items-center justify-center border border-[#1F1811]/15 bg-[#F3E9DB] text-[#E8491D]">
+                  <FiMapPin className="text-base" />
+                </span>
 
-                      <div className="text-gray-600 text-[14px]">
-                        For urgent queries only
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <p className="font-[JetBrains_Mono] text-[9px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Our location
+                  </p>
 
-                  {/* whatsapp link */}
+                  <p className="mt-1 text-sm font-bold text-[#1F1811]">
+                    CraveIt - Food on Demand
+                  </p>
 
-                  <div className="flex gap-5 items-center">
-                    <div className="text-green-700 font-bold text-2xl border border-none bg-green-100 rounded-[50%] p-3">
-                      <FaWhatsapp />
-                    </div>
-                    <div>
-                      <div className="flex gap-5">
-                        <a
-                          href="https://wa.me/7645956734"
-                          target="blank"
-                          className="hover:underline "
-                        >
-                          7645956734
-                        </a>
-                      </div>
-
-                      <div className="text-gray-600 text-[14px]">
-                        Chat with us instantly
-                      </div>
-                      <div className="text-[12px] text-gray-500">
-                        Fastest response
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* address */}
-
-                  <div className="flex gap-5 items-center">
-                    <div className="text-violet-700 font-bold text-2xl border border-none bg-violet-100 rounded-[50%] p-3">
-                      <MdOutlineLocationOn />
-                    </div>
-                    <div>
-                      <div>CraveIt - Food you on demand</div>
-                      <div className="text-gray-600 text-[14px]">
-                        1st Floor, H.No. 00, Balaji Nagar, Aayodhya Bypass Road,
-                        Bhopal, MP - 462023
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Office time */}
-
-                  <div className="px-5 pt-3 pb-6 bg-(--color-background) rounded">
-                    <div className="flex flex-col gap-3">
-                      <h1 className="font-bold text-[18px]">Support Hours</h1>
-                      <div className="flex gap-2">
-                        <h3 className="font-bold ">Daily</h3>
-                        <p>11:00 AM - 8:00 PM IST</p>
-                      </div>
-                    </div>
-                  </div>
+                  <p className="mt-1 max-w-sm text-xs leading-5 text-[#8A7C6A]">
+                    1st Floor, H.No. 00, Balaji Nagar, Aayodhya Bypass Road,
+                    Bhopal, Madhya Pradesh, 462023
+                  </p>
                 </div>
               </div>
+            </div>
 
-              {/* User queries box */}
+            {/* SUPPORT HOURS */}
 
-              <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-                <form
-                  onSubmit={submitContact}
-                  onReset={handleClear}
-                  className="p-5 sm:p-8"
-                >
-                  <h1 className="text-2xl font-semibold text-(--color-primary) mb-5">
-                    Send us a message
-                  </h1>
+            <div className="mt-2 bg-[#1F1811] p-5">
+              <div className="flex items-start gap-3">
+                <FiClock className="mt-0.5 text-base text-[#E8491D]" />
 
-                  <div className="space-y-3">
-                    {/* Contact name */}
+                <div>
+                  <p className="font-[JetBrains_Mono] text-[9px] font-bold uppercase tracking-[0.16em] text-[#C9BEB0]">
+                    Support hours
+                  </p>
 
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="fullName" name="fullName" id="fullName">
-                        Full Name <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="fullName"
-                        placeholder="Nitish Kumar"
-                        value={contactUs.fullName}
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        required
-                        className="w-full h-fit px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                      />
-                    </div>
+                  <p className="mt-1 text-sm font-bold text-[#FBF3E7]">
+                    Every day · 11:00 AM - 8:00 PM
+                  </p>
 
-                    {/* Contact email */}
-
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="email" name="email" id="email">
-                        Email <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="email"
-                        id="email"
-                        value={contactUs.email}
-                        placeholder="nitish@example.com"
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        required
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                      />
-                    </div>
-
-                    {/* Contact subject/topic */}
-
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="subject" name="subject" id="subject">
-                        Subject <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="subject"
-                        id="subject"
-                        value={contactUs.subject}
-                        placeholder="Request Help"
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        required
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                      />
-                    </div>
-
-                    {/* Contact query in detail */}
-
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="query" name="query" id="query">
-                        Message <span className="text-red-600">*</span>
-                      </label>
-                      <textarea
-                        type="text"
-                        name="query"
-                        id="query"
-                        value={contactUs.query}
-                        placeholder="Please describe your query in detail.."
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        required
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition disabled:cursor-not-allowed disabled:bg-gray-200"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-
-                  <div className="text-center mt-5">
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-(--color-secondary) text-black font-bold py-3 px-6 rounded-lg hover:bg-(--color-secondary-hover) shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-(--color-secondary)"
-                    >
-                      <div className="flex gap-2 items-center justify-center">
-                        {<FiSend />} <span>Send Message</span>
-                      </div>
-                    </button>
-                  </div>
-                </form>
+                  <p className="mt-1 text-xs text-[#C9BEB0]/70">
+                    Indian Standard Time
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* RIGHT SIDE - FORM */}
+
+          <div className="bg-white p-5 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.35)] sm:p-7 lg:p-8">
+            {isSubmitted ? (
+              <div className="flex min-h-125 flex-col items-center justify-center text-center">
+                {/* Success Icon */}
+                <div className="flex size-16 items-center justify-center bg-[#E8491D] text-3xl text-[#FBF3E7]">
+                  ✓
+                </div>
+
+                <p className="mt-6 font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8491D]">
+                  Message received
+                </p>
+
+                <h2 className="mt-3 font-[Archivo_Black] text-3xl uppercase leading-tight text-[#1F1811] sm:text-4xl">
+                  THANKS FOR
+                  <br />
+                  REACHING OUT!
+                </h2>
+
+                <p className="mt-4 max-w-md text-sm leading-6 text-[#8A7C6A]">
+                  Your message has been successfully sent to the CraveIt team.
+                  We'll get back to you as soon as possible.
+                </p>
+
+                <div className="mt-8 border-t border-dashed border-[#1F1811]/20 pt-6">
+                  <p className="font-[JetBrains_Mono] text-[10px] uppercase tracking-wider text-[#8A7C6A]">
+                    Usually responds within
+                  </p>
+
+                  <p className="mt-1 font-[Archivo_Black] text-xl text-[#1F1811]">
+                    24 HOURS
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSubmitted(false)}
+                  className="mt-8 cursor-pointer bg-[#1F1811] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#FBF3E7] transition-colors hover:bg-[#E8491D]"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* EXISTING FORM HEADER */}
+                <div className="border-b border-dashed border-[#1F1811]/20 pb-5">
+                  <p className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                    Send a message
+                  </p>
+
+                  <h2 className="mt-2 font-[Archivo_Black] text-2xl uppercase text-[#1F1811] sm:text-3xl">
+                    HOW CAN WE HELP?
+                  </h2>
+
+                  <p className="mt-2 text-sm text-[#8A7C6A]">
+                    Fill in the details below and we'll take it from there.
+                  </p>
+                </div>
+
+                <form
+                  onSubmit={submitContact}
+                  onReset={handleClear}
+                  className="mt-6"
+                >
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    {/* FULL NAME */}
+
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="fullName"
+                        className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-wider text-[#1F1811]"
+                      >
+                        Full name <span className="text-[#E8491D]">*</span>
+                      </label>
+
+                      <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        value={contactUs.fullName}
+                        onChange={handleChange}
+                        placeholder="Your name"
+                        disabled={isLoading}
+                        required
+                        className="w-full border border-[#1F1811]/20 bg-[#FBF3E7]/50 px-4 py-3 text-sm text-[#1F1811] outline-none transition-colors placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+                    </div>
+
+                    {/* EMAIL */}
+
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="email"
+                        className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-wider text-[#1F1811]"
+                      >
+                        Email address <span className="text-[#E8491D]">*</span>
+                      </label>
+
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={contactUs.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                        disabled={isLoading}
+                        required
+                        className="w-full border border-[#1F1811]/20 bg-[#FBF3E7]/50 px-4 py-3 text-sm text-[#1F1811] outline-none transition-colors placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+                    </div>
+                  </div>
+
+                  {/* SUBJECT */}
+
+                  <div className="mt-5 flex flex-col gap-2">
+                    <label
+                      htmlFor="subject"
+                      className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-wider text-[#1F1811]"
+                    >
+                      Subject <span className="text-[#E8491D]">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={contactUs.subject}
+                      onChange={handleChange}
+                      placeholder="What can we help you with?"
+                      disabled={isLoading}
+                      required
+                      className="w-full border border-[#1F1811]/20 bg-[#FBF3E7]/50 px-4 py-3 text-sm text-[#1F1811] outline-none transition-colors placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
+                    />
+                  </div>
+
+                  {/* MESSAGE */}
+
+                  <div className="mt-5 flex flex-col gap-2">
+                    <label
+                      htmlFor="query"
+                      className="font-[JetBrains_Mono] text-[10px] font-bold uppercase tracking-wider text-[#1F1811]"
+                    >
+                      Message <span className="text-[#E8491D]">*</span>
+                    </label>
+
+                    <textarea
+                      id="query"
+                      name="query"
+                      value={contactUs.query}
+                      onChange={handleChange}
+                      placeholder="Tell us more about your question..."
+                      disabled={isLoading}
+                      required
+                      rows={6}
+                      className="w-full resize-none border border-[#1F1811]/20 bg-[#FBF3E7]/50 px-4 py-3 text-sm leading-6 text-[#1F1811] outline-none transition-colors placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
+                    />
+                  </div>
+
+                  {/* ACTIONS */}
+
+                  <div className="mt-6 flex flex-col gap-3 border-t border-dashed border-[#1F1811]/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs leading-5 text-[#8A7C6A]">
+                      Our support team usually responds within 24 hours.
+                    </p>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="reset"
+                        disabled={isLoading}
+                        className="cursor-pointer px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#8A7C6A] transition-colors hover:text-[#1F1811] disabled:cursor-not-allowed"
+                      >
+                        Clear
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="inline-flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#FBF3E7] transition-all hover:bg-[#cf3d16] disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <FiSend className="text-sm" />
+
+                        {isLoading ? "Sending..." : "Send message"}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </>
+      </section>
+    </main>
   );
 };
 

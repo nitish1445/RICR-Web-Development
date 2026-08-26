@@ -1,108 +1,183 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FaArrowRight,
+  FaBolt,
+  FaClock,
+  FaHeart,
+  FaCheck,
+} from "react-icons/fa6";
+import { FiCheckCircle } from "react-icons/fi";
+
+const features = [
+  {
+    icon: FaBolt,
+    title: "Order with ease",
+    description:
+      "Browse restaurants, explore menus, and place your order in just a few clicks.",
+  },
+  {
+    icon: FaClock,
+    title: "Fresh & fast",
+    description:
+      "From the kitchen to your doorstep, stay updated throughout your order.",
+  },
+  {
+    icon: FaHeart,
+    title: "Made for cravings",
+    description:
+      "Discover food, restaurants, and flavors you'll keep coming back to.",
+  },
+];
+
+const offers = [
+  "Discover restaurants around you",
+  "Explore menus before you order",
+  "Track your order with ease",
+  "Enjoy a smooth ordering experience",
+];
 
 const About = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-linear-to-br from-orange-50 via-white to-red-50 min-h-screen px-6 md:px-20 py-16">
-      {/* Header Section */}
-      <div className="text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight">
-          About <span className="text-orange-500">CraveIt</span>
-        </h1>
+    <main className="text-[#1F1811]">
+      {/* About : Hero */}
+      <section className="relative overflow-hidden bg-[#1F1811]">
+        {/* Decorative elements */}
+        <div className="absolute left-0 top-0 h-64 w-64 rounded-full bg-[#E8491D]/10 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#E8491D]/5 blur-3xl" />
 
-        <p className="mt-4 text-gray-700 text-lg leading-relaxed text-center">
-          Craving something crispy, cheesy, and full of flavor? CraveIt brings
-          you hot, freshly prepared meals straight from your favorite
-          restaurants. From crunchy bites to juicy burgers and spicy delights -
-          every order is packed with taste and delivered fast.
-        </p>
-      </div>
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#E8491D]">
+              ABOUT CRAVEIT
+            </p>
 
-      {/* Main About Section */}
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-        {/* Left Text */}
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900">Who We Are </h2>
+            <h1 className="mt-4 font-[Archivo_Black] text-4xl uppercase leading-[0.95] tracking-tight text-[#FBF3E7] sm:text-6xl lg:text-7xl">
+              FOOD YOU LOVE.
+              <br />
+              <span className="text-[#E8491D]">WITHOUT THE WAIT.</span>
+            </h1>
 
-          <p className="mt-5 text-gray-600 text-lg leading-relaxed">
-            At <span className="font-semibold text-orange-500">CraveIt</span>,
-            we believe food is more than just a meal — it’s comfort, happiness,
-            and a way to connect.
-          </p>
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#C9BEB0] sm:text-base">
+              CraveIt brings your favorite restaurants, delicious meals, and a
+              smooth ordering experience together in one place.
+            </p>
 
-          <p className="mt-4 text-gray-600 text-lg leading-relaxed">
-            Whether you’re ordering a quick snack, planning a dinner, or picking
-            up your meal on the go, CraveIt makes it effortless. We partner with
-            top-rated restaurants and ensure your food arrives fresh, fast, and
-            full of flavor.
-          </p>
-
-          <div className="mt-8 flex gap-4">
-            <button className="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300">
-              Explore Restaurants
-            </button>
-
-            <button className="cursor-pointer border border-orange-400 text-orange-500 hover:bg-orange-100 px-6 py-3 rounded-full font-semibold transition duration-300">
-              Learn More
+            <button
+              type="button"
+              onClick={() => navigate("/restaurants")}
+              className="mt-7 inline-flex cursor-pointer items-center gap-2 bg-[#E8491D] px-5 py-3 text-sm font-bold text-[#FBF3E7] transition-colors hover:bg-[#FBF3E7] hover:text-[#1F1811]"
+            >
+              Explore restaurants
+              <FaArrowRight className="text-xs" />
             </button>
           </div>
         </div>
+      </section>
 
-        {/* Right Card */}
-        <div className="bg-white/80 rounded-3xl shadow-xl p-10 border border-gray-100">
-          <h3 className="text-2xl font-bold text-gray-900">What We Offer </h3>
+      {/* What we Do */}
+      <section className="bg-[#E8491D] py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.5fr] lg:gap-16">
+            {/* Left */}
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1F1811]/70">
+                WHAT WE DO
+              </p>
 
-          <ul className="mt-6 space-y-5 text-gray-700 text-lg">
-            <li className="flex items-center gap-3">
-              <span className="text-orange-500 text-2xl">✔</span>
-              Fast & reliable doorstep delivery
-            </li>
+              <h2 className="mt-4 font-[Archivo_Black] text-3xl uppercase leading-tight text-[#FBF3E7] sm:text-4xl">
+                MORE THAN
+                <br />
+                JUST FOOD DELIVERY.
+              </h2>
 
-            <li className="flex items-center gap-3">
-              <span className="text-orange-500 text-2xl">✔</span>
-              Take-in option for quick pickup
-            </li>
+              <p className="mt-5 max-w-md text-sm leading-7 text-[#FBF3E7]/85">
+                Whether you're looking for a quick meal, your favorite comfort
+                food, or something completely new, CraveIt makes discovering and
+                ordering food simple.
+              </p>
 
-            <li className="flex items-center gap-3">
-              <span className="text-orange-500 text-2xl">✔</span>
-              Best local restaurants and cuisines
-            </li>
+              <div className="mt-7 space-y-3">
+                {offers.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 text-sm text-[#FBF3E7]"
+                  >
+                    <FiCheckCircle className="shrink-0 text-sm text-[#1F1811]" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            <li className="flex items-center gap-3">
-              <span className="text-orange-500 text-2xl">✔</span>
-              Smooth ordering with real-time updates
-            </li>
+            {/* Right Features */}
+            <div className="grid gap-px bg-[#1F1811]/20 sm:grid-cols-3">
+              {features.map((feature) => {
+                const Icon = feature.icon;
 
-            <li className="flex items-center gap-3">
-              <span className="text-orange-500 text-2xl">✔</span>
-              Secure payments & exclusive deals
-            </li>
-          </ul>
+                return (
+                  <div key={feature.title} className="bg-[#E8491D] p-6 sm:p-7">
+                    <Icon className="text-xl text-[#1F1811]" />
+
+                    <h3 className="mt-6 text-base font-bold uppercase text-[#FBF3E7]">
+                      {feature.title}
+                    </h3>
+
+                    <p className="mt-3 text-xs leading-6 text-[#FBF3E7]/75">
+                      {feature.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Mission Section */}
-      <div className="mt-20 max-w-6xl mx-auto bg-linear-to-r from-orange-500 to-red-500 text-white rounded-3xl shadow-2xl p-12 text-center">
-        <h2 className="text-3xl md:text-4xl font-extrabold">Our Mission</h2>
+      {/* CTA */}
+      <section className="bg-[#FBF3E7] py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.4fr_0.6fr]">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#E8491D]">
+                OUR MISSION
+              </p>
 
-        <p className="mt-6 text-lg md:text-xl text-white/90 leading-relaxed max-w-4xl mx-auto">
-          We’re on a mission to make food ordering effortless, modern, and
-          exciting. From doorstep delivery to take-in pickup, CraveIt is built
-          to match your lifestyle.
-        </p>
-      </div>
+              <h2 className="mt-4 max-w-3xl font-[Archivo_Black] text-4xl uppercase leading-[0.95] tracking-tight text-[#1F1811] sm:text-5xl lg:text-6xl">
+                MAKING EVERY
+                <br />
+                CRAVING EASY TO
+                <br />
+                SATISFY.
+              </h2>
 
-      {/* Footer Section */}
-      <div className="mt-20 text-center text-gray-600">
-        <p className="text-lg">
-          Made with ♥️ by
-          <span className="font-semibold text-orange-500">CraveIt</span>
-        </p>
+              <p className="mt-6 max-w-2xl text-sm leading-7 text-[#6E6256] sm:text-base">
+                Our goal is simple — connect people with great food and make
+                every step, from discovering a restaurant to placing an order,
+                feel effortless.
+              </p>
+            </div>
 
-        <p className="mt-2 text-sm text-gray-500">
-          Fresh food. Fast delivery. Happy cravings.
-        </p>
-      </div>
-    </div>
+            <div className="lg:text-right">
+              <button
+                type="button"
+                onClick={() => navigate("/restaurants")}
+                className="inline-flex cursor-pointer items-center gap-2 bg-[#1F1811] px-5 py-3 text-sm font-bold text-[#FBF3E7] transition-colors hover:bg-[#E8491D]"
+              >
+                Start exploring
+                <FaArrowRight className="text-xs" />
+              </button>
+
+              <p className="mt-4 text-xs text-[#6E6256]">
+                Good food is only a few clicks away.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 };
 

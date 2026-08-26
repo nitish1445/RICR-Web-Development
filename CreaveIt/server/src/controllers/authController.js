@@ -99,7 +99,7 @@ export const UserLogout = async (req, res, next) => {
     // send mesage to frontend
     res.clearCookie("parle");
 
-    res.status(200).json({ message: "Logout Successfull" });
+    res.status(200).json({ message: "Logout Successfull", });
   } catch (error) {
     next(error);
   }
@@ -146,6 +146,8 @@ export const UserGenOtp = async (req, res, next) => {
       email,
       otp: hashOTP,
     });
+
+    console.log("OTP generated and saved to db: ", otp);
 
     await sendOTPEmail(email, otp);
 
@@ -227,7 +229,7 @@ export const UserForgetPassword = async (req, res, next) => {
     res
       .status(200)
       .clearCookie("otpToken")
-      .json({ message: "Password changed, please login again" });
+      .json({ message: "Password changed successfully!" });
   } catch (error) {
     next(error);
   }
