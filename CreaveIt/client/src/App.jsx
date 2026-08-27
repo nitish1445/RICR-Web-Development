@@ -25,7 +25,9 @@ import ContactMessages from "./components/adminDashboard/ContactMessages";
 import AdminProfile from "./components/adminDashboard/AdminProfile";
 import Orders from "./components/adminDashboard/AdminOrders";
 import AdminAddData from "./components/adminDashboard/AdminAddData";
-import CustomerRoute from "./Layout/AuthCustomer";
+import CustomerRoute from "./Layout/AuthCheckout";
+import DummyLogin from "./pages/DummyLogin";
+import AuthAdminLayout from "./Layout/AuthAdmin";
 
 const App = () => {
   return (
@@ -36,7 +38,7 @@ const App = () => {
           position="top-right"
           reverseOrder={false}
           toastOptions={{
-            duration: 3000,
+            duration: 2000,
             style: {
               background: "#1F1811",
               color: "#FBF3E7",
@@ -76,7 +78,7 @@ const App = () => {
               path="/restaurant-dashboard"
               element={<RestaurantDashboard />}
             />
-            <Route path="/admin-dashboard" element={<AdminDashboard />}>
+            <Route path="/admin-dashboard" element={<AuthAdminLayout />}>
               <Route index element={<DashboardOverview />} />
               <Route path="orders" element={<Orders />} />
               <Route path="customers" element={<Customers />} />
@@ -100,6 +102,7 @@ const App = () => {
             <Route path="contact" element={<Contact />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="restaurants" element={<OrderNow />} />
+            <Route path="dummy-login" element={<DummyLogin />} />
             <Route
               path="restaurants/:restaurantId"
               element={<RestaurantDisplayMenu />}

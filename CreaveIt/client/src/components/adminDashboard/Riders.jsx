@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
 import api from "../../config/Api";
 import ManagementTable from "./ManagementTable";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Riders = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [riders, setRiders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,10 @@ const Riders = () => {
   };
 
   const handleDelete = async (rider) => {
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot perfom this action.");
+    }
+
     const confirmDelete = window.confirm(
       `Delete delivery partner ${rider?.fullName}?`,
     );
@@ -55,6 +60,10 @@ const Riders = () => {
     }
   };
   const handleCreate = () => {
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot perfom this action.");
+    }
+
     navigate("/admin-dashboard/add-user");
   };
 

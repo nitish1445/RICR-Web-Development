@@ -3,8 +3,10 @@ import toast from "react-hot-toast";
 import api from "../../config/Api";
 import ManagementTable from "./ManagementTable";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Managers = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,6 @@ const Managers = () => {
 
     try {
       const res = await api.get("/admin/managers");
-
       setManagers(res.data.data || []);
 
       if (showToast) {
@@ -39,6 +40,10 @@ const Managers = () => {
   };
 
   const handleDelete = async (manager) => {
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot perfom this action.");
+    }
+
     const confirmDelete = window.confirm(
       `Delete ${manager?.restaurantName || manager?.fullName}?`,
     );
@@ -58,6 +63,10 @@ const Managers = () => {
     }
   };
   const handleCreate = () => {
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot perfom this action.");
+    }
+
     navigate("/admin-dashboard/add-user");
   };
 

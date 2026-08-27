@@ -33,3 +33,24 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Loading Animations */
+@keyframes sineWave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(3px);
+  }
+}
+
+.sine-dot {
+  animation: sineWave 1.2s ease-in-out infinite;
+}

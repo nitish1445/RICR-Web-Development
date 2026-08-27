@@ -1,22 +1,27 @@
 import React from "react";
-
 import {
   FaEnvelope,
   FaLocationDot,
   FaPhone,
   FaUser,
   FaUserShield,
+  FaCalendarDays,
+  FaVenusMars,
+  FaLocationCrosshairs,
+  FaMoneyCheckDollar,
+  FaCircleCheck,
+  FaBuildingColumns,
+  FaShareNodes,
 } from "react-icons/fa6";
-
 import { useAuth } from "../../context/AuthContext";
 
 const AdminProfile = () => {
   const { user } = useAuth();
-
   const getInitial = () => {
     return user?.fullName?.charAt(0)?.toUpperCase() || "A";
   };
 
+  const isSuperAdmin = user?.email === "sarainitish@gmail.com";
   const address =
     user?.address && user.address !== "N/A"
       ? `${user.address}${
@@ -24,16 +29,27 @@ const AdminProfile = () => {
         }${user?.pin && user.pin !== "N/A" ? ` - ${user.pin}` : ""}`
       : "No address available";
 
+  const formattedDob = user?.dob
+    ? new Date(user.dob).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
+    : "N/A";
+
+  const accountType = isSuperAdmin ? "Super Administrator" : "Administrator";
+  const paymentDetails = user?.paymentDetail;
+  const geolocation = user?.geolocation;
+
   return (
     <main className="min-h-full bg-[#FBF3E7]">
       <div className="mx-auto max-w-4xl">
         {/* Profile Hero */}
-
         <section className="overflow-hidden bg-[#1F1811]">
           <div className="relative p-6 sm:p-8">
-            {/* Decorative text */}
+            {/* Decorative Text */}
             <span className="absolute right-4 top-2 font-[Archivo_Black] text-6xl uppercase text-white/4 sm:right-8 sm:text-8xl">
-              Admin
+              {isSuperAdmin ? "Super" : "Admin"}
             </span>
 
             <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
@@ -57,26 +73,32 @@ const AdminProfile = () => {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
                   <h2 className="truncate font-[Archivo_Black] text-2xl uppercase text-[#FBF3E7] sm:text-3xl">
-                    {user?.fullName || "Admin"}
+                    {user?.fullName || "Administrator"}
                   </h2>
 
                   <span className="flex items-center gap-1.5 bg-[#E8491D] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FBF3E7]">
                     <FaUserShield />
-                    Administrator
+
+                    {isSuperAdmin ? "Super Admin" : "Administrator"}
                   </span>
                 </div>
 
                 <p className="mt-2 text-sm text-[#C9BEB0]">
-                  Full access to the CraveIt administration panel.
+                  {isSuperAdmin
+                    ? "Complete access and administrative control over the CraveIt platform."
+                    : "Administrative access to manage and monitor the CraveIt platform."}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Bottom status */}
+          {/* Account Status */}
           <div className="flex items-center gap-2 border-t border-dashed border-white/10 bg-black/10 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#C9BEB0] sm:px-8">
-            <span className="size-2 bg-[#6B8E4E]" />
-            Administrator Account Active
+            <FaCircleCheck className="text-[#6B8E4E]" />
+
+            {user?.isActive === "active"
+              ? `${accountType} Account Active`
+              : `${accountType} Account Inactive`}
           </div>
         </section>
 
@@ -84,7 +106,7 @@ const AdminProfile = () => {
         <section className="mt-6">
           <div className="mb-4">
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-              Account Information
+              Administrator Information
             </p>
 
             <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
@@ -93,7 +115,7 @@ const AdminProfile = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
-            {/* Name */}
+            {/* Full Name */}
             <div className="bg-white p-5 sm:p-6">
               <div className="flex items-start gap-4">
                 <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
@@ -112,7 +134,7 @@ const AdminProfile = () => {
               </div>
             </div>
 
-            {/* Role */}
+            {/* Admin Type */}
             <div className="bg-white p-5 sm:p-6">
               <div className="flex items-start gap-4">
                 <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
@@ -121,11 +143,11 @@ const AdminProfile = () => {
 
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
-                    Role
+                    Account Type
                   </p>
 
-                  <p className="mt-2 text-sm font-bold capitalize text-[#1F1811]">
-                    {user?.role || "Admin"}
+                  <p className="mt-2 text-sm font-bold text-[#1F1811]">
+                    {accountType}
                   </p>
                 </div>
               </div>
@@ -169,6 +191,44 @@ const AdminProfile = () => {
               </div>
             </div>
 
+            {/* Date of Birth */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaCalendarDays />
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Date of Birth
+                  </p>
+
+                  <p className="mt-2 text-sm font-bold text-[#1F1811]">
+                    {formattedDob}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Gender */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaVenusMars />
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Gender
+                  </p>
+
+                  <p className="mt-2 text-sm font-bold capitalize text-[#1F1811]">
+                    {user?.gender || "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Address */}
             <div className="bg-white p-5 sm:col-span-2 sm:p-6">
               <div className="flex items-start gap-4">
@@ -183,6 +243,99 @@ const AdminProfile = () => {
 
                   <p className="mt-2 text-sm font-bold text-[#1F1811]">
                     {address}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* System Details */}
+        <section className="mt-6">
+          <div className="mb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+              Account Configuration
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+              Additional Details
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
+            {/* Geolocation */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaLocationCrosshairs />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Geolocation
+                  </p>
+
+                  <p className="mt-2 truncate text-sm font-bold text-[#1F1811]">
+                    {geolocation?.lat && geolocation?.lon
+                      ? `${geolocation.lat}, ${geolocation.lon}`
+                      : "Not available"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* UPI */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaMoneyCheckDollar />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Payment UPI
+                  </p>
+
+                  <p className="mt-2 truncate text-sm font-bold text-[#1F1811]">
+                    {paymentDetails?.upi || "Not available"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Account Number */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaBuildingColumns />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Account Number
+                  </p>
+
+                  <p className="mt-2 truncate text-sm font-bold text-[#1F1811]">
+                    {paymentDetails?.account_number || "Not available"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* IFSC Code */}
+            <div className="bg-white p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaShareNodes />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    IFSC Code
+                  </p>
+
+                  <p className="mt-2 truncate text-sm font-bold uppercase text-[#1F1811]">
+                    {paymentDetails?.IFSC || "Not available"}
                   </p>
                 </div>
               </div>

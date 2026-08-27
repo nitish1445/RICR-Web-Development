@@ -86,7 +86,10 @@ export const UserLogin = async (req, res, next) => {
     genToken(existingData, res);
 
     // send mesage to frontend
-    res.status(200).json({ message: "Login Successfull", data: existingData });
+    res.status(200).json({
+      message: `Logged in as ${existingData.fullName || existingData.email}`,
+      data: existingData,
+    });
     // end
   } catch (error) {
     next(error);
@@ -99,7 +102,7 @@ export const UserLogout = async (req, res, next) => {
     // send mesage to frontend
     res.clearCookie("parle");
 
-    res.status(200).json({ message: "Logout Successfull", });
+    res.status(200).json({ message: "Logout Successfull" });
   } catch (error) {
     next(error);
   }

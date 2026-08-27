@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
 import {
   FaUser,
   FaStore,
@@ -10,14 +9,14 @@ import {
   FaPlus,
   FaArrowRotateRight,
 } from "react-icons/fa6";
-
 import api from "../../config/Api";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminAddData = () => {
+  const { user } = useAuth();
+
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
-
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -95,6 +94,10 @@ const AdminAddData = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot add users.");
+    }
 
     try {
       const payload = {

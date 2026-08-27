@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../config/Api";
-
+import Logo from "../assets/craveIt-logo.png";
 import {
   FaEye,
   FaEyeSlash,
@@ -162,8 +162,12 @@ const Signup = () => {
               onClick={() => navigate("/")}
               className="inline-flex cursor-pointer items-center gap-2"
             >
-              <span className="flex size-8 items-center justify-center rounded-lg bg-[#E8491D] text-[#FBF3E7]">
-                <FaUtensils className="text-sm" />
+              <span className="flex size-8 items-center justify-center">
+                <img
+                  src={Logo}
+                  alt="CraveIt Logo"
+                  className="h-full w-full object-contain"
+                />
               </span>
 
               <span className="font-[Archivo_Black] text-lg tracking-wide text-[#FBF3E7]">

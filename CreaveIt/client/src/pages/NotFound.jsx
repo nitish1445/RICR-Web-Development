@@ -1,11 +1,6 @@
 import { Link } from "react-router-dom";
-
-import {
-  FaUtensils,
-  FaArrowLeft,
-  FaHouse,
-  FaArrowRight,
-} from "react-icons/fa6";
+import Logo from "../assets/craveIt-logo.png";
+import { FaArrowLeft, FaHouse, FaArrowRight } from "react-icons/fa6";
 
 const NotFound = () => {
   return (
@@ -33,8 +28,12 @@ const NotFound = () => {
       <section className="relative w-full max-w-2xl text-center">
         {/* Brand */}
         <Link to="/" className="inline-flex items-center gap-2 text-[#1F1811]">
-          <span className="flex size-9 items-center justify-center bg-[#1F1811] text-[#FBF3E7]">
-            <FaUtensils className="text-sm" />
+          <span className="flex size-9 items-center justify-center">
+            <img
+              src={Logo}
+              alt="CraveIt Logo"
+              className="h-full w-full object-contain"
+            />
           </span>
 
           <span className="font-[Archivo_Black] text-lg tracking-tight">

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-
-import { FaShoppingCart, FaUtensils, FaArrowRight } from "react-icons/fa";
+import Logo from "../assets/craveIt-logo.png";
+import { FaShoppingCart, FaArrowRight } from "react-icons/fa";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { FiMenu, FiX } from "react-icons/fi";
 
@@ -60,8 +60,12 @@ const Header = () => {
           onClick={closeMenu}
           className="flex shrink-0 items-center gap-2"
         >
-          <div className="flex size-9 items-center justify-center bg-[#E8491D] text-[#FBF3E7]">
-            <FaUtensils className="text-sm" />
+          <div className="flex size-9 items-center justify-center">
+            <img
+              src={Logo}
+              alt="CraveIt Logo"
+              className="h-full w-full object-contain"
+            />
           </div>
 
           <span className="font-[Archivo_Black] text-xl tracking-tight text-[#1F1811]">

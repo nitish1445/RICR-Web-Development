@@ -36,7 +36,7 @@ const EditProfileModal = ({ onClose }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    console.log("Forma Data ",formData);
+    console.log("Forma Data ", formData);
 
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
@@ -480,6 +480,7 @@ const EditProfileModal = ({ onClose }) => {
                 <button
                   type="submit"
                   disabled={loading}
+                  onClick={() => handleSubmit}
                   className="px-6 py-2 bg-(--color-secondary) text-(--color-primary) rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
                 >
                   {loading ? (

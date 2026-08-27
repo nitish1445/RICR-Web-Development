@@ -34,7 +34,13 @@ export const NewContact = async (req, res, next) => {
 
 export const GetAllRestaurants = async (req, res, next) => {
   try {
-    const restaurant = await User.find({ role: "manager" }).select("-password");
+    const restaurant = await User.find({
+      role: "manager",
+      $nor: [
+        { fullName: "Restaurant Manager" },
+        { email: "manager@gmail.com" },
+      ],
+    }).select("-password");
 
     res.status(200).json({
       message: "Restaurants fetched successfully",
@@ -55,9 +61,10 @@ export const GetRestaurantDisplay = async (req, res, next) => {
       return next(error);
     }
 
-    const restaurantMenuData = await Menu.find({ restaurantID: id })
-      .sort({ updatedAt: -1 });
-      // .populate("restaurantID");
+    const restaurantMenuData = await Menu.find({ restaurantID: id }).sort({
+      updatedAt: -1,
+    });
+    // .populate("restaurantID");
 
     // console.log(restaurantMenuData);
 

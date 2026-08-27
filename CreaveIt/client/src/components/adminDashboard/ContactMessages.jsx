@@ -11,8 +11,10 @@ import {
 } from "react-icons/fa6";
 
 import api from "../../config/Api";
+import { useAuth } from "../../context/AuthContext";
 
 const ContactMessages = () => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
@@ -20,11 +22,8 @@ const ContactMessages = () => {
   const fetchMessages = async (showToast = false) => {
     try {
       setLoading(true);
-
       const res = await api.get("/admin/contact-messages");
-
       setMessages(res.data?.data || []);
-
       if (showToast) {
         toast.success("Contact messages refreshed");
       }
@@ -51,6 +50,12 @@ const ContactMessages = () => {
   };
 
   const handleDelete = async (id) => {
+    //Dummy Admin can't perform this action
+
+    if (user.email === "admin@gmail.com") {
+      return toast.error("Dummy Admin cannot perfom this action.");
+    }
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this message?",
     );
@@ -59,17 +64,13 @@ const ContactMessages = () => {
 
     try {
       setDeletingId(id);
-
       const res = await api.delete(`/admin/contact-messages/${id}`);
-
       setMessages((prev) => prev.filter((message) => message._id !== id));
-
       toast.success(
         res.data?.message || "Contact message deleted successfully",
       );
     } catch (error) {
       console.error(error);
-
       toast.error(
         error?.response?.data?.message || "Failed to delete contact message",
       );
@@ -80,7 +81,6 @@ const ContactMessages = () => {
 
   const formatDate = (date) => {
     if (!date) return "N/A";
-
     return new Date(date).toLocaleDateString("en-IN", {
       day: "numeric",
       month: "short",

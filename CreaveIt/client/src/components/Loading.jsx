@@ -1,5 +1,5 @@
 import React from "react";
-import { FaUtensils } from "react-icons/fa6";
+import Logo from "../assets/craveIt-logo.png";
 
 const Loading = () => {
   return (
@@ -7,9 +7,13 @@ const Loading = () => {
       <div className="flex flex-col items-center">
         {/* Animated Icon */}
         <div className="relative flex h-16 w-16 items-center justify-center bg-[#161E54] shadow-lg shadow-[#161E54]/20">
-          <FaUtensils className="h-7 w-7 animate-pulse text-[#F16D34]" />
+          <img
+            src={Logo}
+            alt="Logo"
+            className="h-10 w-10 animate-pulse object-contain"
+          />
 
-          <div className="absolute -inset-2 border border-[#F16D34]/30 animate-ping" />
+          <div className="absolute -inset-2 animate-ping border border-[#F16D34]/30" />
         </div>
 
         {/* Brand */}
@@ -24,11 +28,15 @@ const Loading = () => {
 
         {/* Loading Dots */}
         <div className="mt-5 flex items-center gap-2">
-          <span className="h-2 w-2 animate-bounce rounded-full bg-[#F16D34]" />
-
-          <span className="h-2 w-2 animate-bounce rounded-full bg-[#FF986A] [animation-delay:150ms]" />
-
-          <span className="h-2 w-2 animate-bounce rounded-full bg-[#161E54] [animation-delay:300ms]" />
+          <span className="sine-dot h-2 w-2 rounded-full bg-[#F16D34]" />
+          <span
+            className="sine-dot h-2 w-2 rounded-full bg-[#FF986A]"
+            style={{ animationDelay: "150ms" }}
+          />
+          <span
+            className="sine-dot h-2 w-2 rounded-full bg-[#161E54]"
+            style={{ animationDelay: "300ms" }}
+          />
         </div>
       </div>
     </div>

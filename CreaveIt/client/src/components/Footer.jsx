@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-
+import Logo from "../assets/craveIt-logo.png";
 import {
-  FaUtensils,
   FaBolt,
   FaClock,
   FaHeart,
@@ -15,22 +14,34 @@ import {
 const quickLinks = [
   { label: "Home", path: "/" },
   { label: "Restaurants", path: "/restaurants" },
-  { label: "Offers", path: "/" },
   { label: "About Us", path: "/about" },
+  { label: "Track Order", path: "/user-dashboard" },
 ];
 
 const supportLinks = [
   { label: "Help Center", path: "/contact" },
-  { label: "Track Order", path: "/user-dashboard" },
   { label: "Contact Us", path: "/contact" },
   { label: "Privacy Policy", path: "/privacy" },
+  { label: "Dummy Login", path: "/dummy-login" },
 ];
 
 const socials = [
-  { icon: FaInstagram, href: "https://instagram.com/nitish_yadvv", label: "Instagram" },
+  {
+    icon: FaInstagram,
+    href: "https://instagram.com/nitish_yadvv",
+    label: "Instagram",
+  },
   { icon: FaXTwitter, href: "https:/x.com/nitish_yadvv", label: "X" },
-  { icon: FaFacebookF, href: "https://facebook.com/nitishyadvv", label: "Facebook" },
-  { icon: FaLinkedinIn, href: "https://linkedin.com/in/nitish1445", label: "LinkedIn" },
+  {
+    icon: FaFacebookF,
+    href: "https://facebook.com/nitishyadvv",
+    label: "Facebook",
+  },
+  {
+    icon: FaLinkedinIn,
+    href: "https://linkedin.com/in/nitish1445",
+    label: "LinkedIn",
+  },
 ];
 
 const benefits = [
@@ -59,10 +70,14 @@ const Footer = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.9fr_1.2fr]">
           {/* Brand */}
           <div>
-            <Link to="/" className="group inline-flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center bg-[#E8491D] text-[#FBF3E7]">
-                <FaUtensils className="text-sm" />
-              </span>
+            <Link to="/" className="flex shrink-0 items-center gap-2">
+              <div className="flex size-9 items-center justify-center">
+                <img
+                  src={Logo}
+                  alt="CraveIt Logo"
+                  className="h-full w-full object-contain"
+                />
+              </div>
 
               <span className="font-[Archivo_Black] text-xl tracking-tight text-[#FBF3E7]">
                 CRAVE
@@ -188,12 +203,14 @@ const Footer = () => {
               Privacy
             </Link>
 
-            <Link
-              to="/terms"
+            <a
+              href="https://github.com/nitish1445/RICR-Web-Development/tree/main/CreaveIt"
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-[Inter] text-xs text-[#8A7C6A] transition-colors hover:text-[#FBF3E7]"
             >
-              Terms
-            </Link>
+              GitHub
+            </a>
 
             <Link
               to="/contact"
