@@ -7,10 +7,8 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import UserDashBoard from "./pages/dashboards/UserDashBoard";
 import RiderDashboard from "./pages/dashboards/RiderDashboard";
 import RestaurantDashboard from "./pages/dashboards/RestaurantDashboard";
-import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import OrderNow from "./pages/Restaurants";
 import RestaurantDisplayMenu from "./pages/RestaurantMenu";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -28,6 +26,13 @@ import AdminAddData from "./components/adminDashboard/AdminAddData";
 import CustomerRoute from "./Layout/AuthCheckout";
 import DummyLogin from "./pages/DummyLogin";
 import AuthAdminLayout from "./Layout/AuthAdmin";
+import AuthManagerLayout from "./Layout/AuthManager";
+import AuthUserLayout from "./Layout/AuthCustomer";
+import AuthRiderLayout from "./Layout/AuthRider";
+import UserOverview from "./components/userDashboard/UserOverview";
+import UserHelp from "./components/userDashboard/UserHelp";
+import UserProfile from "./components/userDashboard/UserProfile";
+import UserOrder from "./components/userDashboard/UserOrder";
 
 const App = () => {
   return (
@@ -72,12 +77,25 @@ const App = () => {
 
           {/* Auth Protected Page  */}
           <Route element={<AuthPageLayout />}>
-            <Route path="/user-dashboard" element={<UserDashBoard />} />
-            <Route path="/rider-dashboard" element={<RiderDashboard />} />
-            <Route
-              path="/restaurant-dashboard"
-              element={<RestaurantDashboard />}
-            />
+            {/* Customer Protected Route */}
+            <Route path="/user-dashboard" element={<AuthUserLayout />}>
+              <Route index element={<UserOverview />} />
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="orders" element={<UserOrder />} />
+              <Route path="help" element={<UserHelp />} />
+            </Route>
+
+            {/* Rider Protected Route */}
+            <Route path="/rider-dashboard" element={<AuthRiderLayout />}>
+              <Route index element={<RiderDashboard />} />
+            </Route>
+
+            {/* Manager Proteted Route */}
+            <Route path="/restaurant-dashboard" element={<AuthManagerLayout />}>
+              <Route index element={<RestaurantDashboard />} />
+            </Route>
+
+            {/* Admin Protected Route */}
             <Route path="/admin-dashboard" element={<AuthAdminLayout />}>
               <Route index element={<DashboardOverview />} />
               <Route path="orders" element={<Orders />} />

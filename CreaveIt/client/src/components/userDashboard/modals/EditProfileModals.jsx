@@ -1,502 +1,373 @@
-import React, { useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import {
+  FaArrowRight,
+  FaBuildingColumns,
+  FaCalendarDays,
+  FaCamera,
+  FaCreditCard,
+  FaMoneyBillTransfer,
+  FaUser,
+  FaVenusMars,
+  FaXmark,
+} from "react-icons/fa6";
+import { toast } from "react-hot-toast";
 import api from "../../../config/Api";
-import { GiCancel } from "react-icons/gi";
+import { useAuth } from "../../../context/AuthContext";
 
-const EditProfileModal = ({ onClose }) => {
-  const { user, setUser, setIsLogin } = useAuth();
+const EditProfileModal = ({ isOpen, onClose}) => {
+  const { user, setUser } = useAuth();
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
-    email: user?.email || "",
     phone: user?.phone || "",
-    gender: user?.gender || "",
     dob: user?.dob || "",
-    address: user?.address || "",
-    city: user?.city || "",
-    pin: user?.pin || "",
-    document: {
-      uidai: user?.document?.uidai || "",
-      pan: user?.document?.pan || "",
-    },
+    gender: user?.gender || "N/A",
+    photo: "",
     paymentDetail: {
-      upi: user?.paymentDetail?.upi || "",
-      account_number: user?.paymentDetail?.account_number || "",
-      ifs_Code: user?.paymentDetail?.ifs_Code || "",
-    },
-    geoLocation: {
-      lat: user?.geoLocation?.lat || "",
-      lon: user?.geoLocation?.lon || "",
+      upi: "",
+      account_number: "",
+      IFSC: "",
     },
   });
 
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
 
-  const validateForm = () => {
-    const newErrors = {};
+  // Populate existing user data
+  useEffect(() => {
+    if (user && isOpen) {
+      setFormData({
+        fullName: user?.fullName || "",
+        phone: user?.phone || "",
+        dob: user?.dob || "",
+        gender: user?.gender || "N/A",
+        photo: user?.photo?.url || "",
+        paymentDetail: {
+          upi:
+            user?.paymentDetail?.upi === "N/A"
+              ? ""
+              : user?.paymentDetail?.upi || "",
 
-    console.log("Forma Data ", formData);
+          account_number:
+            user?.paymentDetail?.account_number === "N/A"
+              ? ""
+              : user?.paymentDetail?.account_number || "",
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+          IFSC:
+            user?.paymentDetail?.IFSC === "N/A"
+              ? ""
+              : user?.paymentDetail?.IFSC || "",
+        },
+      });
     }
+  }, [user, isOpen]);
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+  // Prevent background scroll
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
     }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
-    if (!formData.mobileNumber) {
-      newErrors.mobileNumber = "Mobile number is required";
-    } else if (!/^\d{10}$/.test(formData.mobileNumber.replace(/\D/g, ""))) {
-      newErrors.mobileNumber = "Mobile number must be 10 digits";
-    }
+  if (!isOpen) return null;
 
-    if (!formData.city.trim()) {
-      newErrors.city = "City is required";
-    }
-
-    if (!formData.pin.trim()) {
-      newErrors.pin = "PIN code is required";
-    } else if (!/^\d{6}$/.test(formData.pin)) {
-      newErrors.pin = "PIN code must be 6 digits";
-    }
-
-    if (
-      formData.document.pan &&
-      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.document.pan)
-    ) {
-      newErrors.pan = "Invalid PAN format";
-    }
-
-    if (
-      formData.paymentDetail.upi &&
-      !/^[a-zA-Z0-9._-]+@[a-zA-Z]{3,}$/.test(formData.paymentDetail.upi)
-    ) {
-      newErrors.upi = "Invalid UPI format";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleClose = () => {
+    if (loading) return;
+    onClose();
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
-    }
+    }));
   };
 
-  const handleNestedChange = (parent, field, value) => {
-    setFormData({
-      ...formData,
-      [parent]: {
-        ...formData[parent],
-        [field]: value,
+  const handlePaymentChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      paymentDetail: {
+        ...prev.paymentDetail,
+        [name]: value,
       },
-    });
-    // Clear error for this field
-    if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
-    }
+    }));
   };
 
-  const fetchLocation = (e) => {
-    e.preventDefault();
-    console.log("fetchLocation");
-    navigator.geolocation.getCurrentPosition((result) => {
-      console.log(
-        "Location Result:",
-        result.coords.latitude,
-        result.coords.longitude,
-      );
-      setFormData({
-        ...formData,
-        geoLocation: {
-          ...formData["geoLocation"],
-          lat: result.coords.latitude,
-          lon: result.coords.longitude,
-        },
-      });
-    });
+  const validate = () => {
+    if (!formData.fullName.trim()) {
+      toast.error("Full name is required");
+      return false;
+    }
+
+    if (!formData.phone.trim()) {
+      toast.error("Phone number is required");
+      return false;
+    }
+
+    if (formData.phone.length < 10) {
+      toast.error("Enter a valid phone number");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      setMessage({ type: "error", text: "Please fix the errors above" });
-      return;
-    }
-    console.log(formData);
+    if (!validate()) return;
     setLoading(true);
-    setMessage({ type: "", text: "" });
 
     try {
-      console.log(formData);
-      const res = await api.put("/user/update", formData);
-      if (res.data?.data) {
-        sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
-        setUser(res.data.data);
-        setIsLogin(true);
-        setMessage({ type: "success", text: "Profile updated successfully!" });
-        setTimeout(() => onClose(), 1500);
-      }
+      const res = await api.patch("/user/update", formData);
+      toast.success(res?.data?.message || "Profile updated successfully");
+      setUser(res?.data?.data);
+      onClose();
     } catch (error) {
-      console.log(error);
-      setMessage({
-        type: "error",
-        text: error.response?.data?.message || "Failed to update profile",
-      });
+      console.log("Update profile error:", error);
+      toast.error(error?.response?.data?.message || "Unable to update profile");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
-        <div className="bg-white w-5xl max-h-[85vh] rounded-md overflow-y-auto">
-          <div className="flex justify-between px-5 py-3 border-b text-2xl font-semibold text-gray-800 items-center">
-            <div>Edit Profile</div>
-            <button
-              onClick={() => onClose()}
-              className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
-            >
-              <GiCancel />
-            </button>
+    <div
+      className="fixed inset-0 z-100 flex items-center justify-center bg-[#1F1811]/60 px-4 py-6 backdrop-blur-sm"
+      onClick={handleClose}
+    >
+      <div
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden bg-[#FFF9F2] shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex shrink-0 items-center justify-between border-b border-[#1F1811]/10 bg-[#1F1811] px-5 py-3">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+              Customer Account
+            </p>
+
+            <h2 className="mt-0.5 font-[Archivo_Black] text-base uppercase text-[#FBF3E7]">
+              Edit Profile
+            </h2>
           </div>
 
-          <div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* Personal Information Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={loading}
+            className="flex size-8 cursor-pointer items-center justify-center text-[#C9BEB0] transition hover:bg-white/10 hover:text-[#E8491D] disabled:cursor-not-allowed"
+          >
+            <FaXmark className="text-lg" />
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <form onSubmit={handleSubmit} className="overflow-y-auto">
+          <div className="p-5 sm:p-6">
+            {/* Basic Information */}
+            <div>
+              <div className="mb-5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
                   Personal Information
+                </p>
+
+                <h3 className="mt-1 font-[Archivo_Black] text-lg uppercase text-[#1F1811]">
+                  Basic Details
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name *
-                    </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {/* Full Name */}
+                <div className="sm:col-span-2">
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    Full Name
+                  </label>
+
+                  <div className="relative">
+                    <FaUser className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
                     <input
                       type="text"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.fullName ? "border-red-500" : "border-gray-300"
-                      }`}
                       placeholder="Enter your full name"
+                      className="w-full border border-[#1F1811]/15 bg-white py-3 pl-10 pr-4 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
                     />
-                    {errors.fullName && (
-                      <p className="text-red-600 text-xs mt-1">
-                        {errors.fullName}
-                      </p>
-                    )}
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      disabled
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-600 cursor-not-allowed"
-                    />
-                    <p className="text-red-500 text-xs mt-1">
-                      Email cannot be changed
-                    </p>
-                  </div>
+                {/* Phone */}
+                <div>
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    Phone Number
+                  </label>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mobile Number *
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.phone ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="10-digit mobile number"
-                    />
-                    {errors.phone && (
-                      <p className="text-red-600 text-xs mt-1">
-                        {errors.phone}
-                      </p>
-                    )}
-                  </div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Enter phone number"
+                    className="w-full border border-[#1F1811]/15 bg-white px-4 py-3 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Gender
-                    </label>
-                    <select
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
+                {/* DOB */}
+                <div>
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    Date of Birth
+                  </label>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date of Birth
-                    </label>
+                  <div className="relative">
+                    <FaCalendarDays className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
                     <input
                       type="date"
                       name="dob"
                       value={formData.dob}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      className="w-full border border-[#1F1811]/15 bg-white py-3 pl-10 pr-3 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Address Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                  Address
-                </h3>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
+                {/* Gender */}
+                <div>
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    Gender
+                  </label>
+
+                  <div className="relative">
+                    <FaVenusMars className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
+                    <select
+                      name="gender"
+                      value={formData.gender}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter your address"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City *
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          errors.city ? "border-red-500" : "border-gray-300"
-                        }`}
-                        placeholder="Enter city"
-                      />
-                      {errors.city && (
-                        <p className="text-red-600 text-xs mt-1">
-                          {errors.city}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PIN Code *
-                      </label>
-                      <input
-                        type="text"
-                        name="pin"
-                        value={formData.pin}
-                        onChange={handleInputChange}
-                        className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          errors.pin ? "border-red-500" : "border-gray-300"
-                        }`}
-                        placeholder="6-digit PIN"
-                        maxLength="6"
-                      />
-                      {errors.pin && (
-                        <p className="text-red-600 text-xs mt-1">
-                          {errors.pin}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-end">
-                      <div className="h-fit flex items-center w-full gap-4">
-                        <button
-                          className="w-full border border-gray-300 rounded-md shadow-sm p-2 h-fit cursor-pointer"
-                          onClick={fetchLocation}
-                        >
-                          Get Live Location
-                        </button>
-                        {formData.geoLocation.lat !== "N/A" &&
-                        formData.geoLocation.lon !== "N/A"
-                          ? "✅"
-                          : "❌"}
-                        {/* {console.log(formData)} */}
-                      </div>
-                    </div>
+                      className="w-full cursor-pointer appearance-none border border-[#1F1811]/15 bg-white py-3 pl-10 pr-4 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
+                    >
+                      <option value="N/A">Prefer not to say</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Documents Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                  Documents
+            {/* Payment Details */}
+            <div className="mt-8 border-t border-dashed border-[#1F1811]/15 pt-7">
+              <div className="mb-5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                  Payment Information
+                </p>
+
+                <h3 className="mt-1 font-[Archivo_Black] text-lg uppercase text-[#1F1811]">
+                  Payment Details
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Aadhaar Number
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.document.uidai}
-                      onChange={(e) =>
-                        handleNestedChange("document", "uidai", e.target.value)
-                      }
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="12-digit UIDAI number"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      PAN Number
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.document.pan}
-                      onChange={(e) =>
-                        handleNestedChange("document", "pan", e.target.value)
-                      }
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.pan ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="PAN number"
-                      maxLength="10"
-                    />
-                    {errors.pan && (
-                      <p className="text-red-600 text-xs mt-1">{errors.pan}</p>
-                    )}
-                  </div>
-                </div>
               </div>
 
-              {/* Payment Details Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                  Payment Detail
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      UPI ID
-                    </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {/* UPI */}
+                <div className="sm:col-span-2">
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    UPI ID
+                  </label>
+
+                  <div className="relative">
+                    <FaMoneyBillTransfer className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
                     <input
                       type="text"
+                      name="upi"
                       value={formData.paymentDetail.upi}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "paymentDetail",
-                          "upi",
-                          e.target.value,
-                        )
-                      }
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.upi ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="username@bank"
+                      onChange={handlePaymentChange}
+                      placeholder="example@upi"
+                      className="w-full border border-[#1F1811]/15 bg-white py-3 pl-10 pr-4 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
                     />
-                    {errors.upi && (
-                      <p className="text-red-600 text-xs mt-1">{errors.upi}</p>
-                    )}
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Account Number
-                    </label>
+                {/* Account Number */}
+                <div>
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    Account Number
+                  </label>
+
+                  <div className="relative">
+                    <FaCreditCard className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
                     <input
                       type="text"
+                      name="account_number"
                       value={formData.paymentDetail.account_number}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "paymentDetail",
-                          "account_number",
-                          e.target.value,
-                        )
-                      }
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Bank account number"
+                      onChange={handlePaymentChange}
+                      placeholder="Enter account number"
+                      className="w-full border border-[#1F1811]/15 bg-white py-3 pl-10 pr-4 text-sm text-[#1F1811] outline-none transition focus:border-[#E8491D]"
                     />
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      IFSC Code
-                    </label>
+                {/* IFSC */}
+                <div>
+                  <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
+                    IFSC Code
+                  </label>
+
+                  <div className="relative">
+                    <FaBuildingColumns className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8A7C6A]" />
+
                     <input
                       type="text"
-                      value={formData.paymentDetail.ifs_Code}
-                      onChange={(e) =>
-                        handleNestedChange(
-                          "paymentDetail",
-                          "ifs_Code",
-                          e.target.value,
-                        )
-                      }
-                      className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="IFSC code"
+                      name="IFSC"
+                      value={formData.paymentDetail.IFSC}
+                      onChange={handlePaymentChange}
+                      placeholder="Enter IFSC code"
+                      className="w-full border border-[#1F1811]/15 bg-white py-3 pl-10 pr-4 text-sm uppercase text-[#1F1811] outline-none transition focus:border-[#E8491D]"
                     />
                   </div>
                 </div>
               </div>
-
-              {/* Form Actions */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-300">
-                <button
-                  type="button"
-                  onClick={() => onClose()}
-                  disabled={loading}
-                  className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  onClick={() => handleSubmit}
-                  className="px-6 py-2 bg-(--color-secondary) text-(--color-primary) rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
-                >
-                  {loading ? (
-                    <>
-                      <span className="animate-spin">⟳</span> Saving...
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
+
+          {/* Footer */}
+          <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t border-[#1F1811]/10 bg-[#FFF9F2] px-5 py-4 sm:px-6">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={loading}
+              className="cursor-pointer px-5 py-2.5 text-xs font-bold text-[#5F5143] transition hover:text-[#E8491D] disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex cursor-pointer items-center gap-2 bg-[#E8491D] px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? (
+                <>
+                  <span className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  Save Changes
+                  <FaArrowRight className="text-[10px]" />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 

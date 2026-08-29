@@ -1,6 +1,7 @@
 import express from "express";
 import {
   UserUpdate,
+  UserUpdateAddress,
   UserChangePhoto,
   UserResetPassword,
   UserPlaceOrder,
@@ -12,7 +13,8 @@ import multer from "multer";
 const router = express.Router();
 const Uploads = multer();
 
-router.put("/update", Protect, UserUpdate);
+router.patch("/update", Protect, UserUpdate);
+router.patch("/updateAddress", Protect, UserUpdateAddress);
 router.patch("/changePhoto", Protect, Uploads.single("image"), UserChangePhoto);
 router.patch("/resetPassword", Protect, UserResetPassword);
 router.post("/placeorder", Protect, UserPlaceOrder);

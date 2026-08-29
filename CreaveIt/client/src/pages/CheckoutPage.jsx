@@ -13,10 +13,8 @@ import OrderSummary from "../components/checkout/OrderSummary";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-
   const { user } = useAuth();
   const { cart, clearCart } = useCart();
-
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [placingOrder, setPlacingOrder] = useState(false);
 
@@ -37,10 +35,8 @@ const CheckoutPage = () => {
       0,
     ) || 0;
 
-  const deliveryFee = subtotal > 0 ? 40 : 0;
-
+  const deliveryFee = subtotal > 149 ? 0 : 49;
   const total = subtotal + deliveryFee;
-
   const handlePlaceOrder = async () => {
     if (!cart?.cartItem?.length) {
       toast.error("Your cart is empty");
@@ -59,12 +55,10 @@ const CheckoutPage = () => {
     try {
       const orderData = {
         restaurantID: cart.restaurantID,
-
         orderItems: cart.cartItem.map((item) => ({
           menuItemID: item._id,
           quantity: Number(item.quantity || 1),
         })),
-
         customerDetails: {
           fullName: user.fullName,
           email: user.email,
@@ -73,24 +67,19 @@ const CheckoutPage = () => {
           city: user.city,
           pin: user.pin,
         },
-
         paymentMethod,
-
         subtotal,
         deliveryFee,
         totalAmount: total,
       };
 
-      const res = await api.post("/customer/createOrder", orderData);
-
-      toast.success(res?.data?.message || "Order placed successfully!");
-
+      console.log("Order Data Packed : ", orderData);
+      // const res = await api.post("/customer/createOrder", orderData);
+      // toast.success(res?.data?.message || "Order placed successfully!");
       clearCart();
-
       navigate("/user-dashboard");
     } catch (error) {
       console.log(error);
-
       toast.error(
         error?.response?.data?.message || "Unable to place your order",
       );

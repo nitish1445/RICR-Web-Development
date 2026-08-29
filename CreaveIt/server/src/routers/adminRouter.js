@@ -22,7 +22,7 @@ router.get("/order/:id", getSingleOrderByAdmin);
 router.get("/customers", getAllCustomers);
 router.delete("/customer/:id", deleteCustomer);
 router.get("/managers", getAllMangers);
-router.delete("/managers/:id", deleteManager);
+router.delete("/manager/:id", deleteManager);
 router.get("/riders", getAllPartners);
 router.delete("/rider/:id", deletePartner);
 router.get("/contact-messages", getAllContactMessages);

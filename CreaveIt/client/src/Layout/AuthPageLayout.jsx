@@ -66,7 +66,7 @@ const AuthPageLayout = () => {
 
   return (
     <>
-      {user?.role !== "admin" && <Header />}
+      {/* {user?.role !== "admin" && <Header />} */}
       <Outlet />
       <CartSidebar isOpen={isCartOpen} onClose={closeCart} />
     </>

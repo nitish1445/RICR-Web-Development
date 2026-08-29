@@ -2,14 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight, FaLock } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext";
-import AdminDashboard from "../pages/dashboards/AdminDashboard";
+import RiderDashboard from "../pages/dashboards/RiderDashboard";
 
-const AuthAdminLayout = () => {
+const AuthRiderLayout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Not logged in or not an admin
-  if (user?.role !== "admin") {
+  // Not logged in or not a delivery partner
+  if (user?.role !== "partner") {
     return (
       <div className="min-h-[calc(100vh-64px)] bg-[#E8491D]/30 px-4 py-10">
         <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-6xl items-center justify-center">
@@ -23,7 +23,7 @@ const AuthAdminLayout = () => {
             </p>
 
             <h1 className="mt-3 text-3xl font-black uppercase text-[#1F1811] sm:text-4xl">
-              Admin Access Only
+              Rider Access Only
             </h1>
 
             <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#5F5143]">
@@ -33,13 +33,13 @@ const AuthAdminLayout = () => {
                   <span className="font-bold uppercase text-[#1F1811]">
                     {user?.role}
                   </span>{" "}
-                  account. Please login with an administrator account to access
-                  the admin dashboard.
+                  account. Please login with a delivery partner account to
+                  access the rider dashboard.
                 </>
               ) : (
                 <>
-                  You need to login with an administrator account to access this
-                  area.
+                  You need to login with a delivery partner account to access
+                  this area.
                 </>
               )}
             </p>
@@ -58,8 +58,7 @@ const AuthAdminLayout = () => {
     );
   }
 
-  // Only admin sees dashboard
-  return <AdminDashboard />;
+  return <RiderDashboard />;
 };
 
-export default AuthAdminLayout;
+export default AuthRiderLayout;

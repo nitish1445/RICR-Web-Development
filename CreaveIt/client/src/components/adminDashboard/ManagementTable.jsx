@@ -7,6 +7,7 @@ import {
   FaStore,
   FaMotorcycle,
   FaPlus,
+  FaPenToSquare,
 } from "react-icons/fa6";
 
 const ManagementTable = ({
@@ -103,14 +104,14 @@ const ManagementTable = ({
             <tr>
               <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider">
                 {isManager
-                  ? "Restaurant"
+                  ? "Restaurant Name"
                   : isPartner
                     ? "Delivery Partner"
-                    : "Customer"}
+                    : "Customer Name"}
               </th>
 
               <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider">
-                Contact
+                Contact Details
               </th>
 
               <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider">
@@ -118,7 +119,7 @@ const ManagementTable = ({
                   ? "Restaurant Details"
                   : isPartner
                     ? "Vehicle / Location"
-                    : "Address"}
+                    : "Customer Address"}
               </th>
 
               <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider">
@@ -126,7 +127,7 @@ const ManagementTable = ({
               </th>
 
               <th className="px-5 py-3 text-right text-[10px] font-bold uppercase tracking-wider">
-                Action
+                Quick Action
               </th>
             </tr>
           </thead>
@@ -190,7 +191,7 @@ const ManagementTable = ({
 
                         <p className="mt-1 text-xs text-[#8A7C6A]">
                           {isManager
-                            ? `Owner: ${item.fullName || "N/A"}`
+                            ? `Manager: ${item.fullName || "N/A"}`
                             : isPartner
                               ? item.gender || "Delivery Partner"
                               : item.gender || "N/A"}
@@ -266,19 +267,28 @@ const ManagementTable = ({
                   {/* Status */}
 
                   <td className="px-5 py-4">
-                    <span
-                      className={`px-2.5 py-1 text-[10px] font-bold uppercase ${
-                        item.isActive === "active"
-                          ? "bg-[#6B8E4E]/15 text-[#6B8E4E]"
-                          : "bg-[#E8491D]/10 text-[#E8491D]"
-                      }`}
-                    >
-                      {item.isActive || "Unknown"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`size-2 rounded-full ${
+                          item.isActive === "active"
+                            ? "bg-[#6B8E4E]"
+                            : "bg-[#E8491D]"
+                        }`}
+                      />
+
+                      <span
+                        className={`text-[10px] font-bold uppercase ${
+                          item.isActive === "active"
+                            ? "text-[#6B8E4E]"
+                            : "text-[#E8491D]"
+                        }`}
+                      >
+                        {item.isActive}
+                      </span>
+                    </div>
                   </td>
 
-                  {/* Delete */}
-
+                  {/* Edit And Delete */}
                   <td className="px-5 py-4">
                     <div className="flex justify-end">
                       <button

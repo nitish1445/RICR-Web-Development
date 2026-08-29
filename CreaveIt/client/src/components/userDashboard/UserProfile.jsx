@@ -1,151 +1,342 @@
 import React, { useState } from "react";
+import {
+  FaEnvelope,
+  FaPhone,
+  FaUser,
+  FaCalendarDays,
+  FaVenusMars,
+  FaPen,
+  FaKey,
+  FaLocationDot,
+  FaMoneyCheckDollar,
+  FaBuildingColumns,
+  FaCreditCard,
+} from "react-icons/fa6";
 import { useAuth } from "../../context/AuthContext";
-import EditProfileModal from "./modals/EditProfileModals";
-import ResetPasswordModal from "./modals/ResetPasswordModal";
-import UserImage from "../../assets/userImage.jpg";
-import { FaCamera } from "react-icons/fa";
-import api from "../../config/Api";
-import toast from "react-hot-toast";
+import EditProfileModal from "../userDashboard/modals/EditProfileModals";
+import EditAddressModal from "../userDashboard/modals/EditAddressModal";
+import ResetPasswordModal from "../userDashboard/modals/ResetPasswordModal";
 
 const UserProfile = () => {
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
-    useState(false);
-
-  const { user, setUser } = useAuth();
-  const [preview, setPreview] = useState("");
-
-  const changePhoto = async (photo) => {
-    const form_Data = new FormData();
-
-    form_Data.append("image", photo);
-    // form_Data.append("imageURL", preview);
-
-    try {
-      const res = await api.patch("/user/changePhoto", form_Data);
-
-      toast.success(res.data.message);
-
-      setUser(res.data.data);
-      sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Unknown Error");
-    }
+  const { user } = useAuth();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isEditAddressOpen, setIsEditAddressOpen] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const getInitial = () => {
+    return user?.fullName?.charAt(0)?.toUpperCase() || "U";
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    const newPhotoURL = URL.createObjectURL(file);
-    //console.log(newPhotoURL);
-    setPreview(newPhotoURL);
-    setTimeout(() => {
-      changePhoto(file);
-    }, 5000);
-  };
+  const address =
+    user?.address && user.address !== "N/A"
+      ? `${user.address}${user?.city ? `, ${user.city}` : ""}${
+          user?.pin ? ` - ${user.pin}` : ""
+        }`
+      : "No address available";
+  const paymentDetails = user?.paymentDetail || user?.paymentDetails || {};
 
   return (
     <>
-      <div className=" h-screen overflow-y-auto p-6 space-y-6">
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <div className="flex gap-6">
-            {/* Photo Section */}
-            <div className="flex flex-col items-center">
-              <div className="relative">
-                <div className="border-4 border-gray-300 rounded-full w-40 h-40 overflow-hidden bg-gray-100">
-                  <img
-                    src={preview || user?.photo?.url || UserImage}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+      <main>
+        {/* Page Heading */}
+        <div className="mb-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+            Account Settings
+          </p>
+
+          <h1 className="mt-1 font-[Archivo_Black] text-2xl uppercase text-[#1F1811] sm:text-3xl">
+            My Profile
+          </h1>
+        </div>
+
+        {/* Profile Hero */}
+        <section className="overflow-hidden bg-[#1F1811]">
+          <div className="relative p-6 sm:p-8">
+            {/* Decorative Text */}
+            <span className="pointer-events-none absolute right-5 top-2 font-[Archivo_Black] text-7xl uppercase text-white/3 sm:text-8xl">
+              Profile
+            </span>
+
+            <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              {/* User Info */}
+              <div className="flex items-center gap-5">
+                {/* Avatar */}
+                <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] text-2xl font-black text-[#1F1811]">
+                  {user?.photo?.url ? (
+                    <img
+                      src={user.photo.url}
+                      alt={user?.fullName || "User"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    getInitial()
+                  )}
                 </div>
-                <label
-                  htmlFor="imageUpload"
-                  className="absolute bottom-2 right-2 bg-(--color-secondary) text-white p-3 rounded-full hover:bg-(--color-secondary-hover) cursor-pointer transition transform hover:scale-110"
-                >
-                  <FaCamera size={18} />
-                </label>
-                <input
-                  type="file"
-                  id="imageUpload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                />
+
+                {/* Details */}
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h2 className="truncate font-[Archivo_Black] text-2xl uppercase text-[#FBF3E7] sm:text-3xl">
+                      {user?.fullName || "Customer"}
+                    </h2>
+
+                    <span className="bg-[#E8491D] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#FBF3E7]">
+                      Customer
+                    </span>
+                  </div>
+
+                  <p className="mt-2 truncate text-sm text-[#C9BEB0]">
+                    {user?.email || "No email available"}
+                  </p>
+                </div>
               </div>
-              <p className="text-gray-500 text-sm mt-2">
-                Click camera to change photo
-              </p>
-            </div>
 
-            {/* Basic Info Section */}
-            <div className="flex justify-between w-full">
-              <div>
-                <div className="mb-6">
-                  <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
-                    {user?.fullName || "Manager Name"}
-                  </h1>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-(--color-secondary) text-white px-3 py-1 rounded-full text-sm font-semibold capitalize">
-                      {user?.role || "manager"}
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        user?.isActive === "active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {user?.isActive || "active"}
-                    </span>
-                  </div>
-                </div>
+              {/* Actions */}
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditProfileOpen(true)}
+                  className="inline-flex cursor-pointer items-center gap-2 bg-[#E8491D] px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16]"
+                >
+                  <FaPen className="text-[11px]" />
+                  Edit Profile
+                </button>
 
-                {/* Contact Information */}
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600 font-medium">Email :</span>
-                    <span className="text-gray-900">
-                      {user?.email || "N/A"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600 font-medium">Phone :</span>
-                    <span className="text-gray-900">
-                      {user?.phone || "N/A"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setIsEditProfileModalOpen(true)}
-                    className="cursor-pointer px-6 py-2 bg-(--color-secondary) text-white rounded-lg hover:bg-(--color-secondary-hover) transition font-semibold"
-                  >
-                    Edit Profile
-                  </button>
-                  <button
-                    onClick={() => setIsResetPasswordModalOpen(true)}
-                    className="cursor-pointer px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold"
-                  >
-                    Reset Password
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsResetPasswordOpen(true)}
+                  className="inline-flex cursor-pointer items-center gap-2 border border-white/15 px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-white/10"
+                >
+                  <FaKey className="text-[11px]" />
+                  Reset Password
+                </button>
               </div>
             </div>
           </div>
+
+          {/* Account Status */}
+          <div className="flex items-center gap-2 border-t border-dashed border-white/10 bg-black/10 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#C9BEB0] sm:px-8">
+            <span className="size-2 bg-[#6B8E4E]" />
+            Account Active
+          </div>
+        </section>
+
+        {/* Basic Details */}
+        <section className="mt-8">
+          <div className="mb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+              Personal Information
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+              Basic Details
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
+            {/* Full Name */}
+            <InfoCard
+              icon={FaUser}
+              label="Full Name"
+              value={user?.fullName || "Not available"}
+            />
+
+            {/* Email */}
+            <InfoCard
+              icon={FaEnvelope}
+              label="Email Address"
+              value={user?.email || "Not available"}
+            />
+
+            {/* Phone */}
+            <InfoCard
+              icon={FaPhone}
+              label="Phone Number"
+              value={user?.phone || "Not available"}
+            />
+
+            {/* Gender */}
+            <InfoCard
+              icon={FaVenusMars}
+              label="Gender"
+              value={user?.gender || "Not specified"}
+              capitalize
+            />
+
+            {/* DOB */}
+            <InfoCard
+              icon={FaCalendarDays}
+              label="Date of Birth"
+              value={
+                user?.dob
+                  ? new Date(user.dob).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : "Not available"
+              }
+            />
+
+            {/* Role */}
+            <InfoCard
+              icon={FaUser}
+              label="Account Type"
+              value={user?.role || "Customer"}
+              capitalize
+            />
+          </div>
+        </section>
+
+        {/* Payment Details */}
+        <section className="mt-8">
+          <div className="mb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+              Financial Information
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+              Payment Details
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
+            {/* UPI */}
+            <InfoCard
+              icon={FaMoneyCheckDollar}
+              label="UPI ID"
+              value={paymentDetails?.upi || "Not available"}
+            />
+
+            {/* Account Number */}
+            <InfoCard
+              icon={FaCreditCard}
+              label="Account Number"
+              value={paymentDetails?.account_number || "Not available"}
+            />
+
+            {/* IFSC */}
+            <InfoCard
+              icon={FaBuildingColumns}
+              label="IFSC Code"
+              value={paymentDetails?.IFSC || "Not available"}
+            />
+
+            {/* Payment Status */}
+            <InfoCard
+              icon={FaMoneyCheckDollar}
+              label="Payment Account"
+              value={
+                paymentDetails?.upi ||
+                paymentDetails?.account_number ||
+                paymentDetails?.IFSC
+                  ? "Configured"
+                  : "Not configured"
+              }
+            />
+          </div>
+        </section>
+
+        {/* Address */}
+        <section className="mt-8">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                Location Information
+              </p>
+
+              <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+                Address
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsEditAddressOpen(true)}
+              className="inline-flex cursor-pointer items-center gap-2 text-xs font-bold text-[#E8491D] transition hover:text-[#C93B16]"
+            >
+              <FaPen className="text-[10px]" />
+              Edit Address
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
+            {/* Complete Address */}
+            <div className="bg-white p-5 sm:col-span-2 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                  <FaLocationDot />
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                    Complete Address
+                  </p>
+
+                  <p className="mt-2 text-sm font-bold leading-6 text-[#1F1811]">
+                    {address}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <InfoCard
+              icon={FaLocationDot}
+              label="City"
+              value={user?.city || "Not available"}
+            />
+
+            <InfoCard
+              icon={FaLocationDot}
+              label="PIN Code"
+              value={user?.pin || "Not available"}
+            />
+          </div>
+        </section>
+      </main>
+
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+      />
+
+      <EditAddressModal
+        isOpen={isEditAddressOpen}
+        onClose={() => setIsEditAddressOpen(false)}
+      />
+
+      <ResetPasswordModal
+        isOpen={isResetPasswordOpen}
+        onClose={() => setIsResetPasswordOpen(false)}
+      />
+    </>
+  );
+};
+
+/* Reusable Information Card */
+
+const InfoCard = ({ icon: Icon, label, value, capitalize = false }) => {
+  return (
+    <div className="bg-white p-5 sm:p-6">
+      <div className="flex items-start gap-4">
+        <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+          <Icon />
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+            {label}
+          </p>
+
+          <p
+            className={`mt-2 truncate text-sm font-bold text-[#1F1811] ${
+              capitalize ? "capitalize" : ""
+            }`}
+          >
+            {value}
+          </p>
         </div>
       </div>
-
-      {isEditProfileModalOpen && (
-        <EditProfileModal onClose={() => setIsEditProfileModalOpen(false)} />
-      )}
-      {isResetPasswordModalOpen && (
-        <ResetPasswordModal
-          onClose={() => setIsResetPasswordModalOpen(false)}
-        />
-      )}
-    </>
+    </div>
   );
 };
 
