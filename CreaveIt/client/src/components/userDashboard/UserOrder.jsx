@@ -1,246 +1,289 @@
-// import React, { useEffect, useState } from "react";
-// import api from "../../config/Api";
-// import toast from "react-hot-toast";
-// import Loading from "../Loading";
+import React, { useEffect, useState } from "react";
+import {
+  FaBagShopping,
+  FaClock,
+  FaLocationDot,
+  FaRotateRight,
+  FaUtensils,
+} from "react-icons/fa6";
+import toast from "react-hot-toast";
+import api from "../../config/Api";
 
-// const UserOrder = () => {
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [orders, setOrders] = useState();
+const UserOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-//   const fetchAllPlacedOrder = async () => {
-//     setIsLoading(true);
-//     console.log("Fetching User Placed Orders...");
-//     try {
-//       const res = await api.get("/user/placedorders");
-//       setOrders(res.data.data);
-//       toast.success(res.data.message);
-//     } catch (error) {
-//       console.log(error);
-//       toast.error(error?.response?.data?.message || "Unknown Error");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  const fetchOrders = async (showToast = false) => {
+    try {
+      if (showToast) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
 
-//   useEffect(() => {
-//     fetchAllPlacedOrder();
-//     // const interval = setInterval(() => {
-//     //   fetchAllPlacedOrder();
-//     // }, 1000 * 10); // Refresh every 1 minutes
-//     // return () => clearInterval(interval);
-//   }, []);
+      const res = await api.get("/user/placedorders");
+      setOrders(res?.data?.data || []);
+      if (showToast) {
+        toast.success("Orders fetched successfully");
+      }
+    } catch (error) {
+      console.log("Fetch orders error:", error);
+      toast.error(error?.response?.data?.message || "Unable to fetch orders");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
-//   // if (isLoading) {
-//   //   return (
-//   //     <div className="w-full">
-//   //       <Loading />
-//   //     </div>
-//   //   );
-//   // }
-//   return (
-//     <>
-//       <div className="bg-gray-50 rounded-lg p-6 h-full overflow-y-auto">
-//         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-//           <h2 className="text-2xl font-bold text-gray-800 mb-4">My Orders</h2>
-//           <div className="border mt-3" />
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-//           {!orders || orders.length === 0 ? (
-//             <div className="text-center text-gray-500 py-12">
-//               <p className="text-lg">No orders placed yet</p>
-//             </div>
-//           ) : (
-//             <div className="mt-6 overflow-x-auto">
-//               <table className="w-full border-collapse">
-//                 <thead>
-//                   <tr className="bg-gray-100 border-b-2 border-gray-300">
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Order Number
-//                     </th>
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Status
-//                     </th>
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Total Amount
-//                     </th>
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Items
-//                     </th>
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Date
-//                     </th>
-//                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-//                       Action
-//                     </th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {orders.map((order, idx) => (
-//                     <tr
-//                       key={idx}
-//                       className="border-b border-gray-200 hover:bg-gray-50 transition"
-//                     >
-//                       <td className="px-4 py-3 text-gray-800 font-medium">
-//                         {order.orderNumber || order._id?.substring(0, 8)}
-//                       </td>
-//                       <td className="px-4 py-3">
-//                         <span
-//                           className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${
-//                             order.status === "completed"
-//                               ? "bg-green-100 text-green-800"
-//                               : order.status === "cancelled"
-//                                 ? "bg-red-100 text-red-800"
-//                                 : order.status === "pending"
-//                                   ? "bg-yellow-100 text-yellow-800"
-//                                   : "bg-blue-100 text-blue-800"
-//                           }`}
-//                         >
-//                           {order.status || "Pending"}
-//                         </span>
-//                       </td>
-//                       <td className="px-4 py-3 text-gray-800 font-semibold">
-//                         ₹ {order.orderValue.total.toFixed(2) || 0}
-//                       </td>
-//                       <td className="px-4 py-3 text-gray-600">
-//                         {order.items?.length || 0} item
-//                         {order.items?.length !== 1 ? "s" : ""}
-//                       </td>
-//                       <td className="px-4 py-3 text-gray-600">
-//                         {new Date(order.createdAt).toLocaleDateString()}
-//                       </td>
-//                       <td className="ps-4 py-3 text-gray-600">
-//                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition">
-//                           Track Order
-//                         </button>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//       );
-//     </>
-//   );
-// };
+  // Only show Delivered, Cancelled and Rejected orders
+  const completedOrders = orders.filter((order) => {
+    const status = order?.status?.toLowerCase();
+    return ["delivered", "cancelled", "rejected"].includes(status);
+  });
 
-// export default UserOrder;
+  const getStatusStyle = (status) => {
+    const currentStatus = status?.toLowerCase();
+    if (currentStatus === "delivered") {
+      return "bg-[#6B8E4E]/15 text-[#6B8E4E]";
+    }
 
-import React from "react";
+    if (currentStatus === "cancelled" || currentStatus === "rejected") {
+      return "bg-[#E8491D]/10 text-[#E8491D]";
+    }
 
-import { FaBagShopping, FaArrowRight, FaClock, FaCheck } from "react-icons/fa6";
+    return "bg-[#1F1811]/10 text-[#5F5143]";
+  };
 
-const MyOrders = () => {
-  // Dummy data
-  const orders = [
-    {
-      id: "#CRV-1024",
-      restaurant: "Burger House",
-      items: "Classic Burger, French Fries",
-      total: "₹420",
-      status: "Delivered",
-      date: "Today",
-    },
-    {
-      id: "#CRV-1023",
-      restaurant: "Pizza Corner",
-      items: "Margherita Pizza, Garlic Bread",
-      total: "₹680",
-      status: "On The Way",
-      date: "Yesterday",
-    },
-    {
-      id: "#CRV-1022",
-      restaurant: "Spice Kitchen",
-      items: "Paneer Butter Masala",
-      total: "₹250",
-      status: "Delivered",
-      date: "20 Aug, 2026",
-    },
-  ];
+  const formatStatus = (status) => {
+    if (!status) return "Unknown";
+
+    const statusMap = {
+      delivered: "Delivered",
+      cancelled: "Cancelled",
+      rejected: "Rejected",
+    };
+
+    return statusMap[status?.toLowerCase()] || status;
+  };
+
+  const getRestaurantImage = (order) => {
+    return (
+      order?.restaurantId?.photo?.url ||
+      order?.restaurantId?.image?.url ||
+      order?.restaurantId?.images?.[0]?.url ||
+      ""
+    );
+  };
+
+  const getRestaurantName = (order) => {
+    return (
+      order?.restaurantId?.restaurantName ||
+      order?.restaurantId?.fullName ||
+      "Restaurant"
+    );
+  };
+
+  const getFoodName = (order) => {
+    if (order?.items?.length > 0) {
+      return order.items
+        .map(
+          (item) =>
+            item?.foodName ||
+            item?.itemName ||
+            item?.name ||
+            item?.title ||
+            "Food Item",
+        )
+        .join(", ");
+    }
+
+    return "Food details unavailable";
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center">
+          <span className="size-8 animate-spin rounded-full border-2 border-[#E8491D] border-t-transparent" />
+
+          <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[#8A7C6A]">
+            Loading Orders...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <main>
+    <>
       {/* Header */}
-      <section>
-        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-          Order Management
-        </p>
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8491D]">
+            Order History
+          </p>
 
-        <div className="mt-1 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <h1 className="font-[Archivo_Black] text-2xl uppercase text-[#1F1811] sm:text-3xl">
-              My Orders
-            </h1>
+          <h1 className="mt-1 font-[Archivo_Black] text-2xl uppercase text-[#1F1811] sm:text-3xl">
+            My Orders
+          </h1>
 
-            <p className="mt-2 text-sm text-[#8A7C6A]">
-              Track and manage all your food orders.
-            </p>
+          <p className="mt-2 text-sm text-[#8A7C6A]">
+            View your delivered, cancelled and rejected orders.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => fetchOrders(true)}
+          disabled={refreshing}
+          className="flex cursor-pointer items-center justify-center gap-2 bg-[#1F1811] px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-[#FBF3E7] transition hover:bg-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <FaRotateRight className={refreshing ? "animate-spin" : ""} />
+          {refreshing ? "Refreshing..." : "Refresh"}
+        </button>
+      </div>
+
+      {/* Orders Count */}
+      <div className="mb-5 flex items-center gap-3 bg-[#1F1811] px-5 py-4">
+        <div className="flex size-10 items-center justify-center bg-[#E8491D] text-[#FBF3E7]">
+          <FaBagShopping />
+        </div>
+
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+            Completed Orders
+          </p>
+
+          <p className="text-xl font-bold text-[#FBF3E7]">
+            {completedOrders.length}
+          </p>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {completedOrders.length === 0 ? (
+        <div className="flex min-h-100 flex-col items-center justify-center bg-white px-6 text-center">
+          <div className="flex size-16 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
+            <FaBagShopping className="text-2xl" />
           </div>
 
-          <span className="text-xs font-bold text-[#8A7C6A]">
-            {orders.length} Total Orders
-          </span>
+          <h2 className="mt-5 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+            No Orders Yet
+          </h2>
+
+          <p className="mt-2 max-w-sm text-sm text-[#8A7C6A]">
+            Your delivered, cancelled or rejected orders will appear here.
+          </p>
         </div>
-      </section>
+      ) : (
+        <div className="space-y-3">
+          {completedOrders.map((order, index) => {
+            const restaurantImage = getRestaurantImage(order);
+            const restaurantName = getRestaurantName(order);
+            const foodName = getFoodName(order);
 
-      {/* Orders */}
-      <section className="mt-6 bg-white">
-        {orders.map((order) => {
-          const delivered = order.status === "Delivered";
+            return (
+              <div
+                key={order?._id || index}
+                className="group bg-white transition-shadow hover:shadow-[0_12px_30px_rgba(31,24,17,0.08)]"
+              >
+                <div className="flex flex-col sm:flex-row">
+                  {/* Restaurant Image */}
+                  <div className="h-40 w-full shrink-0 overflow-hidden bg-[#FBF3E7] sm:h-auto sm:w-40">
+                    {restaurantImage ? (
+                      <img
+                        src={restaurantImage}
+                        alt={restaurantName}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.parentElement.querySelector(
+                            ".image-fallback",
+                          ).style.display = "flex";
+                        }}
+                      />
+                    ) : null}
 
-          return (
-            <div
-              key={order.id}
-              className="flex flex-col gap-5 border-b border-dashed border-[#1F1811]/10 p-5 last:border-none sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex size-12 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
-                  <FaBagShopping />
-                </div>
-
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="font-bold text-[#1F1811]">
-                      {order.restaurant}
-                    </h3>
-
-                    <span
-                      className={`flex items-center gap-1.5 text-[10px] font-bold uppercase ${
-                        delivered ? "text-[#6B8E4E]" : "text-[#D9952B]"
-                      }`}
+                    <div
+                      className={`image-fallback h-full w-full items-center justify-center text-[#E8491D] ${restaurantImage ? "hidden" : "flex"}`}
                     >
-                      {delivered ? <FaCheck /> : <FaClock />}
-                      {order.status}
-                    </span>
+                      <FaUtensils className="text-3xl" />
+                    </div>
                   </div>
 
-                  <p className="mt-2 text-xs text-[#8A7C6A]">{order.items}</p>
+                  {/* Order Details */}
+                  <div className="flex flex-1 flex-col justify-between p-5">
+                    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="size-2 rounded-full bg-[#E8491D]" />
 
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
-                    {order.id} • {order.date}
-                  </p>
+                          <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                            Order #{order?.orderNumber || "UNKNOWN"}
+                          </p>
+                        </div>
+
+                        <h2 className="mt-2 text-lg font-bold text-[#1F1811]">
+                          {restaurantName}
+                        </h2>
+
+                        <div className="mt-2 flex items-center gap-2 text-sm text-[#5F5143]">
+                          <FaUtensils className="shrink-0 text-xs text-[#E8491D]" />
+
+                          <p className="line-clamp-1">{foodName}</p>
+                        </div>
+                      </div>
+
+                      {/* Status */}
+                      <span
+                        className={`w-fit px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${getStatusStyle(order?.status)}`}
+                      >
+                        {formatStatus(order?.status)}
+                      </span>
+                    </div>
+
+                    {/* Bottom Details */}
+                    <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#1F1811]/10 pt-4">
+                      <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
+                        <FaClock className="text-[#E8491D]" />
+
+                        {order?.createdAt
+                          ? new Date(order.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "Date unavailable"}
+                      </div>
+
+                      {order?.restaurantId?.city && (
+                        <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
+                          <FaLocationDot className="text-[#E8491D]" />
+                          {order.restaurantId.city}
+                        </div>
+                      )}
+
+                      <div className="ml-auto text-sm font-bold text-[#1F1811]">
+                        ₹{order?.orderValue?.total || 0}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex items-center justify-between gap-6 sm:block sm:text-right">
-                <p className="font-bold text-[#1F1811]">{order.total}</p>
-
-                <button
-                  type="button"
-                  className="mt-2 inline-flex cursor-pointer items-center gap-2 text-xs font-bold text-[#E8491D]"
-                >
-                  View Details
-                  <FaArrowRight className="text-[10px]" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </section>
-    </main>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 };
 
-export default MyOrders;
+export default UserOrders;

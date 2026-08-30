@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FaEnvelope,
   FaPhone,
@@ -11,17 +11,24 @@ import {
   FaMoneyCheckDollar,
   FaBuildingColumns,
   FaCreditCard,
+  FaCamera,
+  FaSpinner,
 } from "react-icons/fa6";
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../config/Api";
 import EditProfileModal from "../userDashboard/modals/EditProfileModals";
 import EditAddressModal from "../userDashboard/modals/EditAddressModal";
 import ResetPasswordModal from "../userDashboard/modals/ResetPasswordModal";
 
 const UserProfile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isEditAddressOpen, setIsEditAddressOpen] = useState(false);
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [photoLoading, setPhotoLoading] = useState(false);
+
+  const fileInputRef = useRef(null);
   const getInitial = () => {
     return user?.fullName?.charAt(0)?.toUpperCase() || "U";
   };
@@ -32,7 +39,51 @@ const UserProfile = () => {
           user?.pin ? ` - ${user.pin}` : ""
         }`
       : "No address available";
+
   const paymentDetails = user?.paymentDetail || user?.paymentDetails || {};
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    try {
+      setPhotoLoading(true);
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await api.patch("/user/changePhoto", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res?.data?.data) {
+        setUser(res.data.data);
+      }
+
+      toast.success(res?.data?.message || "Profile photo updated");
+    } catch (error) {
+      console.log("Photo upload error:", error);
+
+      toast.error(
+        error?.response?.data?.message || "Unable to update profile photo",
+      );
+    } finally {
+      setPhotoLoading(false);
+
+      e.target.value = "";
+    }
+  };
 
   return (
     <>
@@ -60,16 +111,40 @@ const UserProfile = () => {
               {/* User Info */}
               <div className="flex items-center gap-5">
                 {/* Avatar */}
-                <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] text-2xl font-black text-[#1F1811]">
-                  {user?.photo?.url ? (
-                    <img
-                      src={user.photo.url}
-                      alt={user?.fullName || "User"}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    getInitial()
-                  )}
+                <div className="relative">
+                  <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] text-2xl font-black text-[#1F1811]">
+                    {user?.photo?.url ? (
+                      <img
+                        src={user.photo.url}
+                        alt={user?.fullName || "User"}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      getInitial()
+                    )}
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={photoLoading}
+                    className="absolute -bottom-2 -right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-[#E8491D] text-xs text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+                    title="Change profile photo"
+                  >
+                    {photoLoading ? (
+                      <FaSpinner className="animate-spin" />
+                    ) : (
+                      <FaCamera />
+                    )}
+                  </button>
                 </div>
 
                 {/* Details */}
@@ -87,6 +162,15 @@ const UserProfile = () => {
                   <p className="mt-2 truncate text-sm text-[#C9BEB0]">
                     {user?.email || "No email available"}
                   </p>
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={photoLoading}
+                    className="mt-3 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-[#E8491D] transition hover:text-[#FBF3E7] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {photoLoading ? "Uploading..." : "Change Profile Photo"}
+                  </button>
                 </div>
               </div>
 
@@ -133,28 +217,24 @@ const UserProfile = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
-            {/* Full Name */}
             <InfoCard
               icon={FaUser}
               label="Full Name"
               value={user?.fullName || "Not available"}
             />
 
-            {/* Email */}
             <InfoCard
               icon={FaEnvelope}
               label="Email Address"
               value={user?.email || "Not available"}
             />
 
-            {/* Phone */}
             <InfoCard
               icon={FaPhone}
               label="Phone Number"
               value={user?.phone || "Not available"}
             />
 
-            {/* Gender */}
             <InfoCard
               icon={FaVenusMars}
               label="Gender"
@@ -162,7 +242,6 @@ const UserProfile = () => {
               capitalize
             />
 
-            {/* DOB */}
             <InfoCard
               icon={FaCalendarDays}
               label="Date of Birth"
@@ -177,7 +256,6 @@ const UserProfile = () => {
               }
             />
 
-            {/* Role */}
             <InfoCard
               icon={FaUser}
               label="Account Type"
@@ -200,28 +278,24 @@ const UserProfile = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
-            {/* UPI */}
             <InfoCard
               icon={FaMoneyCheckDollar}
               label="UPI ID"
               value={paymentDetails?.upi || "Not available"}
             />
 
-            {/* Account Number */}
             <InfoCard
               icon={FaCreditCard}
               label="Account Number"
               value={paymentDetails?.account_number || "Not available"}
             />
 
-            {/* IFSC */}
             <InfoCard
               icon={FaBuildingColumns}
               label="IFSC Code"
               value={paymentDetails?.IFSC || "Not available"}
             />
 
-            {/* Payment Status */}
             <InfoCard
               icon={FaMoneyCheckDollar}
               label="Payment Account"
@@ -260,7 +334,6 @@ const UserProfile = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-px bg-[#1F1811]/10 sm:grid-cols-2">
-            {/* Complete Address */}
             <div className="bg-white p-5 sm:col-span-2 sm:p-6">
               <div className="flex items-start gap-4">
                 <div className="flex size-10 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
@@ -290,6 +363,18 @@ const UserProfile = () => {
               label="PIN Code"
               value={user?.pin || "Not available"}
             />
+
+            <InfoCard
+              icon={FaLocationDot}
+              label="Latitude"
+              value={user?.geolocation?.lat || "Not available"}
+            />
+
+            <InfoCard
+              icon={FaLocationDot}
+              label="Longitude"
+              value={user?.geolocation?.lon || "Not available"}
+            />
           </div>
         </section>
       </main>
@@ -312,8 +397,6 @@ const UserProfile = () => {
   );
 };
 
-/* Reusable Information Card */
-
 const InfoCard = ({ icon: Icon, label, value, capitalize = false }) => {
   return (
     <div className="bg-white p-5 sm:p-6">
@@ -328,9 +411,7 @@ const InfoCard = ({ icon: Icon, label, value, capitalize = false }) => {
           </p>
 
           <p
-            className={`mt-2 truncate text-sm font-bold text-[#1F1811] ${
-              capitalize ? "capitalize" : ""
-            }`}
+            className={`mt-2 truncate text-sm font-bold text-[#1F1811] ${capitalize ? "capitalize" : ""}`}
           >
             {value}
           </p>

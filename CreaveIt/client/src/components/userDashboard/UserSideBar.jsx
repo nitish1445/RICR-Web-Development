@@ -1,24 +1,19 @@
 import React from "react";
-
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaHouse,
-  FaLocationDot,
   FaUser,
   FaArrowRightFromBracket,
   FaXmark,
   FaBagShopping,
   FaHeadset,
 } from "react-icons/fa6";
-
 import { useAuth } from "../../context/AuthContext";
-
 import Logo from "../../assets/craveIt-logo.png";
 
 const UserSidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
-
   const navigation = [
     {
       name: "Overview",
@@ -49,6 +44,7 @@ const UserSidebar = ({ isOpen, onClose }) => {
 
   const handleLogout = async () => {
     await logout();
+    navigate("/restaurants");
     onClose?.();
   };
 

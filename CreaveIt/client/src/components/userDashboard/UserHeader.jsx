@@ -50,7 +50,7 @@ const UserHeader = ({ onMenuClick }) => {
         {/* Profile */}
         <Link
           to="/user-dashboard/profile"
-          className="flex size-10 items-center justify-center overflow-hidden bg-[#1F1811] font-bold text-[#FBF3E7]"
+          className="flex size-9 items-center justify-center overflow-hidden bg-[#1F1811] font-bold text-[#FBF3E7]"
         >
           {user?.photo?.url ? (
             <img

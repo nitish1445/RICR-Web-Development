@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   FaHeadset,
   FaBagShopping,
@@ -8,8 +7,10 @@ import {
   FaEnvelope,
   FaArrowRight,
 } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const HelpDesk = () => {
+  const navigate = useNavigate();
   const supportOptions = [
     {
       title: "Order Issues",
@@ -56,6 +57,7 @@ const HelpDesk = () => {
               <button
                 key={item.title}
                 type="button"
+                onClick={() => navigate("/contact")}
                 className="group cursor-pointer bg-white p-6 text-left transition hover:bg-[#1F1811]"
               >
                 <div className="flex size-11 items-center justify-center bg-[#FBF3E7] text-[#E8491D] transition group-hover:bg-[#E8491D] group-hover:text-[#FBF3E7]">
@@ -100,7 +102,7 @@ const HelpDesk = () => {
           </div>
 
           <a
-            href="mailto:support@craveit.com"
+            href="mailto:nitishroy.dz@gmail.com"
             className="inline-flex items-center justify-center gap-2 bg-[#1F1811] px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7]"
           >
             <FaEnvelope />

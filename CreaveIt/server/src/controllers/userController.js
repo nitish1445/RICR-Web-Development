@@ -58,7 +58,8 @@ export const UserUpdate = async (req, res, next) => {
 
 export const UserUpdateAddress = async (req, res, next) => {
   try {
-    const { address, city, pin } = req.body;
+    const { address, city, pin, geolocation } = req.body;
+
     const currentUser = req.user;
 
     // Validation
@@ -75,9 +76,18 @@ export const UserUpdateAddress = async (req, res, next) => {
       return next(error);
     }
 
+    // Update address details
     currentUser.address = address;
     currentUser.city = city;
     currentUser.pin = pin;
+
+    // Update geolocation
+    if (geolocation) {
+      currentUser.geolocation = {
+        lat: geolocation.lat || "N/A",
+        lon: geolocation.lon || "N/A",
+      };
+    }
 
     await currentUser.save();
 
@@ -162,9 +172,7 @@ export const UserResetPassword = async (req, res, next) => {
 export const UserPlaceOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
-
     const { restaurantID, items, orderValue, status, review } = req.body;
-
     console.log({ restaurantID, items, orderValue, status, review });
 
     if (!restaurantID || !items || !orderValue || !status) {
@@ -200,6 +208,60 @@ export const UserAllOrders = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "All Orders Fetched Successfully", data: orders });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const UserCancelOrder = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    if (!orderId) {
+      const error = new Error("Order ID is required.");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    const order = await Order.findOne({
+      _id: orderId,
+      userId: currentUser._id,
+    });
+
+    if (!order) {
+      const error = new Error("Order not found.");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const nonCancellableStatuses = [
+      "ready",
+      "pickedUp",
+      "onTheWay",
+      "delivered",
+      "rejected",
+      "damaged",
+      "cancelled",
+    ];
+
+    if (nonCancellableStatuses.includes(order.status)) {
+      const error = new Error(
+        `Order cannot be cancelled at ${order.status} stage.`,
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    order.status = "cancelled";
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Order cancelled successfully.",
+      data: order,
+    });
   } catch (error) {
     next(error);
   }

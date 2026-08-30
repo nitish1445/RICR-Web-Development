@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
   FaBagShopping,
   FaClock,
@@ -8,73 +7,162 @@ import {
   FaArrowRight,
   FaLocationDot,
   FaUtensils,
+  FaXmark,
 } from "react-icons/fa6";
-
 import { Link } from "react-router-dom";
-
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../config/Api";
 
 const UserOverview = () => {
   const { user } = useAuth();
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [cancellingOrder, setCancellingOrder] = useState(null);
 
   const getFirstName = () => {
     return user?.fullName?.split(" ")[0] || "Customer";
   };
 
-  // Dummy data for now
+  const fetchOrders = async () => {
+    try {
+      setLoadingOrders(true);
+      const res = await api.get("/user/placedorders");
+      setOrders(res?.data?.data || []);
+    } catch (error) {
+      console.log("Fetch orders error:", error);
+      toast.error(error?.response?.data?.message || "Unable to fetch orders");
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const completedStatuses = ["delivered", "cancelled", "rejected"];
+  const currentOrders = orders.filter((order) => {
+    return !completedStatuses.includes(order?.status?.toLowerCase());
+  });
+
   const stats = [
     {
       label: "Total Orders",
-      value: "12",
+      value: orders.length,
       icon: FaBagShopping,
       color: "bg-[#E8491D]",
     },
     {
       label: "Delivered",
-      value: "9",
+      value: orders.filter(
+        (order) => order?.status?.toLowerCase() === "delivered",
+      ).length,
       icon: FaCheck,
       color: "bg-[#6B8E4E]",
     },
     {
-      label: "Pending",
-      value: "2",
+      label: "Current Orders",
+      value: currentOrders.length,
       icon: FaClock,
       color: "bg-[#D9952B]",
     },
     {
       label: "Favorites",
-      value: "6",
+      value: "0",
       icon: FaHeart,
       color: "bg-[#1F1811]",
     },
   ];
 
-  const recentOrders = [
-    {
-      id: "#CRV-1024",
-      restaurant: "Burger House",
-      items: "2 Items",
-      amount: "₹420",
-      status: "Delivered",
-      date: "Today",
-    },
-    {
-      id: "#CRV-1023",
-      restaurant: "Pizza Corner",
-      items: "3 Items",
-      amount: "₹680",
-      status: "On The Way",
-      date: "Yesterday",
-    },
-    {
-      id: "#CRV-1022",
-      restaurant: "Spice Kitchen",
-      items: "1 Item",
-      amount: "₹250",
-      status: "Delivered",
-      date: "Aug 20, 2026",
-    },
-  ];
+  const getRestaurantName = (order) => {
+    return (
+      order?.restaurantId?.restaurantName ||
+      order?.restaurantId?.fullName ||
+      "Restaurant"
+    );
+  };
+
+  const getFoodItems = (order) => {
+    if (!order?.items?.length) {
+      return "Food details unavailable";
+    }
+
+    return order.items
+      .map((item) => item?.foodName || item?.name || item?.itemName || "Food")
+      .join(", ");
+  };
+
+  const getStatusStyle = (status) => {
+    const currentStatus = status?.toLowerCase();
+
+    if (currentStatus === "pending") {
+      return "text-[#D9952B]";
+    }
+
+    if (currentStatus === "accepted") {
+      return "text-[#4C7A9F]";
+    }
+
+    if (currentStatus === "preparing") {
+      return "text-[#9B6B3D]";
+    }
+
+    if (currentStatus === "ready") {
+      return "text-[#7A5EA8]";
+    }
+
+    if (currentStatus === "pickedup") {
+      return "text-[#4C7A9F]";
+    }
+
+    if (currentStatus === "ontheway") {
+      return "text-[#6B8E4E]";
+    }
+
+    return "text-[#8A7C6A]";
+  };
+
+  const formatStatus = (status) => {
+    if (!status) return "Unknown";
+
+    const statusMap = {
+      pending: "Pending",
+      accepted: "Accepted",
+      preparing: "Preparing",
+      ready: "Ready",
+      pickedUp: "Picked Up",
+      onTheWay: "On The Way",
+      delivered: "Delivered",
+      rejected: "Rejected",
+      damaged: "Damaged",
+      cancelled: "Cancelled",
+    };
+
+    return statusMap[status] || status;
+  };
+
+  const canCancelOrder = (status) => {
+    return ["pending", "accepted"].includes(status?.toLowerCase());
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    try {
+      setCancellingOrder(orderId);
+      const res = await api.patch(`/user/cancelOrder/${orderId}`);
+      toast.success(res?.data?.message || "Order cancelled successfully");
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId ? { ...order, status: "cancelled" } : order,
+        ),
+      );
+    } catch (error) {
+      console.log("Cancel order error:", error);
+      toast.error(error?.response?.data?.message || "Unable to cancel order");
+    } finally {
+      setCancellingOrder(null);
+    }
+  };
 
   return (
     <main>
@@ -140,16 +228,16 @@ const UserOverview = () => {
 
       {/* Main Content */}
       <section className="mt-6 grid gap-6 lg:grid-cols-3">
-        {/* Recent Orders */}
+        {/* Current Orders */}
         <div className="bg-white lg:col-span-2">
           <div className="flex items-center justify-between border-b border-[#1F1811]/10 p-5">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-                Order History
+                Active Orders
               </p>
 
               <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
-                Recent Orders
+                Current Orders
               </h2>
             </div>
 
@@ -162,52 +250,114 @@ const UserOverview = () => {
             </Link>
           </div>
 
-          <div>
-            {recentOrders.map((order) => (
-              <div
-                key={order.id}
-                className="flex flex-col gap-4 border-b border-dashed border-[#1F1811]/10 p-5 last:border-none sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
-                    <FaUtensils />
-                  </div>
+          {loadingOrders ? (
+            <div className="flex min-h-72 items-center justify-center">
+              <div className="flex flex-col items-center">
+                <span className="size-7 animate-spin rounded-full border-2 border-[#E8491D] border-t-transparent" />
 
-                  <div>
-                    <p className="text-sm font-bold text-[#1F1811]">
-                      {order.restaurant}
-                    </p>
-
-                    <p className="mt-1 text-xs text-[#8A7C6A]">
-                      {order.id} • {order.items}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between gap-5 sm:block sm:text-right">
-                  <div>
-                    <p className="text-sm font-bold text-[#1F1811]">
-                      {order.amount}
-                    </p>
-
-                    <p className="mt-1 text-[10px] text-[#8A7C6A]">
-                      {order.date}
-                    </p>
-                  </div>
-
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wide ${
-                      order.status === "Delivered"
-                        ? "text-[#6B8E4E]"
-                        : "text-[#D9952B]"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
+                <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+                  Loading Orders...
+                </p>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : currentOrders.length === 0 ? (
+            <div className="flex min-h-72 flex-col items-center justify-center px-5 text-center">
+              <div className="flex size-14 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                <FaBagShopping className="text-xl" />
+              </div>
+
+              <h3 className="mt-4 font-[Archivo_Black] text-lg uppercase text-[#1F1811]">
+                No Current Orders
+              </h3>
+
+              <p className="mt-2 text-sm text-[#8A7C6A]">
+                You don't have any active food orders right now.
+              </p>
+
+              <Link
+                to="/restaurants"
+                className="inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#1F1811] transition hover:text-[#C93B16]"
+              >
+                Explore Restaurants
+                <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+          ) : (
+            <div>
+              {currentOrders.map((order) => (
+                <div
+                  key={order?._id}
+                  className="flex flex-col gap-4 border-b border-dashed border-[#1F1811]/10 p-5 last:border-none sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                      <FaUtensils />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-bold text-[#1F1811]">
+                        {getRestaurantName(order)}
+                      </p>
+
+                      <p className="mt-1 line-clamp-1 text-xs text-[#8A7C6A]">
+                        {order?.orderNumber} • {getFoodItems(order)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-4 sm:justify-end">
+                    <div className="sm:text-right">
+                      <p className="text-sm font-bold text-[#1F1811]">
+                        ₹{order?.orderValue?.total || 0}
+                      </p>
+
+                      <p className="mt-1 text-[10px] text-[#8A7C6A]">
+                        {order?.createdAt
+                          ? new Date(order.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "Date unavailable"}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wide ${getStatusStyle(order?.status)}`}
+                      >
+                        {formatStatus(order?.status)}
+                      </span>
+
+                      {canCancelOrder(order?.status) && (
+                        <button
+                          type="button"
+                          onClick={() => handleCancelOrder(order._id)}
+                          disabled={cancellingOrder === order._id}
+                          className="flex cursor-pointer items-center gap-1.5 bg-[#E8491D]/10 px-3 py-2 text-[9px] font-bold uppercase tracking-wide text-[#E8491D] transition hover:bg-[#E8491D] hover:text-[#FBF3E7] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {cancellingOrder === order._id ? (
+                            <>
+                              <span className="size-3 animate-spin rounded-full border border-[#E8491D] border-t-transparent" />
+                              Cancelling
+                            </>
+                          ) : (
+                            <>
+                              <FaXmark />
+                              Cancel
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}
@@ -242,7 +392,7 @@ const UserOverview = () => {
                 to="/user-dashboard/profile"
                 className="flex items-center justify-between bg-[#FBF3E7] px-4 py-3 text-sm font-bold text-[#1F1811] transition hover:bg-[#1F1811] hover:text-[#FBF3E7]"
               >
-                Manage Address
+                Manage Account
                 <FaArrowRight className="text-xs" />
               </Link>
             </div>

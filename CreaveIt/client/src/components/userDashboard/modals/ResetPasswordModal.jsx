@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   FaArrowRight,
   FaEye,
@@ -9,20 +8,20 @@ import {
   FaShieldHalved,
   FaXmark,
 } from "react-icons/fa6";
-
 import api from "../../../config/Api";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../../../context/AuthContext";
 
 const ResetPasswordModal = ({ isOpen, onClose }) => {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
     cfNewPassword: "",
   });
-
   const [validError, setValidError] = useState({});
   const [loading, setLoading] = useState(false);
-
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -52,7 +51,6 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     if (loading) return;
-
     handleClear();
     onClose();
   };
@@ -86,6 +84,10 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (user.email === "customer@gmail.com") {
+      return toast.error("Dummy Customer cannot perfom this action.");
+    }
+
     if (!validate()) {
       toast.error("Please fix the highlighted fields");
       return;
@@ -95,17 +97,12 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
 
     try {
       const res = await api.patch("/user/resetPassword", formData);
-
       toast.success(res?.data?.message || "Password updated successfully");
-
       handleClear();
       onClose();
     } catch (error) {
       console.log(error);
-
-      toast.error(
-        error?.response?.data?.message || "Unable to reset password",
-      );
+      toast.error(error?.response?.data?.message || "Unable to reset password");
     } finally {
       setLoading(false);
     }
@@ -176,9 +173,7 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
               <p className="text-xs leading-5 text-[#5F5143]">
                 Use a strong password that you don't use for other accounts.
                 Your password must contain at least{" "}
-                <span className="font-bold text-[#1F1811]">
-                  6 characters.
-                </span>
+                <span className="font-bold text-[#1F1811]">6 characters.</span>
               </p>
             </div>
 
@@ -286,9 +281,7 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
-                    }
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-[#8A7C6A] transition hover:text-[#E8491D]"
                   >
                     {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
