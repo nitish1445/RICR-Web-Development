@@ -1,11 +1,21 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import api from "../../../config/Api";
-import { GiCancel } from "react-icons/gi";
+import {
+  FaXmark,
+  FaUser,
+  FaStore,
+  FaLocationDot,
+  FaFileShield,
+  FaWallet,
+  FaLocationCrosshairs,
+  FaCheck,
+} from "react-icons/fa6";
 import toast from "react-hot-toast";
 
 const RestaurantEditProfileModal = ({ onClose }) => {
   const { user, setUser, setIsLogin } = useAuth();
+
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
     email: user?.email || "",
@@ -77,17 +87,23 @@ const RestaurantEditProfileModal = ({ onClose }) => {
     }
 
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({
       ...formData,
       [name]: value,
     });
+
     if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
     }
   };
 
@@ -99,50 +115,70 @@ const RestaurantEditProfileModal = ({ onClose }) => {
         [field]: value,
       },
     });
+
     if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
+      setErrors({
+        ...errors,
+        [field]: "",
+      });
     }
   };
 
   const fetchLocation = (e) => {
     e.preventDefault();
-    navigator.geolocation.getCurrentPosition((result) => {
-      setFormData({
-        ...formData,
-        geoLocation: {
-          ...formData["geoLocation"],
-          lat: result.coords.latitude,
-          lon: result.coords.longitude,
-        },
-      });
-    });
+
+    navigator.geolocation.getCurrentPosition(
+      (result) => {
+        setFormData({
+          ...formData,
+          geoLocation: {
+            ...formData.geoLocation,
+            lat: result.coords.latitude,
+            lon: result.coords.longitude,
+          },
+        });
+
+        toast.success("Live location captured");
+      },
+      () => {
+        toast.error("Unable to fetch location");
+      },
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
-
+    if (user?.email === "manager@gmail.com") {
+      return toast.error("Dummy Manager can't process this task.");
+    }
     if (!validateForm()) {
-      setMessage({ type: "error", text: "Please fix the errors above" });
+      setMessage({
+        type: "error",
+        text: "Please fix the errors above",
+      });
+
       return;
     }
-
     setLoading(true);
     setMessage({ type: "", text: "" });
-
     try {
       const res = await api.put("/restaurant/update", formData);
       if (res.data?.data) {
         sessionStorage.setItem("CraveItUser", JSON.stringify(res.data.data));
         setUser(res.data.data);
         setIsLogin(true);
-        setMessage({ type: "success", text: "Profile updated successfully!" });
-        setTimeout(() => onClose(), 1500);
+
+        setMessage({
+          type: "success",
+          text: "Profile updated successfully!",
+        });
+        toast.success(res.data.message || "Profile updated successfully!");
+        setTimeout(() => onClose(), 1200);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed to update profile");
       setMessage({
         type: "error",
         text: error.response?.data?.message || "Failed to update profile",
@@ -152,106 +188,146 @@ const RestaurantEditProfileModal = ({ onClose }) => {
     }
   };
 
+  const inputClass = (error) =>
+    `w-full bg-[#FBF3E7]/50 px-4 py-3 text-sm text-[#1F1811] outline-none transition placeholder:text-[#8A7C6A]/60 focus:bg-white ${
+      error
+        ? "ring-1 ring-red-500"
+        : "border border-[#1F1811]/10 focus:border-[#E8491D]"
+    }`;
+
+  const sectionTitle = (icon, title, subtitle) => (
+    <div className="mb-5 flex items-start gap-3">
+      <div className="flex size-10 shrink-0 items-center justify-center bg-[#1F1811] text-[#FBF3E7]">
+        {icon}
+      </div>
+
+      <div>
+        <h3 className="font-[Archivo_Black] text-sm uppercase text-[#1F1811]">
+          {title}
+        </h3>
+
+        <p className="mt-1 text-xs text-[#8A7C6A]">{subtitle}</p>
+      </div>
+    </div>
+  );
+
   return (
-    <>
-      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
-        <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg">
-          <div className="flex justify-between px-6 py-4 border-b border-gray-300 items-center sticky top-0 bg-white">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Edit Restaurant Profile
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-[#1F1811]/80 p-3 sm:p-6">
+      <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden bg-[#FBF3E7] shadow-2xl">
+        {/* Header */}
+        <div className="flex shrink-0 items-center justify-between border-b border-[#1F1811]/10 bg-[#FBF3E7] px-5 py-4 sm:px-7">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8491D]">
+              Restaurant Dashboard
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-lg uppercase text-[#1F1811] sm:text-xl">
+              Edit Profile
             </h2>
-            <button
-              onClick={() => onClose()}
-              className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
-            >
-              <GiCancel />
-            </button>
           </div>
 
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            className="flex size-10 cursor-pointer items-center justify-center bg-[#1F1811] text-lg text-[#FBF3E7] transition hover:bg-[#E8491D] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <FaXmark />
+          </button>
+        </div>
+
+        {/* Scroll Content */}
+        <div className="overflow-y-auto">
           {message.text && (
             <div
-              className={`mx-6 mt-4 p-4 rounded-md ${
+              className={`mx-5 mt-5 px-4 py-3 text-sm font-medium sm:mx-7 ${
                 message.type === "success"
-                  ? "bg-green-100 text-green-700 border border-green-300"
-                  : "bg-red-100 text-red-700 border border-red-300"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
               }`}
             >
               {message.text}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {/* Personal Information Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Personal Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-8 p-5 sm:p-7">
+            {/* Personal Information */}
+            <section>
+              {sectionTitle(
+                <FaUser />,
+                "Personal Information",
+                "Update your manager account details",
+              )}
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Manager's Full Name *
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Manager Full Name *
                   </label>
+
                   <input
                     type="text"
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.fullName ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={inputClass(errors.fullName)}
                     placeholder="Enter manager name"
                   />
+
                   {errors.fullName && (
-                    <p className="text-red-600 text-xs mt-1">
+                    <p className="mt-1 text-xs text-red-500">
                       {errors.fullName}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Email Address
                   </label>
+
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     disabled
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-600 cursor-not-allowed"
+                    className="w-full cursor-not-allowed bg-[#1F1811]/5 px-4 py-3 text-sm text-[#8A7C6A]"
                   />
-                  <p className="text-red-500 text-xs mt-1">
-                    Email cannot be changed
+
+                  <p className="mt-1 text-[11px] text-[#E8491D]">
+                    Email address cannot be changed
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Mobile Number *
                   </label>
+
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.phone ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={inputClass(errors.phone)}
                     placeholder="10-digit mobile number"
                   />
+
                   {errors.phone && (
-                    <p className="text-red-600 text-xs mt-1">{errors.phone}</p>
+                    <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Gender
                   </label>
+
                   <select
                     name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass()}
                   >
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
@@ -261,210 +337,234 @@ const RestaurantEditProfileModal = ({ onClose }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Date of Birth
                   </label>
+
                   <input
                     type="date"
                     name="dob"
                     value={formData.dob}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass()}
                   />
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Restaurant Information Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Restaurant Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Restaurant Information */}
+            <section className="border-t border-[#1F1811]/10 pt-8">
+              {sectionTitle(
+                <FaStore />,
+                "Restaurant Information",
+                "Manage your restaurant identity and cuisine",
+              )}
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Restaurant Name *
                   </label>
+
                   <input
                     type="text"
                     name="restaurantName"
                     value={formData.restaurantName}
                     onChange={handleInputChange}
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.restaurantName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
+                    className={inputClass(errors.restaurantName)}
                     placeholder="Enter restaurant name"
                   />
+
                   {errors.restaurantName && (
-                    <p className="text-red-600 text-xs mt-1">
+                    <p className="mt-1 text-xs text-red-500">
                       {errors.restaurantName}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Cuisine Type
                   </label>
+
                   <input
                     type="text"
                     name="cuisine"
                     value={formData.cuisine}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Italian, Indian, Chinese"
+                    className={inputClass()}
+                    placeholder="Indian, Italian, Chinese..."
                   />
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Address Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Address
-              </h3>
-              <div className="grid grid-cols-1 gap-4">
+            {/* Address */}
+            <section className="border-t border-[#1F1811]/10 pt-8">
+              {sectionTitle(
+                <FaLocationDot />,
+                "Restaurant Address",
+                "Update your restaurant location details",
+              )}
+
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Complete Address
                   </label>
+
                   <input
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass()}
                     placeholder="Enter restaurant address"
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                       City *
                     </label>
+
                     <input
                       type="text"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.city ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={inputClass(errors.city)}
                       placeholder="Enter city"
                     />
+
                     {errors.city && (
-                      <p className="text-red-600 text-xs mt-1">{errors.city}</p>
+                      <p className="mt-1 text-xs text-red-500">{errors.city}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Pin Code *
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                      PIN Code *
                     </label>
+
                     <input
                       type="text"
                       name="pin"
                       value={formData.pin}
                       onChange={handleInputChange}
-                      className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.pin ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="6-digit PIN"
                       maxLength="6"
+                      className={inputClass(errors.pin)}
+                      placeholder="6-digit PIN"
                     />
+
                     {errors.pin && (
-                      <p className="text-red-600 text-xs mt-1">{errors.pin}</p>
+                      <p className="mt-1 text-xs text-red-500">{errors.pin}</p>
                     )}
                   </div>
-                  <div className="flex items-end">
-                    <div className="h-fit flex items-center w-full gap-4">
-                      <button
-                        className="w-full border border-gray-300 bg-green-50 rounded-md shadow-sm p-2 h-fit cursor-pointer"
-                        onClick={fetchLocation}
-                      >
-                        Get Live Location
-                      </button>
-                      {formData.geoLocation.lat !== "N/A" &&
-                      formData.geoLocation.lon !== "N/A"
-                        ? "✅"
-                        : "❌"}
-                    </div>
+
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                      Live Location
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={fetchLocation}
+                      className="flex w-full cursor-pointer items-center justify-center gap-2 bg-[#1F1811] px-4 py-3 text-sm font-bold text-[#FBF3E7] transition hover:bg-[#E8491D]"
+                    >
+                      <FaLocationCrosshairs />
+                      Get Current Location
+                    </button>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Business Documents Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Business Documents
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(formData.geoLocation.lat || formData.geoLocation.lon) && (
+                  <div className="flex items-center gap-2 bg-green-50 px-4 py-3 text-xs font-medium text-green-700">
+                    <FaCheck />
+                    Location coordinates successfully captured
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Documents */}
+            <section className="border-t border-[#1F1811]/10 pt-8">
+              {sectionTitle(
+                <FaFileShield />,
+                "Business Documents",
+                "Manage your restaurant registration details",
+              )}
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    GST Certificate
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    GST Number
                   </label>
+
                   <input
                     type="text"
                     value={formData.document.gst}
                     onChange={(e) =>
                       handleNestedChange("document", "gst", e.target.value)
                     }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="GST number"
+                    className={inputClass()}
+                    placeholder="Enter GST number"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     FSSAI License
                   </label>
+
                   <input
                     type="text"
                     value={formData.document.fssai}
                     onChange={(e) =>
                       handleNestedChange("document", "fssai", e.target.value)
                     }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="FSSAI registration number"
+                    className={inputClass()}
+                    placeholder="Enter FSSAI number"
                   />
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Payment Details Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Payment Details
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Payment */}
+            <section className="border-t border-[#1F1811]/10 pt-8">
+              {sectionTitle(
+                <FaWallet />,
+                "Payment Details",
+                "Update settlement and payment information",
+              )}
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     UPI ID
                   </label>
+
                   <input
                     type="text"
                     value={formData.paymentDetail.upi}
                     onChange={(e) =>
                       handleNestedChange("paymentDetail", "upi", e.target.value)
                     }
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.upi ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={inputClass(errors.upi)}
                     placeholder="username@bank"
                   />
+
                   {errors.upi && (
-                    <p className="text-red-600 text-xs mt-1">{errors.upi}</p>
+                    <p className="mt-1 text-xs text-red-500">{errors.upi}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     Account Number
                   </label>
+
                   <input
                     type="text"
                     value={formData.paymentDetail.account_number}
@@ -475,15 +575,16 @@ const RestaurantEditProfileModal = ({ onClose }) => {
                         e.target.value,
                       )
                     }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass()}
                     placeholder="Bank account number"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
                     IFSC Code
                   </label>
+
                   <input
                     type="text"
                     value={formData.paymentDetail.ifs_Code}
@@ -494,31 +595,33 @@ const RestaurantEditProfileModal = ({ onClose }) => {
                         e.target.value,
                       )
                     }
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="IFSC code"
+                    className={inputClass()}
+                    placeholder="Enter IFSC code"
                   />
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Form Actions */}
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-300">
+            {/* Actions */}
+            <div className="sticky bottom-0 -mx-5 flex flex-col-reverse gap-3 border-t border-[#1F1811]/10 bg-[#FBF3E7] px-5 pt-5 sm:-mx-7 sm:flex-row sm:justify-end sm:px-7">
               <button
                 type="button"
-                onClick={() => onClose()}
+                onClick={onClose}
                 disabled={loading}
-                className=" cursor-pointer px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50"
+                className="cursor-pointer bg-[#1F1811]/10 px-6 py-3 text-sm font-bold text-[#1F1811] transition hover:bg-[#1F1811]/20 disabled:opacity-50"
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 disabled={loading}
-                className="cursor-pointer px-6 py-2 bg-(--color-secondary) text-white rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-7 py-3 text-sm font-bold text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <>
-                    <span className="animate-spin">⟳</span> Saving...
+                    <span className="animate-spin">⟳</span>
+                    Saving Changes...
                   </>
                 ) : (
                   "Save Changes"
@@ -528,7 +631,8 @@ const RestaurantEditProfileModal = ({ onClose }) => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
+
 export default RestaurantEditProfileModal;

@@ -42,9 +42,14 @@ const UserOverview = () => {
   }, []);
 
   const completedStatuses = ["delivered", "cancelled", "rejected"];
+
   const currentOrders = orders.filter((order) => {
     return !completedStatuses.includes(order?.status?.toLowerCase());
   });
+
+  const topCurrentOrders = [...currentOrders]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
 
   const stats = [
     {
@@ -229,7 +234,7 @@ const UserOverview = () => {
       {/* Main Content */}
       <section className="mt-6 grid gap-6 lg:grid-cols-3">
         {/* Current Orders */}
-        <div className="bg-white lg:col-span-2">
+        {/* <div className="bg-white lg:col-span-2">
           <div className="flex items-center justify-between border-b border-[#1F1811]/10 p-5">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
@@ -328,6 +333,139 @@ const UserOverview = () => {
                     <div className="flex items-center gap-3">
                       <span
                         className={`text-[10px] font-bold uppercase tracking-wide ${getStatusStyle(order?.status)}`}
+                      >
+                        {formatStatus(order?.status)}
+                      </span>
+
+                      {canCancelOrder(order?.status) && (
+                        <button
+                          type="button"
+                          onClick={() => handleCancelOrder(order._id)}
+                          disabled={cancellingOrder === order._id}
+                          className="flex cursor-pointer items-center gap-1.5 bg-[#E8491D]/10 px-3 py-2 text-[9px] font-bold uppercase tracking-wide text-[#E8491D] transition hover:bg-[#E8491D] hover:text-[#FBF3E7] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {cancellingOrder === order._id ? (
+                            <>
+                              <span className="size-3 animate-spin rounded-full border border-[#E8491D] border-t-transparent" />
+                              Cancelling
+                            </>
+                          ) : (
+                            <>
+                              <FaXmark />
+                              Cancel
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div> */}
+        {/* Current Orders */}
+        <div className="bg-white lg:col-span-2">
+          <div className="flex items-center justify-between border-b border-[#1F1811]/10 p-5">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                Active Orders
+              </p>
+
+              <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+                Current Orders
+              </h2>
+            </div>
+
+            <Link
+              to="/user-dashboard/orders"
+              className="flex items-center gap-2 text-xs font-bold text-[#E8491D] transition hover:text-[#C93B16]"
+            >
+              View All
+              <FaArrowRight />
+            </Link>
+          </div>
+
+          {loadingOrders ? (
+            <div className="flex min-h-72 items-center justify-center">
+              <div className="flex flex-col items-center">
+                <span className="size-7 animate-spin rounded-full border-2 border-[#E8491D] border-t-transparent" />
+
+                <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+                  Loading Orders...
+                </p>
+              </div>
+            </div>
+          ) : topCurrentOrders.length === 0 ? (
+            <div className="flex min-h-72 flex-col items-center justify-center px-5 text-center">
+              <div className="flex size-14 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                <FaBagShopping className="text-xl" />
+              </div>
+
+              <h3 className="mt-4 font-[Archivo_Black] text-lg uppercase text-[#1F1811]">
+                No Current Orders
+              </h3>
+
+              <p className="mt-2 text-sm text-[#8A7C6A]">
+                You don't have any active food orders right now.
+              </p>
+
+              <Link
+                to="/restaurants"
+                className="inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#1F1811] transition hover:text-[#C93B16]"
+              >
+                Explore Restaurants
+                <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+          ) : (
+            <div>
+              {topCurrentOrders.map((order) => (
+                <div
+                  key={order?._id}
+                  className="flex flex-col gap-4 border-b border-dashed border-[#1F1811]/10 p-5 last:border-none sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center bg-[#FBF3E7] text-[#E8491D]">
+                      <FaUtensils />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-bold text-[#1F1811]">
+                        {getRestaurantName(order)}
+                      </p>
+
+                      <p className="mt-1 line-clamp-1 text-xs text-[#8A7C6A]">
+                        {order?.orderNumber} • {getFoodItems(order)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-4 sm:justify-end">
+                    <div className="sm:text-right">
+                      <p className="text-sm font-bold text-[#1F1811]">
+                        ₹{order?.orderValue?.total || 0}
+                      </p>
+
+                      <p className="mt-1 text-[10px] text-[#8A7C6A]">
+                        {order?.createdAt
+                          ? new Date(order.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "Date unavailable"}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wide ${getStatusStyle(
+                          order?.status,
+                        )}`}
                       >
                         {formatStatus(order?.status)}
                       </span>

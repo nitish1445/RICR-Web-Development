@@ -33,6 +33,12 @@ import UserOverview from "./components/userDashboard/UserOverview";
 import UserHelp from "./components/userDashboard/UserHelp";
 import UserProfile from "./components/userDashboard/UserProfile";
 import UserOrder from "./components/userDashboard/UserOrder";
+import RestaurantOverview from "./components/resturantDashboard/RestaurantOverview";
+import RestaurantProfile from "./components/resturantDashboard/RestaurantProfile";
+import RestaurantHelp from "./components/resturantDashboard/RestaurantHelp";
+import RestaurantOrder from "./components/resturantDashboard/RestaurantOrder";
+import RestaurantMenu from "./components/resturantDashboard/RestaurantMenu";
+import RestaurantEarnings from "./components/resturantDashboard/RestaurantEarnings";
 
 const App = () => {
   return (
@@ -92,7 +98,12 @@ const App = () => {
 
             {/* Manager Proteted Route */}
             <Route path="/restaurant-dashboard" element={<AuthManagerLayout />}>
-              <Route index element={<RestaurantDashboard />} />
+              <Route index element={<RestaurantOverview />} />
+              <Route path="menu" element={<RestaurantMenu />} />
+              <Route path="profile" element={<RestaurantProfile />} />
+              <Route path="orders" element={<RestaurantOrder />} />
+              <Route path="earnings" element={<RestaurantEarnings />} />
+              <Route path="help" element={<RestaurantHelp />} />
             </Route>
 
             {/* Admin Protected Route */}

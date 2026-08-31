@@ -62,6 +62,7 @@ const orderSchema = new mongoose.Schema(
         "accepted",
         "preparing",
         "ready",
+        "partnerAssigned",
         "pickedUp",
         "onTheWay",
         "delivered",

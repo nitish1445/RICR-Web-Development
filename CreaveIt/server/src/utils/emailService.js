@@ -1,76 +1,94 @@
 import sendEmail from "../config/email.js";
 
 export const sendOTPEmail = async (to, otp) => {
-  const subject = "OTP to reset your CraveIt Password";
+  const subject = "Reset Your CraveIt Password";
 
   const message = `
-      <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CraveIt OTP</title>
+      </head>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-          
-          <!-- Header -->
+      <body style="margin:0; padding:0; background-color:#FBF3E7; font-family:Arial, Helvetica, sans-serif;">
+
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBF3E7;">
           <tr>
-            <td style="padding:20px; text-align:center; background-color:#0d6efd; border-radius:8px 8px 0 0;">
-              <h2 style="margin:0; color:#ffffff;">One Time Password</h2>
+            <td align="center">
+
+              <table width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; background-color:#FFFFFF;">
+
+                <!-- Header -->
+                <tr>
+                  <td style="background-color:#1F1811; padding:25px; text-align:center; border-bottom:4px solid #E8491D;">
+                    <h1 style="margin:0; color:#FBF3E7; font-size:26px; font-weight:bold;">
+                      Crave<span style="color:#E8491D;">It</span>
+                    </h1>
+
+                    <p style="margin:6px 0 0; color:#8A7C6A; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;">
+                      Password Reset
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                  <td style="padding:30px; color:#1F1811;">
+
+                    <h2 style="margin:0 0 15px; font-size:22px;">
+                      Verify your identity
+                    </h2>
+
+                    <p style="margin:0 0 20px; font-size:14px; line-height:22px; color:#5F5143;">
+                      Use the OTP below to reset your CraveIt password.
+                    </p>
+
+                    <!-- OTP -->
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td align="center" style="background-color:#FBF3E7; padding:22px;">
+                          <p style="margin:0 0 8px; font-size:10px; font-weight:bold; letter-spacing:1.5px; color:#8A7C6A; text-transform:uppercase;">
+                            Your OTP
+                          </p>
+
+                          <p style="margin:0; font-size:30px; font-weight:bold; letter-spacing:8px; color:#E8491D;">
+                            ${otp}
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="margin:20px 0 0; font-size:12px; line-height:20px; color:#8A7C6A;">
+                      This OTP is valid for <strong style="color:#1F1811;">5 minutes</strong>. Do not share it with anyone.
+                    </p>
+
+                    <p style="margin:12px 0 0; font-size:12px; line-height:20px; color:#8A7C6A;">
+                      If you didn't request this, you can safely ignore this email.
+                    </p>
+
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color:#1F1811; padding:16px; text-align:center;">
+                    <p style="margin:0; font-size:10px; color:#8A7C6A;">
+                      © ${new Date().getFullYear()} CraveIt. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+
             </td>
           </tr>
-
-          <!-- Body -->
-          <tr>
-            <td style="padding:30px; color:#333333;">
-              <p style="font-size:16px; margin:0 0 15px;">
-                Hello,
-              </p>
-
-              <p style="font-size:16px; margin:0 0 20px;">
-                Use the following One-Time Password (OTP) to complete your verification:
-              </p>
-
-              <!-- OTP Box -->
-              <div style="text-align:center; margin:30px 0;">
-                <span style="
-                  display:inline-block;
-                  padding:15px 30px;
-                  font-size:28px;
-                  letter-spacing:6px;
-                  color:#0d6efd;
-                  background-color:#f1f5ff;
-                  border:1px dashed #0d6efd;
-                  border-radius:6px;
-                  font-weight:bold;
-                ">
-                  ${otp}
-                </span>
-              </div>
-
-              <p style="font-size:14px; color:#666666; margin:0 0 10px;">
-                This OTP is valid for <strong>5 minutes</strong>. Please do not share it with anyone.
-              </p>
-
-              <p style="font-size:14px; color:#666666; margin:0;">
-                If you did not request this, you can safely ignore this email.
-              </p>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="padding:15px; text-align:center; background-color:#f8f9fa; border-radius:0 0 8px 8px;">
-              <p style="font-size:12px; color:#999999; margin:0;">
-                ©${new Date().getFullYear()} CraveIt India Pvt. Ltd. All rights reserved.
-              </p>
-            </td>
-          </tr>
-
         </table>
-      </td>
-    </tr>
-  </table>
 
-</body>`;
+      </body>
+    </html>
+  `;
 
-await sendEmail(to,subject, message)
+  await sendEmail(to, subject, message);
 };

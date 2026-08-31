@@ -21,9 +21,9 @@ const UserOrders = () => {
       } else {
         setLoading(true);
       }
-
       const res = await api.get("/user/placedorders");
       setOrders(res?.data?.data || []);
+
       if (showToast) {
         toast.success("Orders fetched successfully");
       }
@@ -40,46 +40,60 @@ const UserOrders = () => {
     fetchOrders();
   }, []);
 
-  // Only show Delivered, Cancelled and Rejected orders
-  const completedOrders = orders.filter((order) => {
-    const status = order?.status?.toLowerCase();
-    return ["delivered", "cancelled", "rejected"].includes(status);
-  });
-
+  // Order Status Styles
   const getStatusStyle = (status) => {
     const currentStatus = status?.toLowerCase();
-    if (currentStatus === "delivered") {
-      return "bg-[#6B8E4E]/15 text-[#6B8E4E]";
-    }
 
-    if (currentStatus === "cancelled" || currentStatus === "rejected") {
-      return "bg-[#E8491D]/10 text-[#E8491D]";
-    }
+    const statusStyles = {
+      pending: "bg-[#D9952B]/15 text-[#B87514]",
+      accepted: "bg-[#4C7A9F]/15 text-[#4C7A9F]",
+      preparing: "bg-[#9B6B3D]/15 text-[#9B6B3D]",
+      ready: "bg-[#7A5EA8]/15 text-[#7A5EA8]",
+      partnerassigned: "bg-[#5B7DB1]/15 text-[#5B7DB1]",
+      pickedup: "bg-[#356B8C]/15 text-[#356B8C]",
+      ontheway: "bg-[#3F8A65]/15 text-[#3F8A65]",
+      delivered: "bg-[#6B8E4E]/15 text-[#6B8E4E]",
+      rejected: "bg-[#E8491D]/10 text-[#E8491D]",
+      damaged: "bg-[#A13D3D]/10 text-[#A13D3D]",
+      cancelled: "bg-[#E8491D]/10 text-[#E8491D]",
+    };
 
-    return "bg-[#1F1811]/10 text-[#5F5143]";
+    return statusStyles[currentStatus] || "bg-[#1F1811]/10 text-[#5F5143]";
   };
 
+  // Format Order Status
   const formatStatus = (status) => {
     if (!status) return "Unknown";
 
     const statusMap = {
+      pending: "Pending",
+      accepted: "Accepted",
+      preparing: "Preparing",
+      ready: "Ready",
+      partnerassigned: "Partner Assigned",
+      pickedup: "Picked Up",
+      ontheway: "On The Way",
       delivered: "Delivered",
-      cancelled: "Cancelled",
       rejected: "Rejected",
+      damaged: "Damaged",
+      cancelled: "Cancelled",
     };
 
     return statusMap[status?.toLowerCase()] || status;
   };
 
+  // Restaurant Image
   const getRestaurantImage = (order) => {
     return (
       order?.restaurantId?.photo?.url ||
       order?.restaurantId?.image?.url ||
       order?.restaurantId?.images?.[0]?.url ||
+      order?.restaurantId?.restaurantImage?.url ||
       ""
     );
   };
 
+  // Restaurant Name
   const getRestaurantName = (order) => {
     return (
       order?.restaurantId?.restaurantName ||
@@ -88,6 +102,7 @@ const UserOrders = () => {
     );
   };
 
+  // Food Names
   const getFoodName = (order) => {
     if (order?.items?.length > 0) {
       return order.items
@@ -105,6 +120,7 @@ const UserOrders = () => {
     return "Food details unavailable";
   };
 
+  // Loading State
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -133,7 +149,7 @@ const UserOrders = () => {
           </h1>
 
           <p className="mt-2 text-sm text-[#8A7C6A]">
-            View your delivered, cancelled and rejected orders.
+            Track all your food orders and delivery status.
           </p>
         </div>
 
@@ -144,6 +160,7 @@ const UserOrders = () => {
           className="flex cursor-pointer items-center justify-center gap-2 bg-[#1F1811] px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-[#FBF3E7] transition hover:bg-[#E8491D] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <FaRotateRight className={refreshing ? "animate-spin" : ""} />
+
           {refreshing ? "Refreshing..." : "Refresh"}
         </button>
       </div>
@@ -156,17 +173,15 @@ const UserOrders = () => {
 
         <div>
           <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
-            Completed Orders
+            Total Orders
           </p>
 
-          <p className="text-xl font-bold text-[#FBF3E7]">
-            {completedOrders.length}
-          </p>
+          <p className="text-xl font-bold text-[#FBF3E7]">{orders.length}</p>
         </div>
       </div>
 
       {/* Empty State */}
-      {completedOrders.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="flex min-h-100 flex-col items-center justify-center bg-white px-6 text-center">
           <div className="flex size-16 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
             <FaBagShopping className="text-2xl" />
@@ -177,12 +192,12 @@ const UserOrders = () => {
           </h2>
 
           <p className="mt-2 max-w-sm text-sm text-[#8A7C6A]">
-            Your delivered, cancelled or rejected orders will appear here.
+            Your food orders will appear here.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {completedOrders.map((order, index) => {
+          {orders.map((order, index) => {
             const restaurantImage = getRestaurantImage(order);
             const restaurantName = getRestaurantName(order);
             const foodName = getFoodName(order);
@@ -202,15 +217,23 @@ const UserOrders = () => {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
-                          e.currentTarget.parentElement.querySelector(
-                            ".image-fallback",
-                          ).style.display = "flex";
+
+                          const fallback =
+                            e.currentTarget.parentElement.querySelector(
+                              ".image-fallback",
+                            );
+
+                          if (fallback) {
+                            fallback.style.display = "flex";
+                          }
                         }}
                       />
                     ) : null}
 
                     <div
-                      className={`image-fallback h-full w-full items-center justify-center text-[#E8491D] ${restaurantImage ? "hidden" : "flex"}`}
+                      className={`image-fallback h-full w-full items-center justify-center text-[#E8491D] ${
+                        restaurantImage ? "hidden" : "flex"
+                      }`}
                     >
                       <FaUtensils className="text-3xl" />
                     </div>
@@ -241,7 +264,9 @@ const UserOrders = () => {
 
                       {/* Status */}
                       <span
-                        className={`w-fit px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${getStatusStyle(order?.status)}`}
+                        className={`w-fit px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${getStatusStyle(
+                          order?.status,
+                        )}`}
                       >
                         {formatStatus(order?.status)}
                       </span>
@@ -249,6 +274,7 @@ const UserOrders = () => {
 
                     {/* Bottom Details */}
                     <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#1F1811]/10 pt-4">
+                      {/* Date */}
                       <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
                         <FaClock className="text-[#E8491D]" />
 
@@ -264,6 +290,7 @@ const UserOrders = () => {
                           : "Date unavailable"}
                       </div>
 
+                      {/* Location */}
                       {order?.restaurantId?.city && (
                         <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
                           <FaLocationDot className="text-[#E8491D]" />
@@ -271,6 +298,7 @@ const UserOrders = () => {
                         </div>
                       )}
 
+                      {/* Total */}
                       <div className="ml-auto text-sm font-bold text-[#1F1811]">
                         ₹{order?.orderValue?.total || 0}
                       </div>

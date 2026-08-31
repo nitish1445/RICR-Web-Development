@@ -1,11 +1,9 @@
 import nodemailer from "nodemailer";
 
-const sendEmail = async (to,subject,message) => {
+const sendEmail = async (to, subject, message) => {
   try {
     console.log("Started sending email");
 
-
-    //transporting to sender gmail
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -14,23 +12,30 @@ const sendEmail = async (to,subject,message) => {
       },
     });
 
-    console.log("3....2....1....!");
+    console.log("Verifying email transporter...");
 
-    //sending email using sender to reciever
+    await transporter.verify();
+
+    console.log("Transporter verified successfully");
 
     const mailOption = {
-      from: process.env.GMAIL_USER, //sender
-      to, //recever or user
+      from: `"CraveIt" <${process.env.GMAIL_USER}>`,
+      to,
       subject,
       html: message,
     };
 
-    console.log("Sending email");
+    console.log("Sending email to:", to);
 
-    const res = await transporter.sendMail(mailOption);
-    console.log(res);
+    const response = await transporter.sendMail(mailOption);
+
+    console.log("Email sent successfully");
+    console.log("Message ID:", response.messageId);
+
+    return response;
   } catch (error) {
-    console.log(error);
+    console.error("Email sending failed:", error.message);
+    throw error;
   }
 };
 

@@ -9,13 +9,14 @@ import {
   RestaurantResetPassword,
   RestaurantUpdatePhoto,
   GetAllPlacedOrder,
-  RestaurantOrderStatusUpdate
+  RestaurantOrderStatusUpdate,
 } from "../controllers/restaurantController.js";
 import { ManagerProtect, Protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 const upload = multer();
 
+//Add Menu Item
 router.post(
   "/addMenuItem",
   Protect,
@@ -24,8 +25,10 @@ router.post(
   RestaurantAddMenuItem,
 );
 
+//Get Menu Item
 router.get("/menuItems", Protect, ManagerProtect, GetRestaurantMenuItem);
 
+//Update Menu Item Photos
 router.put(
   "/updateMenuItem/:id",
   Protect,
@@ -34,8 +37,10 @@ router.put(
   RestaurantEditMenuItem,
 );
 
+//Update Restaurant Profile
 router.put("/update", Protect, ManagerProtect, RestaurantUpdateProfile);
 
+//Update Restaurant Profile Photo
 router.patch(
   "/changePhoto",
   Protect,
@@ -44,17 +49,18 @@ router.patch(
   RestaurantUpdatePhoto,
 );
 
+//Reset Restaurant Password
 router.patch(
   "/resetPassword",
   Protect,
   ManagerProtect,
-  upload.array("itemImages", 5),
   RestaurantResetPassword,
 );
 
+//Get All Placed Orders
 router.get("/placedOrders", Protect, ManagerProtect, GetAllPlacedOrder);
 
-
+//Update Order Status
 router.patch(
   "/orders/:id/updateorderstatus",
   Protect,

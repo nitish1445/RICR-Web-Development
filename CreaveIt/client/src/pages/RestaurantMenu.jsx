@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
 import api from "../config/Api";
 import Loading from "../components/Loading";
 import { useCart } from "../context/CartContext";
@@ -16,13 +15,9 @@ import {
 
 const RestaurantDisplayMenu = () => {
   const navigate = useNavigate();
-
   const { restaurantId } = useParams();
-
   const { cart, addToCart, clearCart, openCart } = useCart();
-
   const [loading, setLoading] = useState(false);
-
   const [menuItems, setMenuItems] = useState([]);
   const [restaurantData, setRestaurantData] = useState(null);
 
@@ -34,16 +29,13 @@ const RestaurantDisplayMenu = () => {
 
   const fetchMenuData = async () => {
     if (!restaurantId) return;
-
     setLoading(true);
 
     try {
       const res = await api.get(`/public/restaurant/menu/${restaurantId}`);
-
       setMenuItems(res.data.data);
     } catch (error) {
       console.log(error);
-
       toast.error(error?.response?.data?.message || "Unable to load menu");
     } finally {
       setLoading(false);
@@ -58,7 +50,6 @@ const RestaurantDisplayMenu = () => {
       const matchedRestaurant = (res.data.data || []).find(
         (restaurant) => restaurant._id === restaurantId,
       );
-
       setRestaurantData(matchedRestaurant || null);
     } catch (error) {
       console.log(error);
@@ -203,9 +194,7 @@ const RestaurantDisplayMenu = () => {
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {menuItems.map((EachItem) => {
               const isAdded = cartFlag.includes(EachItem._id);
-
               const isAvailable = EachItem.availability === "available";
-
               const isVeg = EachItem.type === "veg";
 
               return (

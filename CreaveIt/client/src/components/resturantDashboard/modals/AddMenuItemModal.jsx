@@ -1,6 +1,12 @@
-import React, { useState } from "react";
-import { GiCancel } from "react-icons/gi";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+import React, { useEffect, useState } from "react";
+import {
+  FaXmark,
+  FaPlus,
+  FaImage,
+  FaTrash,
+  FaIndianRupeeSign,
+  FaCheck,
+} from "react-icons/fa6";
 import toast from "react-hot-toast";
 import api from "../../../config/Api";
 
@@ -18,44 +24,104 @@ const AddMenuItemModal = ({ onClose }) => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
-  // for backend
+  // Backend images
   const [images, setImages] = useState([]);
 
-  // for frontend
+  // Preview images
   const [imagePreviews, setImagePreviews] = useState([]);
-
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
+
     if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
     }
   };
 
   const handleImageChange = (e) => {
-    const files = e.target.files;
-    const fileArray = Array.from(files);
-    let temp = [];
-    fileArray.forEach((img) => {
-      let imgURL = URL.createObjectURL(img);
-      temp.push(imgURL);
-    });
-    //slice == max length limit of array -1
-    setImagePreviews(temp.slice(0, 5));
-    setImages(fileArray.slice(0, 5));
+    const selectedFiles = Array.from(e.target.files);
+    if (!selectedFiles.length) return;
+    const totalImages = [...images, ...selectedFiles];
+    if (totalImages.length > 5) {
+      toast.error("Maximum 5 images allowed");
+      return;
+    }
+    const oversizedImage = selectedFiles.find(
+      (file) => file.size > 1024 * 1024,
+    );
+
+    if (oversizedImage) {
+      toast.error("Each image must be less than 1 MB");
+      return;
+    }
+    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setImages(totalImages);
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
+
+    e.target.value = "";
+  };
+
+  const removeImage = (index) => {
+    URL.revokeObjectURL(imagePreviews[index]);
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.itemName.trim()) {
+      newErrors.itemName = "Item name is required";
+    }
+
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+
+    if (!formData.price) {
+      newErrors.price = "Price is required";
+    }
+
+    if (!formData.cuisine.trim()) {
+      newErrors.cuisine = "Cuisine is required";
+    }
+
+    if (!formData.servingSize.trim()) {
+      newErrors.servingSize = "Serving size is required";
+    }
+
+    if (!formData.type) {
+      newErrors.type = "Food type is required";
+    }
+
+    if (!formData.preparationTime) {
+      newErrors.preparationTime = "Preparation time is required";
+    }
+
+    if (images.length === 0) {
+      newErrors.images = "At least one image is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      toast.error("Please fill all required details");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // transfer menu data to form data
-
       const form_data = new FormData();
       form_data.append("itemName", formData.itemName);
       form_data.append("description", formData.description);
@@ -68,23 +134,28 @@ const AddMenuItemModal = ({ onClose }) => {
         "availability",
         formData.availability ? "available" : "unavailable",
       );
+
       images.forEach((img) => {
         form_data.append("itemImages", img);
       });
-
-      //connect backend
       const res = await api.post("/restaurant/addMenuItem", form_data);
       toast.success(res.data.message);
-      setTimeout(handleClose, 1500);
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
     } catch (error) {
       console.log(error);
-      toast.error(error?.respone?.data?.message || "Unknown Error");
-    }finally{
+      toast.error(error?.response?.data?.message || "Failed to add menu item");
+    } finally {
       setLoading(false);
     }
   };
 
   const handleClose = () => {
+    imagePreviews.forEach((preview) => {
+      URL.revokeObjectURL(preview);
+    });
+
     setFormData({
       itemName: "",
       description: "",
@@ -95,200 +166,310 @@ const AddMenuItemModal = ({ onClose }) => {
       servingSize: "",
       availability: true,
     });
+
     setImagePreviews([]);
     setImages([]);
-    setErrors("");
+    setErrors({});
     setLoading(false);
     onClose();
   };
 
+  // Disable background scrolling
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
-    <>
-      <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
-        <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg">
-          <div className="flex justify-between px-6 py-4 border-b border-gray-300 items-center sticky top-0 bg-white">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Add Menu Item
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden bg-[#FBF3E7] shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#1F1811]/10 bg-[#FBF3E7] px-5 py-4 sm:px-6">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8491D]">
+              Restaurant Menu
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-lg uppercase text-[#1F1811] sm:text-xl">
+              Add New Item
             </h2>
-            <button
-              onClick={handleClose}
-              className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
-            >
-              <GiCancel />
-            </button>
           </div>
 
-          {/* Menu Detail */}
-
-          <form
-            onSubmit={handleSubmit}
-            onReset={handleClose}
-            className="p-6 space-y-6"
+          <button
+            type="button"
+            onClick={handleClose}
+            className="flex size-9 cursor-pointer items-center justify-center text-[#1F1811] transition hover:bg-[#E8491D] hover:text-white"
           >
-            {/* Item image Section */}
+            <FaXmark className="text-lg" />
+          </button>
+        </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Item Image
-              </h3>
-              <div className="flex items-end gap-4">
-                <label
-                  htmlFor="image"
-                  className="px-6 py-2 w-fit bg-(--color-secondary) text-white rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex gap-3 items-center"
-                >
-                  Add Image
-                </label>
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600">
-                    (Upto 5 images allowed)
-                  </span>
-                  <span className="text-sm text-gray-600">
-                    (Max size 1 MB each.)
-                  </span>
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto p-5 sm:p-6"
+        >
+          <div className="space-y-7">
+            {/* Images */}
+            <section>
+              <div className="mb-4 flex items-end justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                    Visual Content
+                  </p>
+
+                  <h3 className="mt-1 font-bold text-[#1F1811]">Item Images</h3>
                 </div>
-                <input
-                  type="file"
-                  name="image"
-                  id="image"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="hidden"
-                  multiple
-                />
+
+                <span className="text-xs font-medium text-[#8A7C6A]">
+                  {images.length}/5 Images
+                </span>
               </div>
-              {imagePreviews.length !== 0 && (
-                <div className="mt-3 grid grid-cols-5 gap-1">
-                  {imagePreviews.map((itemImg, idx) => (
+
+              {/* Image Preview */}
+              {imagePreviews.length > 0 && (
+                <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  {imagePreviews.map((image, index) => (
                     <div
-                      className="border rounded-md w-30 h-30 overflow-hidden"
-                      key={idx}
+                      key={index}
+                      className="group relative aspect-square overflow-hidden bg-[#1F1811]/5"
                     >
                       <img
-                        src={itemImg}
-                        alt=""
-                        className="w-full h-full object-cover"
+                        src={image}
+                        alt={`Preview ${index + 1}`}
+                        className="h-full w-full object-cover"
                       />
+
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute right-2 top-2 flex size-7 cursor-pointer items-center justify-center bg-[#E8491D] text-white opacity-0 transition group-hover:opacity-100"
+                      >
+                        <FaTrash className="text-xs" />
+                      </button>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
 
-            {/* Basic Detail of dish */}
+              {/* Upload Area */}
+              {images.length < 5 && (
+                <label
+                  htmlFor="itemImages"
+                  className="flex min-h-32 cursor-pointer flex-col items-center justify-center border-2 border-dashed border-[#1F1811]/20 bg-white transition hover:border-[#E8491D] hover:bg-[#FBF3E7]"
+                >
+                  <div className="flex size-10 items-center justify-center bg-[#1F1811] text-[#FBF3E7]">
+                    <FaImage />
+                  </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-1 gap-4">
+                  <p className="mt-3 text-sm font-bold text-[#1F1811]">
+                    Upload Food Images
+                  </p>
+
+                  <p className="mt-1 text-xs text-[#8A7C6A]">
+                    Maximum 5 images • Max 1 MB each
+                  </p>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs font-bold uppercase text-[#E8491D]">
+                    <FaPlus />
+                    Select Images
+                  </div>
+
+                  <input
+                    id="itemImages"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+
+              {errors.images && (
+                <p className="mt-2 text-xs font-medium text-red-500">
+                  {errors.images}
+                </p>
+              )}
+            </section>
+
+            {/* Basic Information */}
+            <section>
+              <div className="mb-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                  Basic Details
+                </p>
+
+                <h3 className="mt-1 font-bold text-[#1F1811]">
+                  Dish Information
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                {/* Item Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Item Name <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Item Name <span className="text-[#E8491D]">*</span>
                   </label>
+
                   <input
                     type="text"
                     name="itemName"
                     value={formData.itemName}
                     onChange={handleInputChange}
-                    placeholder="e.g., Hyderabadi Briyani"
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
+                    placeholder="e.g. Hyderabadi Biryani"
+                    className={`w-full bg-white px-4 py-3 text-sm text-[#1F1811] outline-none transition focus:ring-1 focus:ring-[#E8491D] ${
+                      errors.itemName
+                        ? "ring-1 ring-red-500"
+                        : "border border-[#1F1811]/10"
+                    }`}
                   />
+
+                  {errors.itemName && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.itemName}
+                    </p>
+                  )}
                 </div>
+
+                {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Description <span className="text-[#E8491D]">*</span>
                   </label>
+
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    rows="3"
-                    placeholder="Describe the dish, ingredients, etc.. "
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
+                    rows="4"
+                    placeholder="Describe the dish, ingredients and taste..."
+                    className={`w-full resize-none bg-white px-4 py-3 text-sm text-[#1F1811] outline-none transition focus:ring-1 focus:ring-[#E8491D] ${
+                      errors.description
+                        ? "ring-1 ring-red-500"
+                        : "border border-[#1F1811]/10"
+                    }`}
                   />
+
+                  {errors.description && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.description}
+                    </p>
+                  )}
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Pricing & category section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Pricing & Category
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Pricing */}
+            <section>
+              <div className="mb-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                  Pricing
+                </p>
+
+                <h3 className="mt-1 font-bold text-[#1F1811]">
+                  Price & Category
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {/* Price */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <div className="flex gap-1.5 items-center">
-                      Price in <FaIndianRupeeSign className="text-xs" />{" "}
-                      <span className="text-red-500 ">*</span>
-                    </div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Price <span className="text-[#E8491D]">*</span>
                   </label>
-                  <input
-                    type="text"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    step="0.01"
-                    min="0"
-                    placeholder="Enter the amount of item"
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
-                  />
+
+                  <div className="flex items-center bg-white border border-[#1F1811]/10">
+                    <span className="flex px-3 text-[#E8491D]">
+                      <FaIndianRupeeSign />
+                    </span>
+
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      placeholder="0"
+                      min="0"
+                      className="w-full px-3 py-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  {errors.price && (
+                    <p className="mt-1 text-xs text-red-500">{errors.price}</p>
+                  )}
                 </div>
 
+                {/* Serving Size */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Serving Size <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Serving Size
                   </label>
+
                   <input
                     type="text"
                     name="servingSize"
                     value={formData.servingSize}
                     onChange={handleInputChange}
-                    step="0.01"
-                    min="0"
-                    placeholder="e.g., Main Course, Appetizer"
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
+                    placeholder="e.g. 2 Persons"
+                    className="w-full border border-[#1F1811]/10 bg-white px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-[#E8491D]"
                   />
+
+                  {errors.servingSize && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.servingSize}
+                    </p>
+                  )}
                 </div>
 
+                {/* Cuisine */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cuisine <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Cuisine
                   </label>
+
                   <input
                     type="text"
                     name="cuisine"
                     value={formData.cuisine}
                     onChange={handleInputChange}
-                    step="0.01"
-                    min="0"
-                    placeholder="e.g., Indian, Italian ..."
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
+                    placeholder="e.g. Indian"
+                    className="w-full border border-[#1F1811]/10 bg-white px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-[#E8491D]"
                   />
+
+                  {errors.cuisine && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.cuisine}
+                    </p>
+                  )}
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Attribuites Section */}
+            {/* Attributes */}
+            <section>
+              <div className="mb-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+                  Attributes
+                </p>
 
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                Item Attributes
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <h3 className="mt-1 font-bold text-[#1F1811]">Food Details</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {/* Food Type */}
                 <div>
-                  <label
-                    htmlFor="type"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Food Type <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Food Type <span className="text-[#E8491D]">*</span>
                   </label>
+
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 cursor-pointer"
-                    required
+                    className="w-full cursor-pointer border border-[#1F1811]/10 bg-white px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-[#E8491D]"
                   >
                     <option value="">Select Type</option>
                     <option value="veg">Vegetarian</option>
@@ -300,71 +481,98 @@ const AddMenuItemModal = ({ onClose }) => {
                     <option value="contains-nuts">Contains Nuts</option>
                     <option value="dairy">Dairy</option>
                   </select>
+
+                  {errors.type && (
+                    <p className="mt-1 text-xs text-red-500">{errors.type}</p>
+                  )}
                 </div>
 
+                {/* Preparation Time */}
                 <div>
-                  <label
-                    htmlFor=""
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Preparation Time (minutes){" "}
-                    <span className="text-red-500 ">*</span>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Preparation Time
                   </label>
+
                   <input
                     type="number"
                     name="preparationTime"
                     value={formData.preparationTime}
                     onChange={handleInputChange}
-                    min="0"
-                    placeholder="e.g., 15"
-                    className={`w-full border rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300`}
+                    min="1"
+                    placeholder="e.g. 20 minutes"
+                    className="w-full border border-[#1F1811]/10 bg-white px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-[#E8491D]"
                   />
+
+                  {errors.preparationTime && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {errors.preparationTime}
+                    </p>
+                  )}
                 </div>
 
-                <div className="flex gap-3 justify-start">
-                  <input
-                    type="checkbox"
-                    name="availability"
-                    checked={formData.availability}
-                    onChange={handleInputChange}
-                    className=" text-green-600 border-gray-300 rounded-full focus:ring-green-500 cursor-pointer"
-                  />
-                  <label
-                    htmlFor="availability"
-                    className="block text-sm font-medium text-gray-700 mb-1 cursor-pointer"
-                  >
-                    Available <span className="text-red-500 ">*</span>
+                {/* Availability */}
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1F1811]">
+                    Availability
                   </label>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        availability: !prev.availability,
+                      }))
+                    }
+                    className={`flex w-full cursor-pointer items-center justify-between px-4 py-3 text-sm font-bold transition ${
+                      formData.availability
+                        ? "bg-[#E8491D] text-white"
+                        : "bg-[#1F1811]/10 text-[#1F1811]"
+                    }`}
+                  >
+                    <span>
+                      {formData.availability ? "Available" : "Unavailable"}
+                    </span>
+
+                    {formData.availability && <FaCheck />}
+                  </button>
                 </div>
               </div>
-            </div>
+            </section>
+          </div>
 
-            {/* Form Button */}
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-300">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition disabled:opacity-50 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-(--color-secondary) text-(--color-primary) rounded-md hover:bg-(--color-secondary-hover) transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex gap-3 items-center"
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin">⟳</span> Adding..
-                  </>
-                ) : (
-                  "Add Items"
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Footer */}
+          <div className="mt-8 flex items-center justify-end gap-3 border-t border-[#1F1811]/10 pt-5">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={loading}
+              className="cursor-pointer px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#1F1811] transition hover:bg-[#1F1811]/10 disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex cursor-pointer items-center gap-2 bg-[#E8491D] px-6 py-3 text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? (
+                <>
+                  <span className="animate-spin">◌</span>
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <FaPlus />
+                  Add Item
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,163 +1,244 @@
-import React from "react";
-import { GiCancel } from "react-icons/gi";
+import React, { useEffect } from "react";
+
+import {
+  FaXmark,
+  FaClock,
+  FaUtensils,
+  FaUsers,
+  FaIndianRupeeSign,
+  FaCircleCheck,
+  FaCircleXmark,
+} from "react-icons/fa6";
 
 const ViewItemModal = ({ onClose, selectedItem }) => {
   if (!selectedItem) return null;
 
-  const images = selectedItem.images || [].slice(0, 5);
+  const images = selectedItem?.images?.slice(0, 5) || [];
+
+  const getFoodTypeStyle = () => {
+    switch (selectedItem.type) {
+      case "veg":
+        return "bg-green-100 text-green-700";
+      case "non-veg":
+        return "bg-red-100 text-red-700";
+      case "vegan":
+        return "bg-emerald-100 text-emerald-700";
+      case "jain":
+        return "bg-orange-100 text-orange-700";
+      default:
+        return "bg-[#FBF3E7] text-[#8A7C6A]";
+    }
+  };
+
+  const isAvailable = selectedItem.availability === "available";
+
+  // Disable background scrolling
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100">
-        <div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg">
-          {/* Header */}
-          <div className="flex justify-between px-6 py-4 border-b border-gray-300 items-center sticky top-0 bg-white">
-            <h2 className="text-2xl font-semibold text-gray-800">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4">
+      <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden bg-[#FBF3E7] shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#1F1811]/10 bg-[#FBF3E7] px-5 py-4 sm:px-6">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+              Menu Item Details
+            </p>
+
+            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811] sm:text-2xl">
               {selectedItem.itemName}
             </h2>
-            <button
-              onClick={onClose}
-              className="text-red-400 hover:text-red-700 text-2xl cursor-pointer"
-            >
-              <GiCancel />
-            </button>
           </div>
 
-          {/* Content */}
-          <div className="p-6 space-y-6">
-            {/* Image Gallery */}
-            {images.length > 0 && (
-              <div className="space-y-3">
-                <label className="block text-sm font-semibold text-gray-600">
-                  Images
-                </label>
-                <div className="flex gap-4 flex-wrap">
-                  {images.slice(0, 5).map((image, index) => (
-                    <div
-                      key={index}
-                      className="w-30 h-30 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center"
-                    >
-                      <img
-                        src={image.url}
-                        alt={`${selectedItem.itemName} - ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
+          <button
+            onClick={onClose}
+            className="flex size-10 cursor-pointer items-center justify-center bg-[#1F1811] text-[#FBF3E7] transition hover:bg-[#E8491D]"
+          >
+            <FaXmark className="text-lg" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-y-auto p-5 sm:p-6">
+          {/* Images */}
+          {images.length > 0 && (
+            <div>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                Food Images
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                {images.map((image, index) => (
+                  <div
+                    key={index}
+                    className="aspect-square overflow-hidden bg-[#1F1811]/5"
+                  >
+                    <img
+                      src={image?.url}
+                      alt={`${selectedItem.itemName} ${index + 1}`}
+                      className="h-full w-full object-cover transition duration-300 hover:scale-105"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Price + Status */}
+          <div className="mt-6 grid grid-cols-1 gap-4 border-y border-[#1F1811]/10 py-5 sm:grid-cols-3">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                Price
+              </p>
+
+              <div className="mt-2 flex items-center gap-1 text-2xl font-bold text-[#E8491D]">
+                <FaIndianRupeeSign className="text-lg" />
+                {Number(selectedItem.price || 0).toFixed(2)}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                Food Type
+              </p>
+
+              <span
+                className={`mt-2 inline-block px-3 py-1 text-xs font-bold uppercase ${getFoodTypeStyle()}`}
+              >
+                {selectedItem.type || "N/A"}
+              </span>
+            </div>
+
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                Availability
+              </p>
+
+              <div
+                className={`mt-2 flex items-center gap-2 text-sm font-bold ${
+                  isAvailable ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {isAvailable ? <FaCircleCheck /> : <FaCircleXmark />}
+
+                <span className="capitalize">{selectedItem.availability}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="mt-6">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+              Item Information
+            </p>
+
+            <div className="grid grid-cols-1 border border-[#1F1811]/10 sm:grid-cols-2">
+              <div className="flex items-center gap-4 border-b border-[#1F1811]/10 p-4 sm:border-r">
+                <div className="flex size-10 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
+                  <FaUtensils />
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8A7C6A]">Cuisine</p>
+
+                  <p className="mt-1 font-bold capitalize text-[#1F1811]">
+                    {selectedItem.cuisine || "N/A"}
+                  </p>
                 </div>
               </div>
-            )}
 
-            {/* Item Details Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {/* Item Name */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Item Name
-                </label>
-                <p className="text-gray-800 font-medium">
-                  {selectedItem.itemName}
-                </p>
+              <div className="flex items-center gap-4 border-b border-[#1F1811]/10 p-4">
+                <div className="flex size-10 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
+                  <FaUsers />
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8A7C6A]">Serving Size</p>
+
+                  <p className="mt-1 font-bold text-[#1F1811]">
+                    {selectedItem.servingSize || "N/A"}
+                  </p>
+                </div>
               </div>
 
-              {/* Price */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Price
-                </label>
-                <p className="text-lg font-bold text-orange-600">
-                  ₹{parseFloat(selectedItem.price).toFixed(2)}
-                </p>
+              <div className="flex items-center gap-4 p-4 sm:border-r sm:border-[#1F1811]/10">
+                <div className="flex size-10 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
+                  <FaClock />
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8A7C6A]">Preparation Time</p>
+
+                  <p className="mt-1 font-bold text-[#1F1811]">
+                    {selectedItem.preparationTime || "N/A"}
+                  </p>
+                </div>
               </div>
 
-              {/* Cuisine */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Cuisine
-                </label>
-                <p className="text-gray-800 capitalize">
-                  {selectedItem.cuisine}
-                </p>
+              <div className="flex items-center gap-4 p-4">
+                <div className="flex size-10 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
+                  <FaUtensils />
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8A7C6A]">Item Name</p>
+
+                  <p className="mt-1 font-bold text-[#1F1811]">
+                    {selectedItem.itemName}
+                  </p>
+                </div>
               </div>
-
-              {/* Type */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Type
-                </label>
-                <p
-                  className={`font-medium capitalize ${
-                    selectedItem.type === "veg"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {selectedItem.type}
-                </p>
-              </div>
-
-              {/* Serving Size */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Serving Size
-                </label>
-                <p className="text-gray-800">
-                  {selectedItem.servingSize} Persons
-                </p>
-              </div>
-
-              {/* Preparation Time */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Preparation Time
-                </label>
-                <p className="text-gray-800">
-                  {selectedItem.preparationTime} mins
-                </p>
-              </div>
-
-              {/* Availability */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Availability
-                </label>
-                <p
-                  className={`font-medium capitalize ${
-                    selectedItem.availability === "available"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {selectedItem.availability}
-                </p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-600 mb-2">
-                Description
-              </label>
-              <p className="text-gray-700 leading-relaxed bg-gray-50 p-3 rounded">
-                {selectedItem.description}
-              </p>
-            </div>
-
-            {/* Metadata */}
-            <div className="text-xs text-gray-500 space-y-1 pt-4 border-t border-gray-200">
-              {/* <p>Item ID: {selectedItem._id}</p> */}
-              <p>
-                Created: {new Date(selectedItem.createdAt).toLocaleDateString()}
-              </p>
-              <p>
-                Last Updated:{" "}
-                {new Date(selectedItem.updatedAt).toLocaleDateString()}
-              </p>
             </div>
           </div>
+
+          {/* Description */}
+          <div className="mt-6">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+              Description
+            </p>
+
+            <div className="bg-white p-4 text-sm leading-relaxed text-[#5F5549]">
+              {selectedItem.description || "No description available."}
+            </div>
+          </div>
+
+          {/* Metadata */}
+          <div className="mt-6 flex flex-col gap-2 border-t border-[#1F1811]/10 pt-4 text-xs text-[#8A7C6A] sm:flex-row sm:justify-between">
+            <p>
+              Created:{" "}
+              {selectedItem.createdAt
+                ? new Date(selectedItem.createdAt).toLocaleDateString()
+                : "N/A"}
+            </p>
+
+            <p>
+              Last Updated:{" "}
+              {selectedItem.updatedAt
+                ? new Date(selectedItem.updatedAt).toLocaleDateString()
+                : "N/A"}
+            </p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-[#1F1811]/10 bg-[#FBF3E7] p-4">
+          <button
+            onClick={onClose}
+            className="w-full cursor-pointer bg-[#1F1811] px-5 py-3 text-sm font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#E8491D]"
+          >
+            Close Details
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

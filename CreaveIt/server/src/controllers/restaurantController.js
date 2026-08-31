@@ -86,9 +86,12 @@ export const RestaurantEditMenuItem = async (req, res, next) => {
       availability,
     } = req.body;
 
+    console.log("Request Body:", req.body);
+
     const { id } = req.params;
     const CurrentUser = req.user;
 
+    // Required fields validation
     if (
       !itemName ||
       !description ||
@@ -99,37 +102,57 @@ export const RestaurantEditMenuItem = async (req, res, next) => {
       !servingSize ||
       !availability
     ) {
-      const error = [new Error("All field Required.")];
+      const error = new Error("All fields are required.");
       error.statusCode = 400;
       return next(error);
     }
 
-    const images = [];
-    if (req.files) {
-      images = await UploadMultipleToCloudinary(req.files);
-      console.log(images);
-    }
-
+    // Find existing menu item
     const existingMenuItem = await Menu.findById(id);
 
-    existingMenuItem.itemName = itemName || existingMenuItem.itemName;
-    existingMenuItem.description = description || existingMenuItem.description;
-    existingMenuItem.price = price || existingMenuItem.price;
-    existingMenuItem.cuisine = cuisine || existingMenuItem.cuisine;
-    existingMenuItem.type = type || existingMenuItem.type;
-    existingMenuItem.preparationTime =
-      preparationTime || existingMenuItem.preparationTime;
-    existingMenuItem.servingSize = servingSize || existingMenuItem.servingSize;
-    existingMenuItem.availability =
-      availability || existingMenuItem.availability;
-    existingMenuItem.images =
-      images.length > 0 ? images : existingMenuItem.images;
+    if (!existingMenuItem) {
+      const error = new Error("Menu item not found.");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Optional ownership check
+    if (
+      existingMenuItem.restaurantID?.toString() !==
+      CurrentUser._id.toString()
+    ) {
+      const error = new Error("You are not authorized to edit this menu item.");
+      error.statusCode = 403;
+      return next(error);
+    }
+
+    // Upload new images only if user sends files
+    let uploadedImages = [];
+
+    if (req.files && req.files.length > 0) {
+      uploadedImages = await UploadMultipleToCloudinary(req.files);
+    }
+
+    // Update fields
+    existingMenuItem.itemName = itemName;
+    existingMenuItem.description = description;
+    existingMenuItem.price = price;
+    existingMenuItem.cuisine = cuisine;
+    existingMenuItem.type = type;
+    existingMenuItem.preparationTime = preparationTime;
+    existingMenuItem.servingSize = servingSize;
+    existingMenuItem.availability = availability;
+
+    // Update images only when new images are uploaded
+    if (uploadedImages.length > 0) {
+      existingMenuItem.images = uploadedImages;
+    }
 
     await existingMenuItem.save();
 
-    res.status(201).json({
-      message: "Menu Item Added Successfully",
-      data: newMenuItem,
+    return res.status(200).json({
+      message: "Menu Item Updated Successfully",
+      data: existingMenuItem,
     });
   } catch (error) {
     next(error);
@@ -137,6 +160,7 @@ export const RestaurantEditMenuItem = async (req, res, next) => {
 };
 
 export const RestaurantUpdateProfile = async (req, res, next) => {
+  console.log("Request Body:", req.body);
   try {
     const {
       fullName,

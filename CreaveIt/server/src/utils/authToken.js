@@ -9,13 +9,17 @@ export const genToken = (user, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    console.log(token);
+
+    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("parle", token, {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
     });
+
+    return token;
   } catch (error) {
     throw error;
   }
@@ -30,12 +34,14 @@ export const genOTPToken = (user, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "10m",
     });
-    console.log(token);
+
+    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("otpToken", token, {
       maxAge: 1000 * 60 * 10,
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
     });
   } catch (error) {
     throw error;

@@ -46,7 +46,7 @@ const Login = () => {
       setLoading(true);
       const response = await api.post("/auth/login", formData);
       const user = response.data.data;
-
+      console.log(user);
       setUser(user);
       setIsLogin(true);
       setRole(user.role);

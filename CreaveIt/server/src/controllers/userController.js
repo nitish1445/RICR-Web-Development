@@ -2,6 +2,7 @@ import { User } from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
 import bcrypt from "bcrypt";
 import Order from "../models/orderModal.js";
+import Menu from "../models/menuSchema.js";
 
 export const UserUpdate = async (req, res, next) => {
   try {
@@ -172,28 +173,98 @@ export const UserResetPassword = async (req, res, next) => {
 export const UserPlaceOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const { restaurantID, items, orderValue, status, review } = req.body;
-    console.log({ restaurantID, items, orderValue, status, review });
+    const {
+      restaurantID,
+      orderItems,
+      paymentMethod,
+      subtotal,
+      deliveryFee,
+      totalAmount,
+    } = req.body;
 
-    if (!restaurantID || !items || !orderValue || !status) {
-      const error = new Error("All feilds required");
+    if (!currentUser) {
+      const error = new Error("User not authenticated");
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    if (
+      !restaurantID ||
+      !orderItems?.length ||
+      !paymentMethod ||
+      subtotal === undefined ||
+      totalAmount === undefined
+    ) {
+      const error = new Error("Required fields are missing");
       error.statusCode = 400;
       return next(error);
     }
 
+    // Fetch menu items
+    const menuItemIds = orderItems.map((item) => item.menuItemID);
+
+    const menuItems = await Menu.find({
+      _id: { $in: menuItemIds },
+    });
+
+    console.log(
+      "Database IDs:",
+      menuItems.map((item) => String(item._id)),
+    );
+
+    // Validate all menu items exist
+    if (menuItems.length !== orderItems.length) {
+      const error = new Error("One or more menu items were not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Create order items
+    const items = orderItems.map((orderItem) => {
+      const menuItem = menuItems.find(
+        (item) => String(item._id) === String(orderItem.menuItemID),
+      );
+
+      if (!menuItem) {
+        throw new Error(`Menu item not found: ${orderItem.menuItemID}`);
+      }
+
+      return {
+        menuItemID: menuItem._id,
+        name: menuItem.itemName,
+        price: Number(menuItem.price),
+        quantity: Number(orderItem.quantity || 1),
+        image: menuItem.images?.[0]?.url || "",
+      };
+    });
+
     const newOrder = await Order.create({
       orderNumber: `ORD-${Date.now()}`,
-      restaurantID,
+      restaurantId: restaurantID,
       userId: currentUser._id,
       items,
-      orderValue,
-      status,
-      review: review || "N/A",
+
+      orderValue: {
+        subtotal: Number(subtotal),
+        tax: 0,
+        deliveryFee: Number(deliveryFee || 0),
+        discountType: "none",
+        discountPercentage: 0,
+        total: Number(totalAmount),
+        paymentMethod,
+      },
+
+      status: "pending",
+      paymentStatus: paymentMethod === "COD" ? "pending" : "pending",
     });
-    res
-      .status(201)
-      .json({ message: "Order Placed Successfully", data: newOrder });
+
+    console.log("Order Created:", newOrder);
+    return res.status(201).json({
+      message: "Order Placed Successfully",
+      data: newOrder,
+    });
   } catch (error) {
+    console.log("ORDER ERROR:", error);
     next(error);
   }
 };
