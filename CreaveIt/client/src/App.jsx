@@ -39,6 +39,12 @@ import RestaurantHelp from "./components/resturantDashboard/RestaurantHelp";
 import RestaurantOrder from "./components/resturantDashboard/RestaurantOrder";
 import RestaurantMenu from "./components/resturantDashboard/RestaurantMenu";
 import RestaurantEarnings from "./components/resturantDashboard/RestaurantEarnings";
+import RiderOverview from "./components/riderDashboard/RiderOverview";
+import RiderProfile from "./components/riderDashboard/RiderProfile";
+import RiderCurrentOrder from "./components/riderDashboard/RiderCurrentOrder";
+import RiderHelpSupport from "./components/riderDashboard/RiderHelpSupport";
+import RiderOrderHistory from "./components/riderDashboard/RiderOrderHistory";
+import Documentation from "./pages/Documentation";
 
 const App = () => {
   return (
@@ -93,7 +99,11 @@ const App = () => {
 
             {/* Rider Protected Route */}
             <Route path="/rider-dashboard" element={<AuthRiderLayout />}>
-              <Route index element={<RiderDashboard />} />
+              <Route index element={<RiderOverview />} />
+              <Route path="profile" element={<RiderProfile />} />
+              <Route path="current-order" element={<RiderCurrentOrder />} />
+              <Route path="order-history" element={<RiderOrderHistory />} />
+              <Route path="help" element={<RiderHelpSupport />} />
             </Route>
 
             {/* Manager Proteted Route */}
@@ -132,6 +142,7 @@ const App = () => {
             <Route path="privacy" element={<Privacy />} />
             <Route path="restaurants" element={<OrderNow />} />
             <Route path="dummy-login" element={<DummyLogin />} />
+            <Route path="documentation" element={<Documentation />} />
             <Route
               path="restaurants/:restaurantId"
               element={<RestaurantDisplayMenu />}

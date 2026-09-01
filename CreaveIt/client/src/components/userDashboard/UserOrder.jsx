@@ -5,6 +5,10 @@ import {
   FaLocationDot,
   FaRotateRight,
   FaUtensils,
+  FaMotorcycle,
+  FaUser,
+  FaPhone,
+  FaCircleCheck,
 } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import api from "../../config/Api";
@@ -21,7 +25,9 @@ const UserOrders = () => {
       } else {
         setLoading(true);
       }
+
       const res = await api.get("/user/placedorders");
+
       setOrders(res?.data?.data || []);
 
       if (showToast) {
@@ -29,7 +35,10 @@ const UserOrders = () => {
       }
     } catch (error) {
       console.log("Fetch orders error:", error);
-      toast.error(error?.response?.data?.message || "Unable to fetch orders");
+
+      toast.error(
+        error?.response?.data?.message || "Unable to fetch orders",
+      );
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -40,7 +49,6 @@ const UserOrders = () => {
     fetchOrders();
   }, []);
 
-  // Order Status Styles
   const getStatusStyle = (status) => {
     const currentStatus = status?.toLowerCase();
 
@@ -61,7 +69,6 @@ const UserOrders = () => {
     return statusStyles[currentStatus] || "bg-[#1F1811]/10 text-[#5F5143]";
   };
 
-  // Format Order Status
   const formatStatus = (status) => {
     if (!status) return "Unknown";
 
@@ -82,7 +89,6 @@ const UserOrders = () => {
     return statusMap[status?.toLowerCase()] || status;
   };
 
-  // Restaurant Image
   const getRestaurantImage = (order) => {
     return (
       order?.restaurantId?.photo?.url ||
@@ -93,7 +99,6 @@ const UserOrders = () => {
     );
   };
 
-  // Restaurant Name
   const getRestaurantName = (order) => {
     return (
       order?.restaurantId?.restaurantName ||
@@ -102,7 +107,6 @@ const UserOrders = () => {
     );
   };
 
-  // Food Names
   const getFoodName = (order) => {
     if (order?.items?.length > 0) {
       return order.items
@@ -120,7 +124,32 @@ const UserOrders = () => {
     return "Food details unavailable";
   };
 
-  // Loading State
+  // Show rider only after partner is assigned
+  const hasDeliveryPartner = (status) => {
+    const allowedStatuses = [
+      "partnerassigned",
+      "pickedup",
+      "ontheway",
+      "delivered",
+    ];
+
+    return allowedStatuses.includes(status?.toLowerCase());
+  };
+
+  // Support different backend field names
+  const getDeliveryPartner = (order) => {
+    return (
+      order?.deliveryPartnerId ||
+      order?.riderId ||
+      order?.deliveryPartner ||
+      null
+    );
+  };
+
+  const getRiderImage = (rider) => {
+    return rider?.photo?.url || rider?.image?.url || "";
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -138,6 +167,7 @@ const UserOrders = () => {
   return (
     <>
       {/* Header */}
+
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8491D]">
@@ -166,6 +196,7 @@ const UserOrders = () => {
       </div>
 
       {/* Orders Count */}
+
       <div className="mb-5 flex items-center gap-3 bg-[#1F1811] px-5 py-4">
         <div className="flex size-10 items-center justify-center bg-[#E8491D] text-[#FBF3E7]">
           <FaBagShopping />
@@ -176,11 +207,14 @@ const UserOrders = () => {
             Total Orders
           </p>
 
-          <p className="text-xl font-bold text-[#FBF3E7]">{orders.length}</p>
+          <p className="text-xl font-bold text-[#FBF3E7]">
+            {orders.length}
+          </p>
         </div>
       </div>
 
       {/* Empty State */}
+
       {orders.length === 0 ? (
         <div className="flex min-h-100 flex-col items-center justify-center bg-white px-6 text-center">
           <div className="flex size-16 items-center justify-center bg-[#E8491D]/10 text-[#E8491D]">
@@ -202,13 +236,20 @@ const UserOrders = () => {
             const restaurantName = getRestaurantName(order);
             const foodName = getFoodName(order);
 
+            const showPartner = hasDeliveryPartner(order?.status);
+            const rider = getDeliveryPartner(order);
+            const riderImage = getRiderImage(rider);
+
             return (
               <div
                 key={order?._id || index}
-                className="group bg-white transition-shadow hover:shadow-[0_12px_30px_rgba(31,24,17,0.08)]"
+                className="group overflow-hidden bg-white transition-shadow shadow-[0_6px_15px_rgba(31,24,17,0.08)]"
               >
+                {/* Main Order */}
+
                 <div className="flex flex-col sm:flex-row">
                   {/* Restaurant Image */}
+
                   <div className="h-40 w-full shrink-0 overflow-hidden bg-[#FBF3E7] sm:h-auto sm:w-40">
                     {restaurantImage ? (
                       <img
@@ -240,6 +281,7 @@ const UserOrders = () => {
                   </div>
 
                   {/* Order Details */}
+
                   <div className="flex flex-1 flex-col justify-between p-5">
                     <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                       <div>
@@ -263,6 +305,7 @@ const UserOrders = () => {
                       </div>
 
                       {/* Status */}
+
                       <span
                         className={`w-fit px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${getStatusStyle(
                           order?.status,
@@ -273,8 +316,8 @@ const UserOrders = () => {
                     </div>
 
                     {/* Bottom Details */}
+
                     <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#1F1811]/10 pt-4">
-                      {/* Date */}
                       <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
                         <FaClock className="text-[#E8491D]" />
 
@@ -290,21 +333,119 @@ const UserOrders = () => {
                           : "Date unavailable"}
                       </div>
 
-                      {/* Location */}
                       {order?.restaurantId?.city && (
                         <div className="flex items-center gap-2 text-[10px] font-semibold text-[#8A7C6A]">
                           <FaLocationDot className="text-[#E8491D]" />
+
                           {order.restaurantId.city}
                         </div>
                       )}
 
-                      {/* Total */}
                       <div className="ml-auto text-sm font-bold text-[#1F1811]">
                         ₹{order?.orderValue?.total || 0}
                       </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Delivery Partner Section */}
+
+                {showPartner && (
+                  <div className="border-t border-dashed border-[#1F1811]/15 bg-[#FBF3E7] p-5">
+                    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                      {/* Rider Info */}
+
+                      <div className="flex items-center gap-4">
+                        {/* Rider Photo */}
+
+                        <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#1F1811] text-[#FBF3E7]">
+                          {riderImage ? (
+                            <img
+                              src={riderImage}
+                              alt={rider?.fullName || "Delivery Partner"}
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <FaMotorcycle className="text-lg" />
+                          )}
+                        </div>
+
+                        {/* Rider Details */}
+
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <FaMotorcycle className="text-xs text-[#E8491D]" />
+
+                            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#8A7C6A]">
+                              Delivery Partner
+                            </p>
+                          </div>
+
+                          {rider ? (
+                            <>
+                              <p className="mt-1 text-sm font-bold text-[#1F1811]">
+                                {rider?.fullName || "Delivery Partner"}
+                              </p>
+
+                              {rider?.phone && (
+                                <p className="mt-1 flex items-center gap-2 text-xs text-[#8A7C6A]">
+                                  <FaPhone className="text-[10px] text-[#E8491D]" />
+
+                                  {rider.phone}
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <p className="mt-1 text-xs font-medium text-[#8A7C6A]">
+                              Delivery partner details loading...
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Delivery Status */}
+
+                      <div className="flex items-center gap-3">
+                        {order?.status?.toLowerCase() === "delivered" ? (
+                          <>
+                            <div className="flex size-10 items-center justify-center bg-[#6B8E4E] text-white">
+                              <FaCircleCheck />
+                            </div>
+
+                            <div>
+                              <p className="text-[9px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+                                Delivery Status
+                              </p>
+
+                              <p className="mt-1 text-xs font-bold text-[#6B8E4E]">
+                                Successfully Delivered
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex size-10 items-center justify-center bg-[#E8491D] text-white">
+                              <FaMotorcycle />
+                            </div>
+
+                            <div>
+                              <p className="text-[9px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+                                Delivery Update
+                              </p>
+
+                              <p className="mt-1 text-xs font-bold text-[#1F1811]">
+                                {formatStatus(order?.status)}
+                              </p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

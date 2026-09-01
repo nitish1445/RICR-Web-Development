@@ -1,107 +1,3 @@
-// import React, { useState } from "react";
-// import api from "../../../config/Api";
-// import toast from "react-hot-toast";
-
-// const ViewReceivedOrder = ({ order, onClose }) => {
-//   const [status, setStatus] = useState(order.status || "pending");
-
-//   const handleStatusChange = async (newStatus) => {
-//     try {
-//       const res = await api.patch(
-//         `/restaurant/orders/${order._id}/updateorderstatus?status=${newStatus}`,
-//       );
-//       toast.success(res.data.message);
-//       onClose();
-//     } catch (error) {
-//       console.error("Failed to update order status:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-//       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-//         <div className="flex justify-between items-center mb-4">
-//           <h2 className="text-xl font-bold">Order Details</h2>
-//           <button
-//             onClick={onClose}
-//             className="text-gray-500 hover:text-gray-700"
-//           >
-//             Close
-//           </button>
-//         </div>
-//         {order && (
-//           <div>
-//             <p className="text-gray-700 mb-2">
-//               <span className="font-semibold">Order Number:</span>{" "}
-//               {order.orderNumber || order._id?.substring(0, 8)}
-//             </p>
-//             <p className="text-gray-700 mb-2">
-//               <span className="font-semibold">Customer:</span>{" "}
-//               {order.userId?.fullName || "Unknown"}
-//             </p>
-//             <p className="text-gray-700 mb-2">
-//               <span className="font-semibold">Status:</span>{" "}
-//               {status || "Pending"}
-//               {status === "pending" && (
-//                 <button
-//                   className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition ml-2"
-//                   onClick={() => handleStatusChange("accepted")}
-//                 >
-//                   Accept Order
-//                 </button>
-//               )}
-//               {status === "accepted" && (
-//                 <button
-//                   className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition ml-2"
-//                   onClick={() => handleStatusChange("preparing")}
-//                 >
-//                   Prepration Started
-//                 </button>
-//               )}
-//               {status === "preparing" && (
-//                 <button
-//                   className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition ml-2"
-//                   onClick={() => handleStatusChange("ready")}
-//                 >
-//                   Ready for Pickup
-//                 </button>
-//               )}
-//             </p>
-//             <p className="text-gray-700 mb-2">
-//               <span className="font-semibold">Total Amount:</span> ₹
-//               {order.orderValue.total || 0}
-//             </p>
-//             <h3 className="font-bold text-lg mt-4 mb-2">Items:</h3>
-//             {order.items && order.items.length > 0 ? (
-//               order.items.map((item, idx) => (
-//                 <div key={idx} className="border-b border-gray-200 py-2">
-//                   <p className="text-gray-700">{item.name}</p>
-//                   <p className="text-sm text-gray-500">
-//                     Quantity: {item.quantity}
-//                   </p>
-//                 </div>
-//               ))
-//             ) : (
-//               <p>No items in this order.</p>
-//             )}
-
-//             <div className="mt-3">
-//               <button
-//                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition"
-//                 onClick={() => handleStatusChange("rejected")}
-//               >
-//                 Reject Order
-//               </button>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ViewReceivedOrder;
-
 import React, { useState } from "react";
 import {
   FaXmark,
@@ -383,51 +279,53 @@ const ViewReceivedOrder = ({ order, onClose }) => {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex flex-col-reverse gap-3 border-t border-[#1F1811]/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <button
-            type="button"
-            disabled={
-              loading ||
-              ["rejected", "cancelled", "ready", "delivered"].includes(status)
-            }
-            onClick={() => handleStatusChange("rejected")}
-            className="flex cursor-pointer items-center justify-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#E8491D] transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <FaCircleXmark />
-            Reject Order
-          </button>
-
-          <div className="flex items-center gap-3">
+        {order.status !== "delivered" && (
+          <div className="flex flex-col-reverse gap-3 border-t border-[#1F1811]/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <button
               type="button"
-              onClick={onClose}
-              className="cursor-pointer px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#1F1811] transition hover:bg-[#FBF3E7]"
+              disabled={
+                loading ||
+                ["rejected", "cancelled", "ready", "delivered"].includes(status)
+              }
+              onClick={() => handleStatusChange("rejected")}
+              className="flex cursor-pointer items-center justify-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#E8491D] transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Close
+              <FaCircleXmark />
+              Reject Order
             </button>
 
-            {nextAction && (
+            <div className="flex items-center gap-3">
               <button
                 type="button"
-                disabled={loading}
-                onClick={() => handleStatusChange(nextAction.nextStatus)}
-                className="flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+                onClick={onClose}
+                className="cursor-pointer px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#1F1811] transition hover:bg-[#FBF3E7]"
               >
-                {loading ? (
-                  <>
-                    <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Updating
-                  </>
-                ) : (
-                  <>
-                    <FaCircleCheck />
-                    {nextAction.label}
-                  </>
-                )}
+                Close
               </button>
-            )}
+
+              {nextAction && (
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleStatusChange(nextAction.nextStatus)}
+                  className="flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? (
+                    <>
+                      <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Updating
+                    </>
+                  ) : (
+                    <>
+                      <FaCircleCheck />
+                      {nextAction.label}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

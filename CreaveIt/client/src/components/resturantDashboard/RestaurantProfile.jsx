@@ -103,135 +103,137 @@ const RestaurantProfile = () => {
 
       {/* Res Hero */}
 
-      <section className="overflow-hidden bg-[#1F1811]">
-        <div className="relative p-6 sm:p-8">
-          {/* Decorative text */}
+     <section className="overflow-hidden bg-[#1F1811]">
+  <div className="relative p-5 sm:p-6 md:p-8">
+    {/* Decorative text */}
 
-          <span className="pointer-events-none absolute right-5 top-0 font-[Archivo_Black] text-6xl uppercase tracking-tight text-white/[0.035] sm:text-8xl">
-            Restaurant
-          </span>
+    <span className="pointer-events-none absolute right-3 top-0 font-[Archivo_Black] text-5xl uppercase tracking-tight text-white/[0.035] sm:right-5 sm:text-7xl lg:text-8xl">
+      Restaurant
+    </span>
 
-          <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
-            {/* Restaurant information */}
+    <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      {/* Restaurant information */}
 
-            <div className="flex items-center gap-5">
-              {/* Restaurant Image */}
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+        {/* Restaurant Image */}
 
-              <div className="relative">
-                <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] sm:size-28">
-                  {user?.photo?.url ? (
-                    <img
-                      src={user.photo.url}
-                      alt={restaurantName}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <FaStore className="text-4xl text-[#E8491D]" />
-                  )}
-                </div>
-
-                {/* Camera */}
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  className="hidden"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={photoLoading}
-                  className="absolute -bottom-2 -right-2 flex size-9 cursor-pointer items-center justify-center rounded-full bg-[#E8491D] text-sm text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:opacity-60"
-                >
-                  {photoLoading ? (
-                    <FaSpinner className="animate-spin" />
-                  ) : (
-                    <FaCamera />
-                  )}
-                </button>
-              </div>
-
-              {/* Details */}
-
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="font-[Archivo_Black] text-2xl uppercase leading-tight text-[#FBF3E7] sm:text-3xl">
-                    {restaurantName}
-                  </h2>
-
-                  <span className="flex items-center gap-1 bg-[#6B8E4E] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                    <span className="size-1.5 rounded-full bg-white" />
-                    Active
-                  </span>
-                </div>
-
-                <p className="mt-2 text-sm font-medium text-[#C9BEB0]">
-                  {cuisine}
-                </p>
-
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
-                  <span className="flex items-center gap-2">
-                    <FaUser className="text-[#E8491D]" />
-                    {managerName}
-                  </span>
-
-                  <span className="flex items-center gap-2">
-                    <FaLocationDot className="text-[#E8491D]" />
-                    {user?.city || "Bhopal"}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={photoLoading}
-                  className="mt-4 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-[#E8491D] hover:text-[#FBF3E7]"
-                >
-                  {photoLoading ? "Uploading..." : "Change Restaurant Photo"}
-                </button>
-              </div>
-            </div>
-
-            {/* Actions */}
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setIsEditProfileOpen(true)}
-                className="inline-flex cursor-pointer items-center gap-2 bg-[#E8491D] px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16]"
-              >
-                <FaPen className="text-[11px]" />
-                Edit Profile
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsResetPasswordOpen(true)}
-                className="inline-flex cursor-pointer items-center gap-2 border border-white/15 px-5 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-white/10"
-              >
-                <FaKey className="text-[11px]" />
-                Security
-              </button>
-            </div>
+        <div className="relative w-fit shrink-0">
+          <div className="flex size-20 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] sm:size-24 md:size-28">
+            {user?.photo?.url ? (
+              <img
+                src={user.photo.url}
+                alt={restaurantName}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <FaStore className="text-3xl text-[#E8491D] sm:text-4xl" />
+            )}
           </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            className="hidden"
+          />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={photoLoading}
+            className="absolute -bottom-2 -right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-[#E8491D] text-xs text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60 sm:size-9 sm:text-sm"
+          >
+            {photoLoading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              <FaCamera />
+            )}
+          </button>
         </div>
 
-        {/* Status bar */}
+        {/* Details */}
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-white/10 bg-black/10 px-6 py-3 sm:px-8">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#C9BEB0]">
-            <span className="size-2 bg-[#6B8E4E]" />
-            Restaurant Account Active
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h2 className="wrap-break-word font-[Archivo_Black] text-xl uppercase leading-tight text-[#FBF3E7] sm:text-2xl md:text-3xl">
+              {restaurantName}
+            </h2>
+
+            <span className="flex shrink-0 items-center gap-1 bg-[#6B8E4E] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white sm:px-3 sm:text-[10px]">
+              <span className="size-1.5 rounded-full bg-white" />
+              Active
+            </span>
           </div>
 
-          <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#8A7C6A]">
-            Manager • {user?.role || "manager"}
+          <p className="mt-2 text-sm font-medium text-[#C9BEB0]">
+            {cuisine}
+          </p>
+
+          {/* Role + Location */}
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
+            <span className="flex items-center gap-2">
+              <FaUser className="shrink-0 text-[#E8491D]" />
+              {user?.role || "Manager"}
+            </span>
+
+            <span className="flex items-center gap-2">
+              <FaLocationDot className="shrink-0 text-[#E8491D]" />
+              {user?.city || "Bhopal"}
+            </span>
           </div>
+
+          {/* Change Photo */}
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={photoLoading}
+            className="mt-4 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-[#E8491D] transition hover:text-[#FBF3E7] disabled:opacity-60"
+          >
+            {photoLoading ? "Uploading..." : "Change Restaurant Photo"}
+          </button>
         </div>
-      </section>
+      </div>
+
+      {/* Actions */}
+
+      <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto lg:shrink-0">
+        <button
+          type="button"
+          onClick={() => setIsEditProfileOpen(true)}
+          className="inline-flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-3 py-3 text-[10px] font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16] sm:px-5 sm:text-xs"
+        >
+          <FaPen className="text-[11px]" />
+          Edit Profile
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsResetPasswordOpen(true)}
+          className="inline-flex cursor-pointer items-center justify-center gap-2 border border-white/15 px-3 py-3 text-[10px] font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-white/10 sm:px-5 sm:text-xs"
+        >
+          <FaKey className="text-[11px]" />
+          Security
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {/* Status bar */}
+
+  <div className="flex flex-col gap-2 border-t border-dashed border-white/10 bg-black/10 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+    <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#C9BEB0] sm:text-[10px] sm:tracking-[0.15em]">
+      <span className="size-2 shrink-0 bg-[#6B8E4E]" />
+      Restaurant Account Active
+    </div>
+
+    <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#8A7C6A] sm:text-[10px] sm:tracking-[0.15em]">
+      Manager • {user?.role || "manager"}
+    </div>
+  </div>
+</section>
 
       {/* Restaurant Info */}
 
@@ -455,66 +457,12 @@ const RestaurantProfile = () => {
       {/* Modals */}
 
       {isEditProfileOpen && (
-        // <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-        //   <div className="w-full max-w-lg bg-[#FBF3E7] p-6">
-        //     <div className="mb-6 flex items-center justify-between">
-        //       <div>
-        //         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-        //           Restaurant
-        //         </p>
-
-        //         <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
-        //           Edit Profile
-        //         </h2>
-        //       </div>
-
-        //       <button
-        //         onClick={() => setIsEditProfileOpen(false)}
-        //         className="text-xl text-[#1F1811]"
-        //       >
-        //         ×
-        //       </button>
-        //     </div>
-
-        //     <p className="text-sm text-[#8A7C6A]">
-        //       Connect your existing Edit Profile modal here.
-        //     </p>
-        //   </div>
-        // </div>
-
         <RestaurantEditProfileModal
           onClose={() => setIsEditProfileOpen(false)}
         />
       )}
 
       {isResetPasswordOpen && (
-        // <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-        //   <div className="w-full max-w-lg bg-[#FBF3E7] p-6">
-        //     <div className="mb-6 flex items-center justify-between">
-        //       <div>
-        //         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-        //           Account Security
-        //         </p>
-
-        //         <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
-        //           Reset Password
-        //         </h2>
-        //       </div>
-
-        //       <button
-        //         onClick={() => setIsResetPasswordOpen(false)}
-        //         className="text-xl text-[#1F1811]"
-        //       >
-        //         ×
-        //       </button>
-        //     </div>
-
-        //     <p className="text-sm text-[#8A7C6A]">
-        //       Connect your existing Reset Password modal here.
-        //     </p>
-        //   </div>
-        // </div>
-
         <RestaurantResetPassword
           onClose={() => setIsResetPasswordOpen(false)}
         />

@@ -23,31 +23,34 @@ const RestaurantEarnings = () => {
         setLoading(true);
       }
 
-      // Change endpoint according to your backend
-      const res = await api.get("/restaurant/orders");
+      const res = await api.get("/restaurant/earnings");
 
-      setOrders(res?.data?.data || []);
+      console.log("Earnings Response:", res.data);
+
+      setOrders(
+        Array.isArray(res?.data?.data?.orders) ? res.data.data.orders : [],
+      );
 
       if (showToast) {
         toast.success("Earnings updated");
       }
     } catch (error) {
       console.log("Fetch earnings error:", error);
+
       toast.error(error?.response?.data?.message || "Unable to fetch earnings");
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
-
   useEffect(() => {
     fetchOrders();
   }, []);
 
   // Only delivered orders should count as earnings
-  const completedOrders = orders.filter(
-    (order) => order?.status?.toLowerCase() === "delivered",
-  );
+  const completedOrders = Array.isArray(orders)
+    ? orders.filter((order) => order?.status?.toLowerCase() === "delivered")
+    : [];
 
   const totalEarnings = completedOrders.reduce(
     (total, order) => total + Number(order?.orderValue?.total || 0),

@@ -118,8 +118,7 @@ export const RestaurantEditMenuItem = async (req, res, next) => {
 
     // Optional ownership check
     if (
-      existingMenuItem.restaurantID?.toString() !==
-      CurrentUser._id.toString()
+      existingMenuItem.restaurantID?.toString() !== CurrentUser._id.toString()
     ) {
       const error = new Error("You are not authorized to edit this menu item.");
       error.statusCode = 403;
@@ -426,6 +425,97 @@ export const RestaurantOrderStatusUpdate = async (req, res, next) => {
     res.status(200).json({
       message: "Order Status Updated Successfully",
       data: existingOrder,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const RestaurantEarnings = async (req, res, next) => {
+  try {
+    const CurrentUser = req.user;
+    // Get all delivered orders of current restaurant
+    const orders = await Order.find({
+      restaurantId: CurrentUser._id,
+      status: "delivered",
+    })
+      .populate("userId", "fullName")
+      .sort({ createdAt: -1 });
+
+    // Calculate earnings
+    const ordersWithEarnings = orders.map((order) => {
+      const orderTotal = Number(order?.orderValue?.total || 0);
+      const restaurantEarning = Number((orderTotal * 0.75).toFixed(2));
+      const riderEarning = Number((orderTotal * 0.15).toFixed(2));
+      const platformEarning = Number((orderTotal * 0.1).toFixed(2));
+
+      return {
+        ...order.toObject(),
+        earnings: {
+          orderTotal,
+          restaurant: restaurantEarning,
+          rider: riderEarning,
+          platform: platformEarning,
+        },
+      };
+    });
+
+    // Total Restaurant Earnings
+    const totalEarnings = ordersWithEarnings.reduce(
+      (total, order) => total + order.earnings.restaurant,
+      0,
+    );
+
+    // Today's Earnings
+    const today = new Date().toDateString();
+
+    const todayOrders = ordersWithEarnings.filter(
+      (order) => new Date(order.createdAt).toDateString() === today,
+    );
+
+    const todayEarnings = todayOrders.reduce(
+      (total, order) => total + order.earnings.restaurant,
+      0,
+    );
+
+    // Monthly Earnings
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const monthOrders = ordersWithEarnings.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return (
+        orderDate.getMonth() === currentMonth &&
+        orderDate.getFullYear() === currentYear
+      );
+    });
+
+    const monthEarnings = monthOrders.reduce(
+      (total, order) => total + order.earnings.restaurant,
+      0,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant earnings fetched successfully",
+      data: {
+        orders: ordersWithEarnings,
+
+        summary: {
+          totalEarnings: Number(totalEarnings.toFixed(2)),
+          todayEarnings: Number(todayEarnings.toFixed(2)),
+          monthlyEarnings: Number(monthEarnings.toFixed(2)),
+          completedOrders: ordersWithEarnings.length,
+          todayOrders: todayOrders.length,
+          monthlyOrders: monthOrders.length,
+        },
+
+        distribution: {
+          restaurant: "75%",
+          rider: "15%",
+          platform: "10%",
+        },
+      },
     });
   } catch (error) {
     next(error);

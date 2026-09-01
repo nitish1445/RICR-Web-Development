@@ -5,17 +5,13 @@ import {
   FaChevronDown,
   FaEnvelope,
   FaHeadset,
-  FaMessage,
   FaPhone,
   FaQuestion,
   FaUtensils,
 } from "react-icons/fa6";
-import toast from "react-hot-toast";
 
 const RestaurantHelp = () => {
   const [openFaq, setOpenFaq] = useState(null);
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
 
   const faqs = [
     {
@@ -44,25 +40,6 @@ const RestaurantHelp = () => {
         "Review the order details and update its status when appropriate. For technical or account-related issues, contact CraveIt support.",
     },
   ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!subject.trim() || !message.trim()) {
-      return toast.error("Please fill all the fields");
-    }
-
-    // Connect support API here
-    console.log({
-      subject,
-      message,
-    });
-
-    toast.success("Your support request has been submitted");
-
-    setSubject("");
-    setMessage("");
-  };
 
   return (
     <div>
@@ -143,104 +120,51 @@ const RestaurantHelp = () => {
         </div>
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        {/* FAQ */}
-        <section className="bg-white">
-          <div className="border-b border-[#1F1811]/10 p-5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-              Common Questions
-            </p>
+      {/* FAQ - Full Width */}
+      <section className="mt-6 bg-white">
+        <div className="border-b border-[#1F1811]/10 p-5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
+            Common Questions
+          </p>
 
-            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
-              Frequently Asked
-            </h2>
-          </div>
+          <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
+            Frequently Asked
+          </h2>
+        </div>
 
-          <div>
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="border-b border-[#1F1811]/10 last:border-none"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="flex w-full cursor-pointer items-center justify-between gap-4 p-5 text-left"
-                >
-                  <span className="text-sm font-bold text-[#1F1811]">
-                    {faq.question}
-                  </span>
-
-                  <FaChevronDown
-                    className={`shrink-0 text-xs text-[#E8491D] transition-transform ${
-                      openFaq === index ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {openFaq === index && (
-                  <div className="px-5 pb-5">
-                    <p className="text-sm leading-6 text-[#8A7C6A]">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Support Form */}
-        <section className="bg-white">
-          <div className="border-b border-[#1F1811]/10 p-5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8491D]">
-              Contact Team
-            </p>
-
-            <h2 className="mt-1 font-[Archivo_Black] text-xl uppercase text-[#1F1811]">
-              Send a Request
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-5">
-            <div>
-              <label className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
-                Subject
-              </label>
-
-              <input
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="What do you need help with?"
-                className="w-full border border-[#1F1811]/15 bg-[#FBF3E7] px-4 py-3 text-sm text-[#1F1811] outline-none placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D]"
-              />
-            </div>
-
-            <div className="mt-4">
-              <label className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-[#8A7C6A]">
-                Message
-              </label>
-
-              <textarea
-                rows="5"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe your issue in detail..."
-                className="w-full resize-none border border-[#1F1811]/15 bg-[#FBF3E7] px-4 py-3 text-sm text-[#1F1811] outline-none placeholder:text-[#8A7C6A]/60 focus:border-[#E8491D]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-5 py-3 text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#C93B16]"
+        <div>
+          {faqs.map((faq, index) => (
+            <div
+              key={index}
+              className="border-b border-[#1F1811]/10 last:border-none"
             >
-              <FaMessage />
-              Submit Request
-            </button>
-          </form>
-        </section>
-      </div>
+              <button
+                type="button"
+                onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                className="flex w-full cursor-pointer items-center justify-between gap-4 p-5 text-left"
+              >
+                <span className="text-sm font-bold text-[#1F1811]">
+                  {faq.question}
+                </span>
+
+                <FaChevronDown
+                  className={`shrink-0 text-xs text-[#E8491D] transition-transform ${
+                    openFaq === index ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {openFaq === index && (
+                <div className="px-5 pb-5">
+                  <p className="text-sm leading-6 text-[#8A7C6A]">
+                    {faq.answer}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Contact Options */}
       <section className="mt-6 grid gap-4 sm:grid-cols-2">

@@ -203,6 +203,13 @@ const Footer = () => {
               Privacy
             </Link>
 
+            <Link
+              to="/documentation"
+              className="font-[Inter] text-xs text-[#8A7C6A] transition-colors hover:text-[#FBF3E7]"
+            >
+              Documentation
+            </Link>
+
             <a
               href="https://github.com/nitish1445/RICR-Web-Development/tree/main/CreaveIt"
               target="_blank"
@@ -211,14 +218,6 @@ const Footer = () => {
             >
               GitHub
             </a>
-
-            <Link
-              to="/contact"
-              className="group inline-flex items-center gap-1.5 font-[Inter] text-xs text-[#8A7C6A] transition-colors hover:text-[#E8491D]"
-            >
-              Contact
-              <FaArrowUpRightFromSquare className="text-[9px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
           </div>
         </div>
       </div>

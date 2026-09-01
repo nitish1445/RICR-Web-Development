@@ -1,6 +1,5 @@
 import express from "express";
 import multer from "multer";
-
 import {
   RestaurantAddMenuItem,
   GetRestaurantMenuItem,
@@ -10,6 +9,7 @@ import {
   RestaurantUpdatePhoto,
   GetAllPlacedOrder,
   RestaurantOrderStatusUpdate,
+  RestaurantEarnings,
 } from "../controllers/restaurantController.js";
 import { ManagerProtect, Protect } from "../middlewares/authMiddleware.js";
 
@@ -59,6 +59,9 @@ router.patch(
 
 //Get All Placed Orders
 router.get("/placedOrders", Protect, ManagerProtect, GetAllPlacedOrder);
+
+//Get Restaurant Earnings
+router.get("/earnings", Protect, ManagerProtect, RestaurantEarnings);
 
 //Update Order Status
 router.patch(

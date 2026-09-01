@@ -325,7 +325,6 @@ export const UserCancelOrder = async (req, res, next) => {
     }
 
     order.status = "cancelled";
-
     await order.save();
 
     return res.status(200).json({

@@ -462,3 +462,38 @@ export const addUserByAdmin = async (req, res) => {
     });
   }
 };
+
+export const MarkOrderPaymentPaid = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Already paid check
+    if (order.paymentStatus === "paid") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment is already marked as paid",
+      });
+    }
+
+    // Mark payment as paid
+    order.paymentStatus = "paid";
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment marked as paid successfully",
+      data: order,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

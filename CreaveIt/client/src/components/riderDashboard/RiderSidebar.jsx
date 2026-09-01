@@ -1,90 +1,207 @@
 import React from "react";
-import { TbChartTreemap } from "react-icons/tb";
-import { ImProfile } from "react-icons/im";
-import { TiShoppingCart } from "react-icons/ti";
-import { FaHistory } from "react-icons/fa";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { MdLogout } from "react-icons/md";
-import api from "../../config/Api";
-import toast from "react-hot-toast";
+
+import {
+  FaChartPie,
+  FaMotorcycle,
+  FaClockRotateLeft,
+  FaUser,
+  FaRightFromBracket,
+  FaXmark,
+  FaCircleQuestion
+} from "react-icons/fa6";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import Logo from "../../assets/craveIt-logo.png";
 
-const RiderSideBar = ({ active, setActive, isCollapsed, setIsCollapsed }) => {
-  const { setUser, setIsLogin } = useAuth();
+const RiderSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-
+  const { user, logout } = useAuth();
   const menuItems = [
-    { key: "overview", title: "Overview", icon: <TbChartTreemap /> },
-    { key: "profile", title: "Profile", icon: <ImProfile /> },
-    { key: "current-order", title: "Current Order", icon: <TiShoppingCart /> },
-    { key: "order-history", title: "Order History", icon: <FaHistory /> },
+    {
+      name: "Overview",
+      icon: FaChartPie,
+      path: "/rider-dashboard",
+      end: true,
+    },
+    {
+      name: "Current Order",
+      icon: FaMotorcycle,
+      path: "/rider-dashboard/current-order",
+    },
+    {
+      name: "Order History",
+      icon: FaClockRotateLeft,
+      path: "/rider-dashboard/order-history",
+    },
+  ];
+
+  const bottomItems = [
+    {
+      name: "Profile",
+      icon: FaUser,
+      path: "/rider-dashboard/profile",
+    },
+    {
+      name: "Help & Support",
+      icon: FaCircleQuestion,
+      path: "/rider-dashboard/help",
+    },
   ];
 
   const handleLogout = async () => {
     try {
-      const res = await api.get("/auth/logout");
-      toast.success(res.data.message);
-      setUser("");
-      setIsLogin(false);
-      navigate("/");
-      sessionStorage.removeItem("CravingUser");
+      await logout();
+
+      toast.success("Logged out successfully");
+
+      navigate("/login");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Unknown Error");
+      console.log(error);
+
+      toast.error("Unable to logout");
     }
   };
 
   return (
     <>
-      <div className="p-2 flex flex-col justify-between h-full">
-        <div>
-          <div className="h-10 text-xl font-bold flex gap-5 items-center mb-3">
-            <button
-              className="ms-2 hover:scale-105"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-              <GiHamburgerMenu />
-            </button>
-            {!isCollapsed && (
-              <span className="overflow-hidden text-nowrap">
-                Rider Dashboard
-              </span>
-            )}
-          </div>
-          <hr />
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-[#1F1811]/50 lg:hidden"
+        />
+      )}
 
-          <div className="py-6 space-y-5 w-full">
-            {menuItems.map((item, idx) => (
-              <button
-                className={`flex gap-3 items-center text-lg ps-2 rounded-xl h-10 w-full text-nowrap overflow-hidden duration-300
-                ${
-                  active === item.key
-                    ? "bg-(--color-secondary) text-white"
-                    : "hover:bg-gray-100/70"
-                } 
-              `}
-                onClick={() => setActive(item.key)}
-                key={idx}
-              >
-                {item.icon}
-                {!isCollapsed && item.title}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#1F1811] transition-transform duration-300 lg:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Logo */}
+        <div className="flex h-20 items-center justify-between px-6">
+          <NavLink to="/" onClick={onClose} className="flex items-center gap-2">
+            <img src={Logo} alt="CraveIt" className="h-9 w-9 object-contain" />
 
-        <div>
+            <span className="font-[Archivo_Black] text-lg tracking-tight text-[#FBF3E7]">
+              CRAVE<span className="text-[#E8491D]">IT</span>
+            </span>
+          </NavLink>
+
           <button
-            className="flex gap-3 items-center text-lg ps-2 rounded-xl h-10 w-full text-nowrap overflow-hidden duration-300 hover:bg-red-500 hover:text-white text-red-600"
-            onClick={handleLogout}
+            type="button"
+            onClick={onClose}
+            className="text-[#FBF3E7] lg:hidden"
           >
-            <MdLogout />
-            {!isCollapsed && "Logout"}
+            <FaXmark className="text-xl" />
           </button>
         </div>
-      </div>
+
+        {/* Rider Info */}
+        <div className="mx-4 bg-[#FBF3E7]/5 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden bg-[#E8491D]">
+              {user?.photo?.url ? (
+                <img
+                  src={user.photo.url}
+                  alt={user?.fullName || "Rider"}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <FaMotorcycle className="text-sm text-[#FBF3E7]" />
+              )}
+            </div>
+
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-[#FBF3E7]">
+                {user?.fullName || "Delivery Partner"}
+              </p>
+
+              <p className="mt-1 truncate text-[10px] text-[#C9BEB0]">
+                {user?.city || "Delivery Partner"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Navigation */}
+        <nav className="mt-6 flex-1 px-3">
+          <p className="px-3 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A7C6A]">
+            Delivery
+          </p>
+
+          <div className="mt-3 space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  end={item.end}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 text-sm font-semibold transition ${
+                      isActive
+                        ? "bg-[#E8491D] text-[#FBF3E7]"
+                        : "text-[#C9BEB0] hover:bg-[#FBF3E7]/5 hover:text-[#FBF3E7]"
+                    }`
+                  }
+                >
+                  <Icon className="text-sm" />
+
+                  {item.name}
+                </NavLink>
+              );
+            })}
+          </div>
+
+          {/* Account Navigation */}
+          <p className="mt-8 px-3 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A7C6A]">
+            Account
+          </p>
+
+          <div className="mt-3 space-y-1">
+            {bottomItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 text-sm font-semibold transition ${
+                      isActive
+                        ? "bg-[#E8491D] text-[#FBF3E7]"
+                        : "text-[#C9BEB0] hover:bg-[#FBF3E7]/5 hover:text-[#FBF3E7]"
+                    }`
+                  }
+                >
+                  <Icon className="text-sm" />
+
+                  {item.name}
+                </NavLink>
+              );
+            })}
+          </div>
+        </nav>
+
+        {/* Logout */}
+        <div className="p-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full cursor-pointer items-center gap-3 bg-[#E8491D]/10 px-4 py-3 text-sm font-bold text-[#E8491D] transition hover:bg-[#E8491D] hover:text-[#FBF3E7]"
+          >
+            <FaRightFromBracket />
+            Logout
+          </button>
+        </div>
+      </aside>
     </>
   );
 };
 
-export default RiderSideBar;
+export default RiderSidebar;

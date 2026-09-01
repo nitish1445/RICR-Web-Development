@@ -101,18 +101,21 @@ const UserProfile = () => {
 
         {/* Profile Hero */}
         <section className="overflow-hidden bg-[#1F1811]">
-          <div className="relative p-6 sm:p-8">
+          <div className="relative p-5 sm:p-6 md:p-8">
             {/* Decorative Text */}
-            <span className="pointer-events-none absolute right-5 top-2 font-[Archivo_Black] text-7xl uppercase text-white/3 sm:text-8xl">
+
+            <span className="pointer-events-none absolute right-3 top-0 font-[Archivo_Black] text-5xl uppercase tracking-tight text-white/[0.035] sm:right-5 sm:text-7xl lg:text-8xl">
               Profile
             </span>
 
-            <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               {/* User Info */}
-              <div className="flex items-center gap-5">
+
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                 {/* Avatar */}
-                <div className="relative">
-                  <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] text-2xl font-black text-[#1F1811]">
+
+                <div className="relative w-fit shrink-0">
+                  <div className="flex size-20 items-center justify-center overflow-hidden border-2 border-[#E8491D] bg-[#FBF3E7] text-xl font-black text-[#1F1811] sm:size-24 sm:text-2xl">
                     {user?.photo?.url ? (
                       <img
                         src={user.photo.url}
@@ -136,7 +139,7 @@ const UserProfile = () => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={photoLoading}
-                    className="absolute -bottom-2 -right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-[#E8491D] text-xs text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="absolute -bottom-2 -right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-[#E8491D] text-xs text-[#FBF3E7] transition hover:bg-[#C93B16] disabled:cursor-not-allowed disabled:opacity-60 sm:size-9 sm:text-sm"
                     title="Change profile photo"
                   >
                     {photoLoading ? (
@@ -148,18 +151,19 @@ const UserProfile = () => {
                 </div>
 
                 {/* Details */}
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="truncate font-[Archivo_Black] text-2xl uppercase text-[#FBF3E7] sm:text-3xl">
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <h2 className="wrap-break-word font-[Archivo_Black] text-xl uppercase leading-tight text-[#FBF3E7] sm:text-2xl md:text-3xl">
                       {user?.fullName || "Customer"}
                     </h2>
 
-                    <span className="bg-[#E8491D] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#FBF3E7]">
+                    <span className="shrink-0 bg-[#E8491D] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#FBF3E7] sm:px-3 sm:text-[10px]">
                       Customer
                     </span>
                   </div>
 
-                  <p className="mt-2 truncate text-sm text-[#C9BEB0]">
+                  <p className="mt-2 break-all text-sm text-[#C9BEB0] sm:break-normal">
                     {user?.email || "No email available"}
                   </p>
 
@@ -167,7 +171,7 @@ const UserProfile = () => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={photoLoading}
-                    className="mt-3 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-[#E8491D] transition hover:text-[#FBF3E7] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="mt-4 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-[#E8491D] transition hover:text-[#FBF3E7] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {photoLoading ? "Uploading..." : "Change Profile Photo"}
                   </button>
@@ -175,32 +179,40 @@ const UserProfile = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex flex-wrap gap-3">
+
+              <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto lg:shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsEditProfileOpen(true)}
-                  className="inline-flex cursor-pointer items-center gap-2 bg-[#E8491D] px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16]"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 bg-[#E8491D] px-3 py-3 text-[10px] font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-[#C93B16] sm:px-4 sm:text-xs"
                 >
                   <FaPen className="text-[11px]" />
-                  Edit Profile
+                  <span className="truncate">Edit Profile</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsResetPasswordOpen(true)}
-                  className="inline-flex cursor-pointer items-center gap-2 border border-white/15 px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-white/10"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 border border-white/15 px-3 py-3 text-[10px] font-bold uppercase tracking-wide text-[#FBF3E7] transition hover:bg-white/10 sm:px-4 sm:text-xs"
                 >
-                  <FaKey className="text-[11px]" />
-                  Reset Password
+                  <FaKey className="shrink-0 text-[11px]" />
+                  <span className="truncate">Reset Password</span>
                 </button>
               </div>
             </div>
           </div>
 
           {/* Account Status */}
-          <div className="flex items-center gap-2 border-t border-dashed border-white/10 bg-black/10 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#C9BEB0] sm:px-8">
-            <span className="size-2 bg-[#6B8E4E]" />
-            Account Active
+
+          <div className="flex flex-col gap-2 border-t border-dashed border-white/10 bg-black/10 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+            <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#C9BEB0] sm:text-[10px] sm:tracking-[0.15em]">
+              <span className="size-2 shrink-0 bg-[#6B8E4E]" />
+              Account Active
+            </div>
+
+            <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#8A7C6A] sm:text-[10px] sm:tracking-[0.15em]">
+              Customer • {user?.role || "customer"}
+            </div>
           </div>
         </section>
 
